@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container" style="max-width:400px; margin-top:60px;">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="mb-4 text-center">Créer un compte</h2>
+          <form method="POST" action="/register">
+            <div class="mb-3">
+              <label for="nom_prenom" class="form-label">Nom et prénom</label>
+              <input type="text" class="form-control" id="nom_prenom" name="nom_prenom" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Adresse email</label>
+              <input type="email" class="form-control" id="email" name="email" required autocomplete="username">
+            </div>
+            <div class="mb-3">
+              <label for="mot_de_passe" class="form-label">Mot de passe</label>
+              <input type="password" class="form-control" id="mot_de_passe" name="mot_de_passe" required autocomplete="new-password">
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn btn-bd-primary w-100">S'inscrire</button>
+          </form> 
+          <div class="mt-3 text-center">
+            <a href="/auth">Déjà un compte ? Se connecter</a>
+          </div>
+        </div>
+      </div>
+      <br>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container" style="margin-top:60px;">
+      <h1 class="mb-5 text-center">Derniers articles par catégorie</h1>
+      <div class="row">
+        <!-- Section Beauté -->
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title">Beauté</h3>
+              <% if (articlesParCategorie["Beauté"]) { %>
+                <h5><%= articlesParCategorie["Beauté"].titre %></h5>
+                <p><%= articlesParCategorie["Beauté"].contenu.substring(0, 120) %>...</p>
+                <small>
+                  Par <%= articlesParCategorie["Beauté"].auteur %>,
+                  le <%= articlesParCategorie["Beauté"].date_publication.toLocaleDateString() %>
+                </small>
+                <br>
+                <a href="/article/<%= articlesParCategorie["Beauté"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+              <% } else { %>
+                <p>Aucun article disponible.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- Section Nutrition -->
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title">Nutrition</h3>
+              <% if (articlesParCategorie["Nutrition"]) { %>
+                <h5><%= articlesParCategorie["Nutrition"].titre %></h5>
+                <p><%= articlesParCategorie["Nutrition"].contenu.substring(0, 120) %>...</p>
+                <small>
+                  Par <%= articlesParCategorie["Nutrition"].auteur %>,
+                  le <%= articlesParCategorie["Nutrition"].date_publication.toLocaleDateString() %>
+                </small>
+                <br>
+                <a href="/article/<%= articlesParCategorie["Nutrition"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+              <% } else { %>
+                <p>Aucun article disponible.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <!-- Section Developpement personnels -->
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h3 class="card-title">Développement Personnels</h3>
+              <% if (articlesParCategorie["DéveloppementPersonnels"]) { %>
+                <h5><%= articlesParCategorie["DéveloppementPersonnels"].titre %></h5>
+                <p><%= articlesParCategorie["DéveloppementPersonnels"].contenu.substring(0, 120) %>...</p>
+                <small>
+                  Par <%= articlesParCategorie["DéveloppementPersonnels"].auteur %>,
+                  le <%= articlesParCategorie["DéveloppementPersonnels"].date_publication.toLocaleDateString() %>
+                </small>
+                <br>
+                <a href="/article/<%= articlesParCategorie["DéveloppementPersonnels"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+              <% } else { %>
+                <p>Aucun article disponible.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

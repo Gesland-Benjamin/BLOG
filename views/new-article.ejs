@@ -1,0 +1,38 @@
+<%- include('partials/head') %>
+<main class="container" style="max-width:500px; margin-top:60px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="mb-4 text-center">Nouvel article</h2>
+      <form method="POST" action="/admin/articles" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="titre" class="form-label">Titre</label>
+          <input type="text" class="form-control" id="titre" name="titre" required>
+        </div>
+        <div class="mb-3">
+          <label for="contenu" class="form-label">Contenu</label>
+          <textarea class="form-control" id="contenu" name="contenu" rows="6" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="categorie_id" class="form-label">Catégorie</label>
+          <select class="form-select" id="categorie_id" name="categorie_id" required>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>"><%= cat.nom %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Ajouter une image</label>
+          <input type="file" class="form-control" id="image" name="image" accept="image/*">
+        </div>
+        <div class="mb-3">
+          <label for="video" class="form-label">Ajouter une vidéo</label>
+          <input type="file" class="form-control" id="video" name="video" accept="video/*">
+        </div>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-bd-primary">Créer l'article</button>
+          <a href="/admin/articles" class="btn btn-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

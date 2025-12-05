@@ -1,0 +1,33 @@
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container" style="margin-top:60px;">
+      <h1 class="mb-4">Articles — <%= categorie %></h1>
+
+      <% if (!articles || articles.length === 0) { %>
+        <p>Aucun article trouvé pour cette catégorie.</p>
+      <% } else { %>
+        <div class="row">
+          <% articles.forEach(function(article) { %>
+            <div class="col-md-6">
+              <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title"><%= article.titre %></h5>
+                  <p class="card-text"><%= (article.contenu || '').substring(0, 200) %>...</p>
+                  <small>Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %></small>
+                  <br>
+                  <a href="/article/<%= article.id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+    </main>
+    <%- include('partials/footer') %>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
