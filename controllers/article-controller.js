@@ -77,6 +77,19 @@ export const getArticleById = async (req, res) => {
       return res.status(404).send("Article non trouvé.");
     }
 
+    let alreadyLiked = false;
+    const rawCookie = req.cookies?.likedArticles;
+    if (rawCookie) {
+      try {
+        const parsed = JSON.parse(rawCookie);
+        if (Array.isArray(parsed)) {
+          alreadyLiked = parsed.map(Number).filter(Number.isFinite).includes(Number(id));
+        }
+      } catch (err) {
+        console.warn("Cookie likedArticles illisible, on continue sans", err);
+      }
+    }
+
     const articleData = {
       id: article.id,
       titre: article.titre,
@@ -84,13 +97,64 @@ export const getArticleById = async (req, res) => {
       auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu",
       categorie: article.categorie ? article.categorie.nom : null,
       date_publication: article.date_publication,
-      image: article.image
+      image: article.image,
+      likes: article.likes || 0,
+      liked: alreadyLiked
     };
 
     res.render("article-detail", { article: articleData, user: req.user });
   } catch (error) {
     console.error("Erreur getArticleById:", error);
     res.status(500).send("Erreur lors du chargement de l'article.");
+  }
+};
+
+// Permet à n'importe quel visiteur (connecté ou non) de liker un article
+export const likeArticle = async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ message: "Identifiant d'article invalide" });
+  }
+
+  try {
+    const article = await Article.findByPk(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article introuvable" });
+    }
+
+    const rawCookie = req.cookies?.likedArticles;
+    let likedArticles = [];
+    if (rawCookie) {
+      try {
+        const parsed = JSON.parse(rawCookie);
+        if (Array.isArray(parsed)) {
+          likedArticles = parsed.map(Number).filter(Number.isFinite);
+        }
+      } catch (err) {
+        console.warn("Cookie likedArticles illisible, on repart à zéro", err);
+      }
+    }
+
+    const alreadyLiked = likedArticles.includes(id);
+    if (alreadyLiked) {
+      return res.json({ likes: article.likes || 0, liked: true });
+    }
+
+    await article.increment("likes", { by: 1 });
+    await article.reload();
+
+    const updatedLiked = [...likedArticles, id];
+    res.cookie("likedArticles", JSON.stringify(updatedLiked), {
+      httpOnly: false,
+      sameSite: "lax",
+      maxAge: 365 * 24 * 60 * 60 * 1000
+    });
+
+    return res.json({ likes: article.likes || 0, liked: true });
+  } catch (error) {
+    console.error("Erreur likeArticle:", error);
+    return res.status(500).json({ message: "Erreur lors de l'enregistrement du like" });
   }
 };
 

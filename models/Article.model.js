@@ -10,7 +10,8 @@ const Article = sequelize.define('Article', {
   date_publication: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   auteur_id: { type: DataTypes.INTEGER, allowNull: false },
   categorie_id: { type: DataTypes.INTEGER, allowNull: false },
-  image: { type: DataTypes.STRING, allowNull: true }
+  image: { type: DataTypes.STRING, allowNull: true },
+  likes: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 }
 }, {
   tableName: 'article',
   timestamps: false

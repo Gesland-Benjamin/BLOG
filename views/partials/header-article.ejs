@@ -7,7 +7,7 @@
           <div class="col-4 text-center">
             <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Titre</a>
           </div>
-          <div class="col-4 d-flex justify-content-end align-items-center">
+          <div class="col-4 d-flex justify-content-end align-items-center gap-2">
             <a class="link-secondary" href="#" aria-label="Search">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24">
                 <title>Search</title>
@@ -15,6 +15,17 @@
                 <path d="M21 21l-5.2-5.2"></path>
               </svg>
             </a>
+            <% if (user && user.role === "admin") { %>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" id="adminMenuDropdownArticle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dashboard
+                  <span class="ms-2" aria-hidden="true">|||</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenuDropdownArticle">
+                  <li><a class="dropdown-item" href="/admin/articles/new">Ajouter un article</a></li>
+                </ul>
+              </div>
+            <% } %>
             <% if (user) { %>
               <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
             <% } else { %>

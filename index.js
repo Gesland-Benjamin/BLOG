@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
 import indexRoutes from "./routes/index.js";
 import articlesRouter from "./routes/article.js";
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 3000;
 // Parse urlencoded and json BEFORE method override
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Middleware pour supporter la méthode PUT/DELETE via _method dans les formulaires
 // On priorise la query string car pour multipart/form-data le body n'est pas parsé avant multer

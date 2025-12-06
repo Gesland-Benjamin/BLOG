@@ -10,7 +10,7 @@
               >Titre</a
             >
           </div>
-          <div class="col-4 d-flex justify-content-end align-items-center">
+          <div class="col-4 d-flex justify-content-end align-items-center gap-2">
             <a class="link-secondary" href="#" aria-label="Search">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +30,17 @@
                 <path d="M21 21l-5.2-5.2"></path>
               </svg>
             </a>
+            <% if (user && user.role === "admin") { %>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" id="adminMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dashboard
+                  <span class="ms-2" aria-hidden="true">|||</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenuDropdown">
+                  <li><a class="dropdown-item" href="/admin/articles/new">Ajouter un article</a></li>
+                </ul>
+              </div>
+            <% } %>
                <% if (user) { %>
           <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
      <% } else { %>
