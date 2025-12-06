@@ -18,7 +18,13 @@
                   <p class="card-text"><%= (article.contenu || '').substring(0, 200) %>...</p>
                   <small>Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %></small>
                   <br>
-                  <a href="/article/<%= article.id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+                  <div class="mt-2">
+                    <a href="/article/<%= article.id %>" class="btn btn-primary btn-sm">Lire l'article</a>
+                    <% if (user && user.role === 'admin') { %>
+                      <a href="/admin/articles/<%= article.id %>/edit" class="btn btn-warning btn-sm">Modifier</a>
+                      <button class="btn btn-danger btn-sm" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
+                    <% } %>
+                  </div>
                 </div>
               </div>
             </div>
@@ -29,5 +35,26 @@
     </main>
     <%- include('partials/footer') %>
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function deleteArticle(articleId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+          fetch(`/admin/articles/${articleId}`, {
+            method: 'DELETE'
+          })
+          .then(response => {
+            if (response.ok) {
+              alert('Article supprimé avec succès');
+              location.reload();
+            } else {
+              alert('Erreur lors de la suppression de l\'article');
+            }
+          })
+          .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la suppression');
+          });
+        }
+      }
+    </script>
   </body>
 </html>

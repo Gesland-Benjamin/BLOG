@@ -2,35 +2,39 @@
 <main class="container" style="max-width:500px; margin-top:60px;">
   <div class="card shadow-sm">
     <div class="card-body">
-      <h2 class="mb-4 text-center">Nouvel article</h2>
-      <form method="POST" action="/admin/articles" enctype="multipart/form-data">
+      <h2 class="mb-4 text-center"><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h2>
+      <!-- Pour les formulaires multipart, on utilise _method dans la query (body non parsé avant multer) -->
+      <form method="POST" action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="titre" class="form-label">Titre</label>
-          <input type="text" class="form-control" id="titre" name="titre" required>
+          <input type="text" class="form-control" id="titre" name="titre" value="<%= isEditing ? article.titre : '' %>" required>
         </div>
         <div class="mb-3">
           <label for="contenu" class="form-label">Contenu</label>
-          <textarea class="form-control" id="contenu" name="contenu" rows="6" required></textarea>
+          <textarea class="form-control" id="contenu" name="contenu" rows="6" required><%= isEditing ? article.contenu : '' %></textarea>
         </div>
         <div class="mb-3">
           <label for="categorie_id" class="form-label">Catégorie</label>
           <select class="form-select" id="categorie_id" name="categorie_id" required>
             <% categories.forEach(cat => { %>
-              <option value="<%= cat.id %>"><%= cat.nom %></option>
+              <option value="<%= cat.id %>" <%= isEditing && cat.id === article.categorie_id ? 'selected' : '' %>><%= cat.nom %></option>
             <% }) %>
           </select>
         </div>
         <div class="mb-3">
           <label for="image" class="form-label">Ajouter une image</label>
           <input type="file" class="form-control" id="image" name="image" accept="image/*">
+          <% if (isEditing && article.image) { %>
+            <small class="text-muted">Image actuelle: <%= article.image %></small>
+          <% } %>
         </div>
         <div class="mb-3">
           <label for="video" class="form-label">Ajouter une vidéo</label>
           <input type="file" class="form-control" id="video" name="video" accept="video/*">
         </div>
         <div class="d-grid gap-2">
-          <button type="submit" class="btn btn-bd-primary">Créer l'article</button>
-          <a href="/admin/articles" class="btn btn-secondary">Annuler</a>
+          <button type="submit" class="btn btn-bd-primary"><%= isEditing ? 'Mettre à jour l\'article' : 'Créer l\'article' %></button>
+          <a href="/article" class="btn btn-secondary">Annuler</a>
         </div>
       </form>
     </div>

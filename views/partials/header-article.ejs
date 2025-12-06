@@ -15,7 +15,11 @@
                 <path d="M21 21l-5.2-5.2"></path>
               </svg>
             </a>
-            <a class="btn btn-sm btn-outline-secondary" href="/auth">Se connecter / S'inscrire</a>
+            <% if (user) { %>
+              <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
+            <% } else { %>
+              <a class="btn btn-sm btn-outline-secondary" href="/auth">Se connecter / S'inscrire</a>
+            <% } %>
           </div>
         </div>
       </div>

@@ -20,8 +20,25 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Parse urlencoded and json BEFORE method override
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Middleware pour supporter la méthode PUT/DELETE via _method dans les formulaires
+// On priorise la query string car pour multipart/form-data le body n'est pas parsé avant multer
+app.use((req, res, next) => {
+  const methodFromQuery = req.query && typeof req.query === 'object' && req.query._method;
+  const methodFromBody = req.body && typeof req.body === 'object' && req.body._method;
+  const method = methodFromQuery || methodFromBody;
+  if (method) {
+    const upper = String(method).toUpperCase();
+    console.log('Override method:', req.method, '=>', upper, 'url:', req.originalUrl);
+    req.originalMethod = req.originalMethod || req.method;
+    req.method = upper;
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");

@@ -1,0 +1,46 @@
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container" style="margin-top:60px;">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+          <article class="card shadow-sm border-0 mb-4">
+            <% if (article.image) { %>
+              <div class="ratio ratio-16x9 bg-light rounded-top" style="overflow:hidden;">
+                <img src="<%= article.image %>" alt="Illustration de l'article" class="w-100 h-100 object-fit-cover">
+              </div>
+            <% } %>
+            <div class="card-body p-4">
+              <p class="text-muted mb-2"><%= new Date(article.date_publication).toLocaleDateString() %></p>
+              <h1 class="mb-3"><%= article.titre %></h1>
+              <p class="text-muted">Par <%= article.auteur %><% if (article.categorie) { %> — <%= article.categorie %><% } %></p>
+              <div class="mt-4 fs-5" style="line-height:1.7;">
+                <%= article.contenu %>
+              </div>
+
+              <% if (article.video) { %>
+                <div class="mt-4">
+                  <div class="ratio ratio-16x9 rounded overflow-hidden">
+                    <video controls class="w-100 h-100">
+                      <source src="<%= article.video %>" type="video/mp4">
+                      Votre navigateur ne supporte pas la lecture vidéo.
+                    </video>
+                  </div>
+                </div>
+              <% } %>
+
+              <div class="d-flex gap-2 mt-4">
+                <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="btn btn-outline-secondary">Retour à la catégorie</a>
+                <a href="/article" class="btn btn-primary">Tous les articles</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
