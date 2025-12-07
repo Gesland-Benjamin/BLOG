@@ -11,6 +11,7 @@ const Article = sequelize.define('Article', {
   auteur_id: { type: DataTypes.INTEGER, allowNull: false },
   categorie_id: { type: DataTypes.INTEGER, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: true },
+  image_alt: { type: DataTypes.STRING(255), allowNull: true, defaultValue: null },
   likes: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 }
 }, {
   tableName: 'article',

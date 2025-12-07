@@ -1,0 +1,37 @@
+# robots.txt
+# Fichier de configuration pour les moteurs de recherche
+
+# Règles globales pour tous les bots
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /uploads/tmp/
+Disallow: /auth/login
+Disallow: /auth/register
+Disallow: /search
+
+# Délai entre les requêtes (en secondes)
+Crawl-delay: 1
+
+# Localisation du sitemap
+Sitemap: http://localhost:3000/sitemap.xml
+
+# Règles spécifiques pour Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Règles spécifiques pour Bingbot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Bloquer les bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

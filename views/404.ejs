@@ -1,0 +1,23 @@
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container text-center" style="margin-top:120px; margin-bottom:120px;">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <h1 class="display-1 fw-bold text-muted">404</h1>
+          <h2 class="mb-4">Page introuvable</h2>
+          <p class="lead text-muted mb-4">
+            Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
+          </p>
+          <div class="d-flex gap-3 justify-content-center">
+            <a href="/" class="btn btn-bd-primary">Retour à l'accueil</a>
+            <a href="/search" class="btn btn-outline-secondary">Rechercher</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+  </body>
+</html>

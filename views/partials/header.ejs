@@ -11,7 +11,7 @@
             >
           </div>
           <div class="col-4 d-flex justify-content-end align-items-center gap-2">
-            <a class="link-secondary" href="#" aria-label="Search">
+            <a class="link-secondary" href="/search" aria-label="Search">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -37,15 +37,21 @@
                   <span class="ms-2" aria-hidden="true">|||</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenuDropdown">
+                  <li><a class="dropdown-item" href="/admin/dashboard">Dashboard</a></li>
+                  <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="/admin/articles/new">Ajouter un article</a></li>
+                  <li><a class="dropdown-item" href="/admin/categories">Gérer les catégories</a></li>
+                  <li><a class="dropdown-item" href="/admin/medias">Gérer les médias</a></li>
+                  <li><a class="dropdown-item" href="/admin/commentaires">Modérer les commentaires</a></li>
+                  <li><a class="dropdown-item" href="/admin/newsletter">📧 Newsletter</a></li>
                 </ul>
               </div>
             <% } %>
-               <% if (user) { %>
-          <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
-     <% } else { %>
-          <a class="btn btn-sm btn-outline-secondary" href="/auth">Connexion</a>
-     <% } %>
+            <% if (user) { %>
+              <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
+            <% } else { %>
+              <a class="btn btn-sm btn-outline-secondary" href="/auth">Se connecter / S'inscrire</a>
+            <% } %>
           </div>
         </div>
       </header>

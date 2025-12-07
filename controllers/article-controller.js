@@ -1,6 +1,8 @@
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
+import Commentaire from "../models/Commentaire.model.js";
+import { generateOpenGraphImage } from "../services/imageHelper.js";
 
 
 const getArticlePage = (req, res) => {
@@ -47,6 +49,8 @@ export const getArticlesParCategorie = async (req, res) => {
           id: article.id,
           titre: article.titre,
           contenu: article.contenu,
+          image: article.image,
+          image_alt: article.image_alt || article.titre,
           auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu",
           date_publication: article.date_publication,
           categorie: categorieTrouvee.nom
@@ -98,14 +102,76 @@ export const getArticleById = async (req, res) => {
       categorie: article.categorie ? article.categorie.nom : null,
       date_publication: article.date_publication,
       image: article.image,
+      image_alt: article.image_alt || article.titre,
       likes: article.likes || 0,
-      liked: alreadyLiked
+      liked: alreadyLiked,
+      // Meta données pour SEO
+      description: (article.contenu || '').substring(0, 160),
+      url: `${process.env.SITE_URL || 'http://localhost:3000'}/article/${article.id}`,
+      openGraphImage: article.image || `${process.env.SITE_URL || 'http://localhost:3000'}/default-og-image.png`
     };
 
-    res.render("article-detail", { article: articleData, user: req.user });
+    const commentaires = await Commentaire.findAll({
+      where: { article_id: id, statut: "approved" },
+      order: [["date", "DESC"]]
+    });
+
+    const commentSubmitted = req.query && req.query.comment_submitted === "1";
+
+    // Générer les meta tags OpenGraph
+    const ogImageTags = generateOpenGraphImage({
+      imageUrl: articleData.openGraphImage,
+      imageAlt: articleData.image_alt,
+      width: '1200',
+      height: '630'
+    });
+
+    res.render("article-detail", { 
+      article: articleData, 
+      user: req.user, 
+      commentaires, 
+      commentSubmitted,
+      ogImageTags
+    });
   } catch (error) {
     console.error("Erreur getArticleById:", error);
     res.status(500).send("Erreur lors du chargement de l'article.");
+  }
+};
+
+export const postComment = async (req, res) => {
+  const articleId = Number(req.params.id);
+  const { nom, contenu } = req.body || {};
+
+  if (!Number.isInteger(articleId)) {
+    return res.status(400).send("Article invalide");
+  }
+
+  if (!contenu || (!req.user && !nom)) {
+    return res.status(400).send("Nom et contenu requis");
+  }
+
+  try {
+    const article = await Article.findByPk(articleId);
+    if (!article) return res.status(404).send("Article introuvable");
+
+    // Heuristique anti-spam simple
+    const lower = (contenu || "").toLowerCase();
+    const looksSpam = lower.includes("http://") || lower.includes("https://") || lower.includes("www.");
+
+    await Commentaire.create({
+      article_id: articleId,
+      contenu,
+      nom: req.user ? req.user.nom_prenom : nom,
+      user_id: req.user ? req.user.id : null,
+      statut: looksSpam ? "pending" : "pending",
+      is_spam: looksSpam
+    });
+
+    return res.redirect(`/article/${articleId}?comment_submitted=1`);
+  } catch (error) {
+    console.error("Erreur postComment:", error);
+    return res.status(500).send("Impossible d'enregistrer le commentaire pour le moment");
   }
 };
 
@@ -160,38 +226,48 @@ export const likeArticle = async (req, res) => {
 
 export const getArticlesByCategorieName = async (req, res) => {
   const rawNom = req.params.nom || '';
-  // Décode et normalise pour comparer sans accents / casse / espaces
   const decoded = decodeURIComponent(rawNom);
   const normalize = str =>
     (str || '')
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // supprime accents
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
 
   try {
-    console.log('getArticlesByCategorieName param raw:', rawNom, 'decoded:', decoded);
-
-    // Cherche la catégorie de façon plus tolérante (sans dépendre d'une comparaison SQL exacte)
     const toutesCategories = await Categorie.findAll();
     const categorieTrouvee = toutesCategories.find(c => normalize(c.nom) === normalize(decoded));
 
     if (!categorieTrouvee) {
-      console.log('Catégorie introuvable en base pour :', decoded);
-      return res.status(404).render('articles-by-category', { articles: [], categorie: decoded });
+      return res.status(404).render('articles-by-category', { 
+        articles: [], 
+        categorie: decoded, 
+        user: req.user,
+        pagination: { page: 1, pages: 0, total: 0 },
+        search: ''
+      });
     }
 
-    // Récupère les articles par categorie_id (évite les problèmes de join/where sur le include)
-    const articles = await Article.findAll({
-      where: { categorie_id: categorieTrouvee.id },
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const offset = (page - 1) * limit;
+    const search = req.query.search || '';
+
+    const where = { categorie_id: categorieTrouvee.id };
+    if (search) {
+      where.titre = { [Article.sequelize.Sequelize.Op.iLike]: `%${search}%` };
+    }
+
+    const { count, rows } = await Article.findAndCountAll({
+      where,
       include: [{ model: User, as: "auteur" }, { model: Categorie, as: "categorie" }],
-      order: [["date_publication", "DESC"]]
+      order: [["date_publication", "DESC"]],
+      limit,
+      offset
     });
 
-    console.log('articles trouvés pour', categorieTrouvee.nom, ':', articles.length);
-
-    const articlesSimplifies = articles.map(a => ({
+    const articlesSimplifies = rows.map(a => ({
       id: a.id,
       titre: a.titre,
       contenu: a.contenu,
@@ -199,7 +275,15 @@ export const getArticlesByCategorieName = async (req, res) => {
       date_publication: a.date_publication
     }));
 
-    res.render("articles-by-category", { articles: articlesSimplifies, categorie: categorieTrouvee.nom, user: req.user });
+    const totalPages = Math.ceil(count / limit);
+
+    res.render("articles-by-category", { 
+      articles: articlesSimplifies, 
+      categorie: categorieTrouvee.nom, 
+      user: req.user,
+      pagination: { page, pages: totalPages, total: count },
+      search
+    });
   } catch (error) {
     console.error("Erreur getArticlesByCategorieName:", error);
     res.status(500).send("Erreur lors du chargement des articles de la catégorie.");

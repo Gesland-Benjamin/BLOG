@@ -9,22 +9,37 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h2 class="mb-4 text-center">Connexion</h2>
+          
+          <% if (errors && errors.length > 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <ul class="mb-0">
+                <% errors.forEach(error => { %>
+                  <li><%= error %></li>
+                <% }) %>
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
           <form method="POST" action="/auth">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3">
               <label for="email" class="form-label">Adresse email</label>
-              <input type="email" class="form-control" id="email" name="email" required autocomplete="username">
+              <input type="email" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('email'))) ? 'is-invalid' : '' %>" 
+                     id="email" name="email" value="<%= formData.email || '' %>" required autocomplete="username">
             </div>
             <div class="mb-3">
               <label for="mot_de_passe" class="form-label">Mot de passe</label>
-              <input type="password" class="form-control" id="mot_de_passe" name="mot_de_passe" required autocomplete="current-password">
+              <input type="password" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('mot de passe'))) ? 'is-invalid' : '' %>" 
+                     id="mot_de_passe" name="mot_de_passe" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn btn-bd-primary w-100">Se connecter</button>
           </form> 
           <div class="mt-3 text-center">
-            <a href="#">Mot de passe oublié ?</a>
+            <a href="/auth/forgot">Mot de passe oublié ?</a>
           </div>
           <div class="mt-2 text-center">
-            <a href="/register">Créer un compte</a>
+            <a href="/auth/register">Créer un compte</a>
           </div>
         </div>
       </div>

@@ -3,30 +3,65 @@
   <div class="card shadow-sm">
     <div class="card-body">
       <h2 class="mb-4 text-center"><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h2>
+      
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <ul class="mb-0">
+            <% errors.forEach(error => { %>
+              <li><%= error %></li>
+            <% }) %>
+          </ul>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+      
       <!-- Pour les formulaires multipart, on utilise _method dans la query (body non parsé avant multer) -->
       <form method="POST" action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-3">
           <label for="titre" class="form-label">Titre</label>
-          <input type="text" class="form-control" id="titre" name="titre" value="<%= isEditing ? article.titre : '' %>" required>
+          <input type="text" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('titre'))) ? 'is-invalid' : '' %>" 
+                 id="titre" name="titre" value="<%= isEditing ? article.titre : (formData.titre || '') %>" required>
+          <small class="form-text text-muted">Min 5 caractères</small>
         </div>
         <div class="mb-3">
           <label for="contenu" class="form-label">Contenu</label>
-          <textarea class="form-control" id="contenu" name="contenu" rows="6" required><%= isEditing ? article.contenu : '' %></textarea>
+          <textarea class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('contenu'))) ? 'is-invalid' : '' %>" 
+                    id="contenu" name="contenu" rows="6" required><%= isEditing ? article.contenu : (formData.contenu || '') %></textarea>
+          <small class="form-text text-muted">Min 50 caractères</small>
         </div>
         <div class="mb-3">
           <label for="categorie_id" class="form-label">Catégorie</label>
-          <select class="form-select" id="categorie_id" name="categorie_id" required>
+          <select class="form-select <%= (errors && errors.length > 0 && errors.some(e => e.includes('catégorie'))) ? 'is-invalid' : '' %>" 
+                  id="categorie_id" name="categorie_id" required>
             <% categories.forEach(cat => { %>
-              <option value="<%= cat.id %>" <%= isEditing && cat.id === article.categorie_id ? 'selected' : '' %>><%= cat.nom %></option>
+              <option value="<%= cat.id %>" <%= isEditing && cat.id === article.categorie_id ? 'selected' : (formData.categorie_id == cat.id ? 'selected' : '') %>><%= cat.nom %></option>
             <% }) %>
           </select>
         </div>
         <div class="mb-3">
           <label for="image" class="form-label">Ajouter une image</label>
           <input type="file" class="form-control" id="image" name="image" accept="image/*">
+          <small class="form-text text-muted d-block mt-2">
+            Formats acceptés: JPEG, PNG, GIF, WebP (Max 5 MB)<br>
+            L'image sera automatiquement compressée et redimensionnée en plusieurs versions
+          </small>
           <% if (isEditing && article.image) { %>
-            <small class="text-muted">Image actuelle: <%= article.image %></small>
+            <div class="mt-2">
+              <small class="text-muted d-block">Image actuelle:</small>
+              <img src="<%= article.image %>" alt="<%= article.image_alt || article.titre %>" style="max-width: 200px; max-height: 150px; margin-top: 10px;">
+            </div>
           <% } %>
+        </div>
+        <div class="mb-3">
+          <label for="image_alt" class="form-label">Description d'image (Alt text) - Important pour le SEO</label>
+          <input type="text" class="form-control" id="image_alt" name="image_alt" 
+                 value="<%= isEditing ? (article.image_alt || '') : (formData.image_alt || '') %>"
+                 placeholder="Ex: Exemple de photographie de beauté">
+          <small class="form-text text-muted d-block mt-2">
+            Description brève et descriptive de l'image (10-125 caractères)<br>
+            Utile pour l'accessibilité et le SEO
+          </small>
         </div>
         <div class="mb-3">
           <label for="video" class="form-label">Ajouter une vidéo</label>

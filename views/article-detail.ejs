@@ -9,7 +9,16 @@
           <article class="card shadow-sm border-0 mb-4">
             <% if (article.image) { %>
               <div class="ratio ratio-16x9 bg-light rounded-top" style="overflow:hidden;">
-                <img src="<%= article.image %>" alt="Illustration de l'article" class="w-100 h-100 object-fit-cover">
+                <img 
+                  src="<%= article.image %>" 
+                  alt="<%= article.image_alt || article.titre %>"
+                  title="<%= article.titre %>"
+                  class="w-100 h-100 object-fit-cover"
+                  loading="lazy"
+                  srcset="<%= article.image %> 600w, <%= article.image.replace('_md', '_lg') %> 1200w"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
+                  style="background-color: #f0f0f0;"
+                >
               </div>
             <% } %>
             <div class="card-body p-4">
@@ -51,6 +60,66 @@
               </div>
             </div>
           </article>
+
+          <section class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h4 mb-0">Commentaires</h2>
+                <span class="text-muted small"><%= commentaires.length %> commentaire<%= commentaires.length > 1 ? 's' : '' %></span>
+              </div>
+
+              <% if (commentaires.length === 0) { %>
+                <p class="text-muted">Soyez le premier à commenter cet article.</p>
+              <% } else { %>
+                <div class="list-group mb-4">
+                  <% commentaires.forEach(c => { %>
+                    <div class="list-group-item border-0 border-bottom pb-3">
+                      <div class="d-flex justify-content-between">
+                        <strong><%= c.nom || 'Lecteur' %></strong>
+                        <small class="text-muted"><%= new Date(c.date).toLocaleDateString() %></small>
+                      </div>
+                      <p class="mb-1"><%= c.contenu %></p>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } %>
+
+              <% if (typeof commentSubmitted !== 'undefined' && commentSubmitted) { %>
+                <div class="alert alert-success">Merci ! Votre commentaire est en attente de validation.</div>
+              <% } %>
+
+              <% if (errors && errors.length > 0) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <ul class="mb-0">
+                    <% errors.forEach(err => { %>
+                      <li><%= err %></li>
+                    <% }) %>
+                  </ul>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <% } %>
+
+              <form method="POST" action="/article/<%= article.id %>/comment">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <% if (!user) { %>
+                  <div class="mb-3">
+                    <label for="nom" class="form-label">Votre nom</label>
+                    <input type="text" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('nom'))) ? 'is-invalid' : '' %>" 
+                           id="nom" name="nom" value="<%= formData.nom || '' %>" required>
+                    <small class="form-text text-muted">Min 3 caractères</small>
+                  </div>
+                <% } %>
+                <div class="mb-3">
+                  <label for="contenu" class="form-label">Votre commentaire</label>
+                  <textarea class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('commentaire'))) ? 'is-invalid' : '' %>" 
+                            id="contenu" name="contenu" rows="4" required><%= formData.contenu || '' %></textarea>
+                  <small class="form-text text-muted">Min 10 caractères</small>
+                </div>
+                <button type="submit" class="btn btn-bd-primary">Publier mon commentaire</button>
+                <p class="text-muted small mt-2 mb-0">Les commentaires sont modérés avant publication.</p>
+              </form>
+            </div>
+          </section>
         </div>
       </div>
     </main>

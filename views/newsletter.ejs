@@ -6,14 +6,43 @@
     <main class="container" style="max-width:400px; margin-top:60px;">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h2 class="mb-4 text-center">Inscription à la newsletter</h2>
+          <h2 class="mb-4 text-center">📧 Newsletter Mi Amor</h2>
+          
+          <% if (typeof message !== 'undefined' && message) { %>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+              <%= message %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <% if (errors && errors.length > 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <ul class="mb-0">
+                <% errors.forEach(err => { %>
+                  <li><%= err %></li>
+                <% }) %>
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <p class="text-muted mb-4">Recevez nos meilleurs articles sur la beauté, la nutrition et le développement personnel directement dans votre boîte mail.</p>
+          
           <form method="POST" action="/newsletter/subscribe">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3">
               <label for="email" class="form-label">Adresse email</label>
-              <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+              <input type="email" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('email'))) ? 'is-invalid' : '' %>" 
+                     id="email" name="email" value="<%= formData.email || '' %>" required autocomplete="email"
+                     placeholder="votre@email.com">
             </div>
-            <button type="submit" class="btn btn-bd-primary w-100">S'abonner</button>
+            <button type="submit" class="btn btn-bd-primary w-100">S'abonner à la newsletter</button>
           </form>
+          
+          <p class="text-muted mt-3 small text-center">
+            En vous inscrivant, vous recevrez un email de confirmation.<br>
+            Vous pourrez vous désinscrire à tout moment.
+          </p>
         </div>
       </div>
       <br>

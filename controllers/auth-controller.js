@@ -7,7 +7,9 @@ export const getAuthPage = (req, res) => {
   res.render("auth", {
     title: "Authentification",
     message: "Veuillez vous connecter pour accéder à votre compte",
-    user: req.user
+    user: req.user,
+    errors: [],
+    formData: {}
   });
 };
 
@@ -16,7 +18,9 @@ export const getRegisterPage = (req, res) => {
   res.render("register", {
     title: "Créer un compte",
     message: "Veuillez remplir le formulaire pour vous inscrire",
-    user: req.user
+    user: req.user,
+    errors: [],
+    formData: {}
   });
 };
 

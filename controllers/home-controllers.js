@@ -23,11 +23,24 @@ const getHomePage = async (req,res) => {
             auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu"
         }));
 
+        // Récupère le dernier article pour la section hero
+        const latestArticle = recentArticles.length > 0 ? recentArticles[0] : null;
+        const featuredArticle = latestArticle ? {
+            id: latestArticle.id,
+            titre: latestArticle.titre,
+            extrait: (latestArticle.contenu || "").substring(0, 200),
+            date_publication: latestArticle.date_publication,
+            image: latestArticle.image,
+            categorie: latestArticle.categorie ? latestArticle.categorie.nom : null,
+            auteur: latestArticle.auteur ? latestArticle.auteur.nom_prenom : "Inconnu"
+        } : null;
+
         res.render("index", {
             title: "Accueil",
             message:"Bienvenue sur le site de Mi Amor",
             user: req.user,
-            recentPosts
+            recentPosts,
+            featuredArticle
         });
     } catch (error) {
         console.error("Erreur getHomePage:", error);
@@ -35,7 +48,8 @@ const getHomePage = async (req,res) => {
             title: "Accueil",
             message:"Bienvenue sur le site de Mi Amor",
             user: req.user,
-            recentPosts: []
+            recentPosts: [],
+            featuredArticle: null
         });
     }
 }

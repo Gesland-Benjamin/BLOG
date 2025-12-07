@@ -10,6 +10,16 @@
         <!-- Section Beauté -->
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
+            <% if (articlesParCategorie["Beauté"] && articlesParCategorie["Beauté"].image) { %>
+              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
+                <img 
+                  src="<%= articlesParCategorie["Beauté"].image %>" 
+                  alt="<%= articlesParCategorie["Beauté"].image_alt || articlesParCategorie["Beauté"].titre %>"
+                  class="w-100 h-100 object-fit-cover"
+                  loading="lazy"
+                >
+              </div>
+            <% } %>
             <div class="card-body">
               <h3 class="card-title">Beauté</h3>
               <% if (articlesParCategorie["Beauté"]) { %>
@@ -30,6 +40,16 @@
         <!-- Section Nutrition -->
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
+            <% if (articlesParCategorie["Nutrition"] && articlesParCategorie["Nutrition"].image) { %>
+              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
+                <img 
+                  src="<%= articlesParCategorie["Nutrition"].image %>" 
+                  alt="<%= articlesParCategorie["Nutrition"].image_alt || articlesParCategorie["Nutrition"].titre %>"
+                  class="w-100 h-100 object-fit-cover"
+                  loading="lazy"
+                >
+              </div>
+            <% } %>
             <div class="card-body">
               <h3 class="card-title">Nutrition</h3>
               <% if (articlesParCategorie["Nutrition"]) { %>
@@ -50,6 +70,16 @@
         <!-- Section Developpement personnels -->
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
+            <% if (articlesParCategorie["DéveloppementPersonnels"] && articlesParCategorie["DéveloppementPersonnels"].image) { %>
+              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
+                <img 
+                  src="<%= articlesParCategorie["DéveloppementPersonnels"].image %>" 
+                  alt="<%= articlesParCategorie["DéveloppementPersonnels"].image_alt || articlesParCategorie["DéveloppementPersonnels"].titre %>"
+                  class="w-100 h-100 object-fit-cover"
+                  loading="lazy"
+                >
+              </div>
+            <% } %>
             <div class="card-body">
               <h3 class="card-title">Développement Personnels</h3>
               <% if (articlesParCategorie["DéveloppementPersonnels"]) { %>

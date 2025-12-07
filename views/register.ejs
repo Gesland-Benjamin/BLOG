@@ -7,22 +7,40 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h2 class="mb-4 text-center">Créer un compte</h2>
-          <form method="POST" action="/register">
+          
+          <% if (errors && errors.length > 0) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <ul class="mb-0">
+                <% errors.forEach(error => { %>
+                  <li><%= error %></li>
+                <% }) %>
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <form method="POST" action="/auth/register">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3">
               <label for="nom_prenom" class="form-label">Nom et prénom</label>
-              <input type="text" class="form-control" id="nom_prenom" name="nom_prenom" required>
+              <input type="text" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('nom'))) ? 'is-invalid' : '' %>" 
+                     id="nom_prenom" name="nom_prenom" value="<%= formData.nom_prenom || '' %>" required>
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Adresse email</label>
-              <input type="email" class="form-control" id="email" name="email" required autocomplete="username">
+              <input type="email" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('email'))) ? 'is-invalid' : '' %>" 
+                     id="email" name="email" value="<%= formData.email || '' %>" required autocomplete="username">
             </div>
             <div class="mb-3">
               <label for="mot_de_passe" class="form-label">Mot de passe</label>
-              <input type="password" class="form-control" id="mot_de_passe" name="mot_de_passe" required autocomplete="new-password">
+              <input type="password" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('mot de passe'))) ? 'is-invalid' : '' %>" 
+                     id="mot_de_passe" name="mot_de_passe" required autocomplete="new-password">
+              <small class="form-text text-muted">Min 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre</small>
             </div>
             <div class="mb-3">
-              <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
-              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+              <label for="mot_de_passe_confirm" class="form-label">Confirmer le mot de passe</label>
+              <input type="password" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('correspondent'))) ? 'is-invalid' : '' %>" 
+                     id="mot_de_passe_confirm" name="mot_de_passe_confirm" required autocomplete="new-password">
             </div>
             <button type="submit" class="btn btn-bd-primary w-100">S'inscrire</button>
           </form> 

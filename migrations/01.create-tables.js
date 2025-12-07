@@ -1,4 +1,4 @@
-import { sequelize } from "../models/index.js";
+import { sequelize } from "../config/database.js";
 
 console.log("🚧 Creation des tables");
 await sequelize.sync({ force: true });

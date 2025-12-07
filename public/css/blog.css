@@ -155,3 +155,11 @@ body {
 .bd-mode-toggle .dropdown-menu .active .bi {
   display: block !important;
 }
+
+.bo {
+  background-image: url(../9bbce84a-f305-462c-a3c1-2b346de83195.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 400px;
+}
