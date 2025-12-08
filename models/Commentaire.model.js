@@ -10,8 +10,10 @@ const Commentaire = sequelize.define('Commentaire', {
   date: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   statut: { type: DataTypes.ENUM('pending', 'approved', 'rejected'), allowNull: false, defaultValue: 'pending' },
   is_spam: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  is_admin_reply: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   user_id: { type: DataTypes.INTEGER, allowNull: true },
-  article_id: { type: DataTypes.INTEGER, allowNull: false }
+  article_id: { type: DataTypes.INTEGER, allowNull: false },
+  parent_id: { type: DataTypes.INTEGER, allowNull: true }
 }, {
   tableName: 'commentaire',
   timestamps: false
@@ -20,5 +22,7 @@ const Commentaire = sequelize.define('Commentaire', {
 // Relations
 Commentaire.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 Commentaire.belongsTo(Article, { foreignKey: 'article_id', as: 'article' });
+Commentaire.belongsTo(Commentaire, { foreignKey: 'parent_id', as: 'parent' });
+Commentaire.hasMany(Commentaire, { foreignKey: 'parent_id', as: 'replies' });
 
 export default Commentaire;

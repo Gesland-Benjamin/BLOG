@@ -69,11 +69,11 @@
         <div class="mb-3">
           <label for="video" class="form-label">URL de la vidéo (optionnel)</label>
           <input type="url" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('vidéo'))) ? 'is-invalid' : '' %>" 
-                 id="video" name="video" placeholder="https://www.youtube.com/embed/... ou https://vimeo.com/..."
+                 id="video" name="video" placeholder="https://www.youtube.com/watch?v=... ou https://vimeo.com/..."
                  value="<%= isEditing ? (article.video || '') : (formData.video || '') %>">
           <small class="form-text text-muted d-block mt-2">
-            Collez l'URL complète de la vidéo (YouTube, Vimeo, etc.)<br>
-            Cette vidéo s'affichera sur la page de l'article
+            Formats acceptés: YouTube (watch?v= ou /embed/), Vimeo, ou lien direct vers une vidéo<br>
+            L'URL sera automatiquement convertie au bon format
           </small>
         </div>
         <div class="d-grid gap-2">

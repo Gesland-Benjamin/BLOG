@@ -4,6 +4,7 @@ import Categorie from "../models/Categorie.model.js";
 import Commentaire from "../models/Commentaire.model.js";
 import { generateOpenGraphImage } from "../services/imageHelper.js";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
+import { prepareVideoUrl, getVideoType } from "../utils/videoHelper.js";
 
 
 const getArticlePage = (req, res) => {
@@ -104,7 +105,8 @@ export const getArticleById = async (req, res) => {
       date_publication: article.date_publication,
       image: article.image,
       image_alt: article.image_alt || article.titre,
-      video: article.video || null,
+      video: article.video ? prepareVideoUrl(article.video) : null,
+      videoType: article.video ? getVideoType(article.video) : null,
       likes: article.likes || 0,
       liked: alreadyLiked,
       // Meta données pour SEO
@@ -114,7 +116,17 @@ export const getArticleById = async (req, res) => {
     };
 
     const commentaires = await Commentaire.findAll({
-      where: { article_id: id, statut: "approved" },
+      where: { article_id: id, statut: "approved", parent_id: null },
+      include: [
+        { 
+          model: Commentaire, 
+          as: "replies",
+          where: { statut: "approved" },
+          required: false,
+          include: [{ model: User, as: "user" }],
+          order: [["date", "ASC"]]
+        }
+      ],
       order: [["date", "DESC"]]
     });
 
