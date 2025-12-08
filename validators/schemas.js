@@ -123,6 +123,13 @@ export const articleSchema = Joi.object({
       'number.integer': 'La catégorie est invalide',
       'number.positive': 'La catégorie est invalide',
       'any.required': 'La catégorie est requise'
+    }),
+  video: Joi.string()
+    .uri()
+    .optional()
+    .allow('')
+    .messages({
+      'string.uri': 'L\'URL de la vidéo doit être valide'
     })
 });
 

@@ -22,9 +22,10 @@ export async function showNewArticleForm(req, res) {
 
 export const createArticle = async (req, res) => {
   try {
-    const { titre, contenu, categorie_id, image_alt } = req.body;
+    const { titre, contenu, categorie_id, image_alt, video } = req.body;
     let image = null;
     let imageAlt = image_alt || null;
+    let videoUrl = video || null;
 
     // Utiliser l'image traitée si disponible
     if (req.processedImage) {
@@ -38,7 +39,7 @@ export const createArticle = async (req, res) => {
     }
 
     // Debug logs pour diagnostiquer les problèmes d'insertion
-    console.log('createArticle payload:', { titre, categorie_id, image, imageAlt });
+    console.log('createArticle payload:', { titre, categorie_id, image, imageAlt, videoUrl });
     console.log('createArticle req.user:', req.user ? { id: req.user.id, nom: req.user.nom_prenom } : null);
 
     // Validation : s'assurer que la catégorie existe
@@ -60,7 +61,8 @@ export const createArticle = async (req, res) => {
       categorie_id: categorieIdNum,
       auteur_id: req.user ? req.user.id : null,
       image,
-      image_alt: imageAlt
+      image_alt: imageAlt,
+      video: videoUrl
     });
 
     console.log('Article créé id=', newArticle.id);
@@ -121,7 +123,7 @@ export const showEditArticleForm = async (req, res) => {
 export const updateArticle = async (req, res) => {
   try {
     const articleId = req.params.id;
-    const { titre, contenu, categorie_id, image_alt } = req.body;
+    const { titre, contenu, categorie_id, image_alt, video } = req.body;
 
     const article = await Article.findByPk(articleId);
     if (!article) {
@@ -141,6 +143,7 @@ export const updateArticle = async (req, res) => {
 
     // Mettre à jour l'image si fournie
     let imageAlt = image_alt || article.image_alt;
+    let videoUrl = video || article.video;
     
     if (req.processedImage) {
       // Supprimer l'ancienne image si elle existe
@@ -171,7 +174,8 @@ export const updateArticle = async (req, res) => {
       contenu,
       categorie_id: categorieIdNum,
       image: article.image,
-      image_alt: imageAlt
+      image_alt: imageAlt,
+      video: videoUrl
     });
 
     console.log('Article mis à jour id=', articleId);

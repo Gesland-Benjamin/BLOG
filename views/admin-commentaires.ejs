@@ -81,27 +81,7 @@
         </table>
       </div>
 
-      <% if (pagination.pages > 1) { %>
-        <nav aria-label="Pagination" class="mt-4">
-          <ul class="pagination justify-content-center">
-            <% if (pagination.page > 1) { %>
-              <li class="page-item">
-                <a class="page-link" href="?page=<%= pagination.page - 1 %>">Précédent</a>
-              </li>
-            <% } %>
-            <% for (let i = 1; i <= pagination.pages; i++) { %>
-              <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
-                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-              </li>
-            <% } %>
-            <% if (pagination.page < pagination.pages) { %>
-              <li class="page-item">
-                <a class="page-link" href="?page=<%= pagination.page + 1 %>">Suivant</a>
-              </li>
-            <% } %>
-          </ul>
-        </nav>
-      <% } %>
+      <%- include('partials/pagination', { pagination, baseUrl }) %>
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>

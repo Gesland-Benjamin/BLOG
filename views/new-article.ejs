@@ -67,8 +67,14 @@
           </small>
         </div>
         <div class="mb-3">
-          <label for="video" class="form-label">Ajouter une vidéo</label>
-          <input type="file" class="form-control" id="video" name="video" accept="video/*">
+          <label for="video" class="form-label">URL de la vidéo (optionnel)</label>
+          <input type="url" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('vidéo'))) ? 'is-invalid' : '' %>" 
+                 id="video" name="video" placeholder="https://www.youtube.com/embed/... ou https://vimeo.com/..."
+                 value="<%= isEditing ? (article.video || '') : (formData.video || '') %>">
+          <small class="form-text text-muted d-block mt-2">
+            Collez l'URL complète de la vidéo (YouTube, Vimeo, etc.)<br>
+            Cette vidéo s'affichera sur la page de l'article
+          </small>
         </div>
         <div class="d-grid gap-2">
           <button type="submit" class="btn btn-bd-primary"><%= isEditing ? 'Mettre à jour l\'article' : 'Créer l\'article' %></button>

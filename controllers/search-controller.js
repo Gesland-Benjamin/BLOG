@@ -1,12 +1,12 @@
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
+import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 
 export const searchArticles = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 9;
-    const offset = (page - 1) * limit;
+    const pageSize = 9;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
     const search = req.query.q || '';
     const categorie = req.query.categorie || '';
 
@@ -44,14 +44,20 @@ export const searchArticles = async (req, res) => {
       image: a.image
     }));
 
-    const totalPages = Math.ceil(count / limit);
+    let baseUrl = '/search?';
+    if (search) baseUrl += `q=${encodeURIComponent(search)}`;
+    if (categorie) baseUrl += (search ? '&' : '') + `categorie=${encodeURIComponent(categorie)}`;
+    if (!search && !categorie) baseUrl = '/search';
+
+    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
 
     res.render("search-articles", {
       articles,
       categories,
-      pagination: { page, pages: totalPages, total: count },
+      pagination: paginationData,
       filters: { q: search, categorie },
-      user: req.user
+      user: req.user,
+      baseUrl
     });
   } catch (error) {
     console.error("Erreur searchArticles:", error);

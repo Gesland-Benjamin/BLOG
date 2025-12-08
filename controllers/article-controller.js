@@ -3,6 +3,7 @@ import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
 import Commentaire from "../models/Commentaire.model.js";
 import { generateOpenGraphImage } from "../services/imageHelper.js";
+import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 
 
 const getArticlePage = (req, res) => {
@@ -103,6 +104,7 @@ export const getArticleById = async (req, res) => {
       date_publication: article.date_publication,
       image: article.image,
       image_alt: article.image_alt || article.titre,
+      video: article.video || null,
       likes: article.likes || 0,
       liked: alreadyLiked,
       // Meta données pour SEO
@@ -247,13 +249,13 @@ export const getArticlesByCategorieName = async (req, res) => {
         categorie: decoded, 
         user: req.user,
         pagination: { page: 1, pages: 0, total: 0 },
-        search: ''
+        search: '',
+        baseUrl: `/article/categorie/${encodeURIComponent(decoded)}`
       });
     }
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = 6;
-    const offset = (page - 1) * limit;
+    const pageSize = 6;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
     const search = req.query.search || '';
 
     const where = { categorie_id: categorieTrouvee.id };
@@ -277,14 +279,24 @@ export const getArticlesByCategorieName = async (req, res) => {
       date_publication: a.date_publication
     }));
 
-    const totalPages = Math.ceil(count / limit);
+    const baseUrl = `/article/categorie/${encodeURIComponent(categorieTrouvee.nom)}`;
+    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
+    if (search) {
+      paginationData.pages = paginationData.pages.map(p => ({
+        ...p,
+        url: p.url + `&search=${encodeURIComponent(search)}`
+      }));
+      paginationData.previous_url = paginationData.previous_url ? paginationData.previous_url + `&search=${encodeURIComponent(search)}` : null;
+      paginationData.next_url = paginationData.next_url ? paginationData.next_url + `&search=${encodeURIComponent(search)}` : null;
+    }
 
     res.render("articles-by-category", { 
       articles: articlesSimplifies, 
       categorie: categorieTrouvee.nom, 
       user: req.user,
-      pagination: { page, pages: totalPages, total: count },
-      search
+      pagination: paginationData,
+      search,
+      baseUrl
     });
   } catch (error) {
     console.error("Erreur getArticlesByCategorieName:", error);

@@ -32,10 +32,29 @@
               <% if (article.video) { %>
                 <div class="mt-4">
                   <div class="ratio ratio-16x9 rounded overflow-hidden">
-                    <video controls class="w-100 h-100">
-                      <source src="<%= article.video %>" type="video/mp4">
-                      Votre navigateur ne supporte pas la lecture vidéo.
-                    </video>
+                    <% if (article.video.includes('youtube.com') || article.video.includes('youtu.be') || article.video.includes('youtube-nocookie.com')) { %>
+                      <!-- YouTube iframe -->
+                      <iframe 
+                        src="<%= article.video %>" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                      </iframe>
+                    <% } else if (article.video.includes('vimeo.com')) { %>
+                      <!-- Vimeo iframe -->
+                      <iframe 
+                        src="<%= article.video %>" 
+                        frameborder="0" 
+                        allow="autoplay; fullscreen; picture-in-picture" 
+                        allowfullscreen>
+                      </iframe>
+                    <% } else { %>
+                      <!-- HTML5 video player for direct video files -->
+                      <video controls class="w-100 h-100">
+                        <source src="<%= article.video %>" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture vidéo.
+                      </video>
+                    <% } %>
                   </div>
                 </div>
               <% } %>

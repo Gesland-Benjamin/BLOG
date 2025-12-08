@@ -1,12 +1,12 @@
 import Commentaire from "../models/Commentaire.model.js";
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
+import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 
 export const listCommentsAdmin = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 20;
-    const offset = (page - 1) * limit;
+    const pageSize = 20;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
 
     const { count, rows } = await Commentaire.findAndCountAll({
       include: [
@@ -18,11 +18,13 @@ export const listCommentsAdmin = async (req, res) => {
       offset
     });
 
-    const totalPages = Math.ceil(count / limit);
+    const baseUrl = '/admin/commentaires';
+    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
 
     res.render("admin-commentaires", { 
       comments: rows,
-      pagination: { page, pages: totalPages, total: count }
+      pagination: paginationData,
+      baseUrl
     });
   } catch (error) {
     console.error("Erreur listCommentsAdmin:", error);

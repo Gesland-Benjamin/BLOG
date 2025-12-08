@@ -1,24 +1,35 @@
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import User from "../models/User.model.js";
+import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 
 // Liste des abonnés (admin uniquement)
 export const listSubscribers = async (req, res) => {
   try {
-    const subscribers = await NewsletterSubscriber.findAll({
+    const pageSize = 20;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
+
+    const { count, rows } = await NewsletterSubscriber.findAndCountAll({
       include: [{ model: User, as: 'user', attributes: ['nom_prenom'] }],
-      order: [['date_inscription', 'DESC']]
+      order: [['date_inscription', 'DESC']],
+      limit,
+      offset
     });
     
     const stats = {
-      total: subscribers.length,
-      confirmed: subscribers.filter(s => s.confirmed).length,
-      pending: subscribers.filter(s => !s.confirmed).length
+      total: count,
+      confirmed: rows.filter(s => s.confirmed).length,
+      pending: rows.filter(s => !s.confirmed).length
     };
+
+    const baseUrl = '/admin/newsletter';
+    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
     
     res.render("admin-newsletter", {
       title: "Gestion de la newsletter",
-      subscribers,
+      subscribers: rows,
       stats,
+      pagination: paginationData,
+      baseUrl,
       user: req.user
     });
   } catch (error) {

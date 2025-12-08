@@ -1,24 +1,37 @@
 import Categorie from '../models/Categorie.model.js';
 import Article from '../models/Article.model.js';
 import { Op } from 'sequelize';
+import { getPaginationParams, createPaginationData } from '../utils/pagination.js';
 
 // Liste toutes les catégories
 export const listCategories = async (req, res) => {
   try {
-    const categories = await Categorie.findAll({
+    const pageSize = 20;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
+
+    const { count, rows } = await Categorie.findAndCountAll({
       attributes: ['id', 'nom'],
-      order: [['nom', 'ASC']]
+      order: [['nom', 'ASC']],
+      limit,
+      offset
     });
 
     // Ajouter le nombre d'articles par catégorie
     const categoriesWithCount = await Promise.all(
-      categories.map(async (cat) => {
+      rows.map(async (cat) => {
         const count = await Article.count({ where: { categorie_id: cat.id } });
         return { ...cat.toJSON(), articleCount: count };
       })
     );
 
-    res.render('admin-categories', { categories: categoriesWithCount });
+    const baseUrl = '/admin/categories';
+    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
+
+    res.render('admin-categories', { 
+      categories: categoriesWithCount,
+      pagination: paginationData,
+      baseUrl
+    });
   } catch (error) {
     console.error('Erreur lors de la récupération des catégories:', error);
     res.status(500).render('500');

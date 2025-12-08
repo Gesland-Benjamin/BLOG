@@ -10,7 +10,7 @@ async function seedDatabase() {
   try {
     console.log("🌱 Démarrage du seeding...");
 
-    // Vider les tables existantes (ordre important pour respecter les contraintes FK)
+    // Vider les tables existantes
     await Commentaire.destroy({ where: {}, force: true });
     await Article.destroy({ where: {}, force: true });
     await NewsletterSubscriber.destroy({ where: {}, force: true });
@@ -19,9 +19,8 @@ async function seedDatabase() {
 
     console.log("🗑️  Tables vidées");
 
-    // 1. Créer les utilisateurs
+    // 1. Créer l'admin
     const adminPassword = await argon2.hash("Admin123!");
-    const visitorPassword = await argon2.hash("Visiteur123!");
 
     const admin = await User.create({
       nom_prenom: "Émilie Delbe",
@@ -30,167 +29,332 @@ async function seedDatabase() {
       role: "admin"
     });
 
-    const visitor1 = await User.create({
-      nom_prenom: "Marie Dupont",
-      email: "marie.dupont@example.com",
-      mot_de_passe: visitorPassword,
-      role: "visiteur"
-    });
-
-    const visitor2 = await User.create({
-      nom_prenom: "Sophie Martin",
-      email: "sophie.martin@example.com",
-      mot_de_passe: visitorPassword,
-      role: "visiteur"
-    });
-
-    console.log("✅ Utilisateurs créés (admin: admin@miamor.com / Admin123!)");
+    console.log("✅ Admin créé");
 
     // 2. Créer les catégories
     const beaute = await Categorie.create({ nom: "Beauté" });
     const nutrition = await Categorie.create({ nom: "Nutrition" });
-    const devPerso = await Categorie.create({ nom: "Développement personnels" });
+    const developpement = await Categorie.create({ nom: "Développement Personnels" });
 
     console.log("✅ Catégories créées");
 
-    // 3. Créer des articles de démo
-    const articles = [
+    // 3. Créer les articles Beauté (8 articles)
+    const beauteArticles = await Article.bulkCreate([
       {
         titre: "Les secrets d'une peau éclatante",
-        contenu: "Une peau éclatante commence par une routine de soin adaptée. Il est essentiel de nettoyer votre peau matin et soir avec des produits doux qui respectent son équilibre naturel. L'hydratation est également cruciale : choisissez une crème adaptée à votre type de peau. N'oubliez pas la protection solaire, même en hiver ! Un SPF quotidien prévient le vieillissement prématuré et les taches pigmentaires. Enfin, une alimentation riche en antioxydants, une bonne hydratation et un sommeil réparateur sont vos meilleurs alliés pour une peau radieuse.",
+        contenu: `<p>Découvrez comment obtenir une peau éclatante et radieuse grâce à des techniques éprouvées.</p><h3>Nettoyage quotidien</h3><p>Le nettoyage est la première étape pour une belle peau. Utilisez un nettoyant doux adapté à votre type de peau.</p><h3>Hydratation</h3><p>L'hydratation est essentielle pour maintenir l'élasticité et la luminosité de votre peau.</p>`,
         categorie_id: beaute.id,
         auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-        likes: 12
-      },
-      {
-        titre: "Ma routine beauté du matin",
-        contenu: "Chaque matin, je commence par nettoyer mon visage à l'eau tiède avec un nettoyant doux. J'applique ensuite un sérum vitaminé pour booster l'éclat, suivi d'une crème hydratante avec SPF 30. Le contour des yeux est important : quelques tapotements légers suffisent. Une touche de blush et un gloss naturel, et je suis prête ! Cette routine ne prend que 10 minutes mais fait toute la différence pour commencer la journée du bon pied.",
-        categorie_id: beaute.id,
-        auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-        likes: 8
-      },
-      {
-        titre: "Les bienfaits du maquillage naturel",
-        contenu: "Le maquillage naturel met en valeur votre beauté sans la masquer. L'objectif est de sublimer vos traits plutôt que de les transformer. Utilisez une BB crème légère au lieu d'un fond de teint couvrant, un mascara pour ouvrir le regard, et une touche de couleur sur les lèvres. Ce type de maquillage convient à toutes les occasions et laisse respirer votre peau. De plus, il est rapide à appliquer et facile à entretenir tout au long de la journée.",
-        categorie_id: beaute.id,
-        auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Femme avec peau éclatante",
         likes: 15
       },
       {
-        titre: "L'importance d'une alimentation équilibrée",
-        contenu: "Notre corps est ce que nous mangeons. Une alimentation équilibrée fournit tous les nutriments essentiels : protéines pour les muscles, glucides pour l'énergie, lipides pour les hormones, vitamines et minéraux pour le bon fonctionnement de l'organisme. Privilégiez les aliments frais et de saison, limitez les produits transformés et écoutez les signaux de votre corps. N'oubliez pas de boire suffisamment d'eau ! Une assiette colorée est souvent le signe d'un repas nutritif et varié.",
-        categorie_id: nutrition.id,
+        titre: "Routines beauté matinales",
+        contenu: `<p>Établissez une routine beauté matinale qui prépare votre peau pour la journée.</p><h3>Étape 1 : Nettoyage</h3><p>Commencez par nettoyer votre peau avec de l'eau tiède.</p>`,
+        categorie_id: beaute.id,
         auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-        likes: 20
-      },
-      {
-        titre: "Mes smoothies préférés pour l'énergie",
-        contenu: "Les smoothies sont parfaits pour un boost d'énergie naturel ! Mon préféré : banane, épinards frais, lait d'amande, beurre de cacahuète et une touche de miel. Ce mélange vous apporte des glucides, des protéines, des fibres et des vitamines. Pour une version plus fruitée, essayez mangue, orange, gingembre frais et graines de chia. Préparez-les le matin ou emportez-les au travail dans une gourde isotherme. C'est délicieux, rapide et tellement meilleur que les en-cas industriels !",
-        categorie_id: nutrition.id,
-        auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-        likes: 18
-      },
-      {
-        titre: "Comment organiser ses repas de la semaine",
-        contenu: "La planification des repas change la vie ! Chaque dimanche, je prends 30 minutes pour établir mon menu de la semaine. Je fais une liste de courses en fonction et je prépare quelques bases : céréales cuites, légumes découpés, sauces maison. Le batch cooking permet de gagner un temps précieux en semaine. J'alterne les sources de protéines (viande, poisson, légumineuses) et je m'assure d'avoir toujours des légumes variés. Cette organisation réduit le stress, limite le gaspillage et favorise une alimentation plus saine.",
-        categorie_id: nutrition.id,
-        auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-        likes: 25
-      },
-      {
-        titre: "La confiance en soi : un travail quotidien",
-        contenu: "La confiance en soi ne se construit pas du jour au lendemain. C'est un processus qui demande de la patience et de la bienveillance envers soi-même. Célébrez vos petites victoires, acceptez vos imperfections et sortez régulièrement de votre zone de confort. Entourez-vous de personnes positives qui vous tirent vers le haut. Pratiquez l'auto-compassion : parlez-vous comme vous parleriez à votre meilleur ami. Rappelez-vous que personne n'est parfait et que vos différences font votre force.",
-        categorie_id: devPerso.id,
-        auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Routine beauté matinale",
         likes: 22
       },
       {
-        titre: "Mes rituels matinaux pour bien commencer la journée",
-        contenu: "Un bon matin conditionne toute la journée. Je me réveille 30 minutes plus tôt pour éviter de me précipiter. Je commence par 10 minutes de méditation ou d'étirements doux. Ensuite, un petit-déjeuner équilibré sans écrans. Je note mes trois priorités du jour dans mon journal. Cette routine me permet d'être plus calme, concentrée et productive. Les matins où je la saute, je sens vraiment la différence ! Trouvez ce qui vous convient et tenez-vous-y au moins 21 jours pour que ça devienne une habitude.",
-        categorie_id: devPerso.id,
+        titre: "Masques faciaux : guide complet",
+        contenu: `<p>Apprenez à choisir et utiliser les bons masques faciaux pour votre peau.</p><h3>Masques hydratants</h3><p>Parfaits pour les peaux sèches.</p>`,
+        categorie_id: beaute.id,
         auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Masque facial",
+        likes: 18
+      },
+      {
+        titre: "Soins des lèvres",
+        contenu: `<p>Les lèvres nécessitent une attention particulière pour rester douces.</p><h3>Exfoliation</h3><p>Éliminez les peaux mortes régulièrement.</p>`,
+        categorie_id: beaute.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Soins lèvres",
+        likes: 12
+      },
+      {
+        titre: "Contour des yeux",
+        contenu: `<p>Le contour des yeux est une zone délicate qui mérite une attention spéciale.</p><h3>Crèmes spécialisées</h3><p>Investissez dans une bonne crème contour.</p>`,
+        categorie_id: beaute.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Contour yeux",
         likes: 16
       },
       {
-        titre: "L'art de dire non sans culpabiliser",
-        contenu: "Dire non est essentiel pour préserver son énergie et ses priorités. Ce n'est pas de l'égoïsme, c'est du respect de soi. Avant d'accepter une demande, demandez-vous : est-ce aligné avec mes valeurs et mes objectifs ? Ai-je vraiment le temps et l'envie ? Vous pouvez refuser avec bienveillance : 'Merci de penser à moi, mais je ne pourrai pas cette fois'. Pas besoin de se justifier longuement. Les personnes qui vous respectent comprendront. Dire non aux autres, c'est dire oui à soi-même.",
-        categorie_id: devPerso.id,
+        titre: "Traitement de l'acné",
+        contenu: `<p>Comprendre et traiter l'acné pour une peau saine.</p><h3>Traitements efficaces</h3><p>Différentes solutions existent pour l'acné.</p>`,
+        categorie_id: beaute.id,
         auteur_id: admin.id,
-        date_publication: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
-        likes: 30
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Traitement acné",
+        likes: 24
+      },
+      {
+        titre: "Produits bio recommandés",
+        contenu: `<p>Découvrez les meilleurs produits de beauté naturels.</p><h3>Avantages</h3><p>Sans produits chimiques agressifs.</p>`,
+        categorie_id: beaute.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Produits bio",
+        likes: 19
+      },
+      {
+        titre: "Routine cheveux",
+        contenu: `<p>Des cheveux sains commencent par une bonne routine.</p><h3>Shampoing</h3><p>Choisissez un shampoing adapté à votre type.</p>`,
+        categorie_id: beaute.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Cheveux sains",
+        likes: 21
       }
-    ];
+    ]);
 
-    const createdArticles = await Article.bulkCreate(articles);
-    console.log("✅ Articles créés");
+    console.log("✅ Articles Beauté créés (8)");
 
-    // 4. Créer des commentaires
-    await Commentaire.create({
-      article_id: createdArticles[0].id,
-      user_id: visitor1.id,
-      nom: visitor1.nom_prenom,
-      contenu: "Merci pour ces conseils ! J'ai commencé à suivre cette routine et je vois déjà une différence.",
-      statut: "approved",
-      is_spam: false,
-      date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
-    });
+    // 4. Créer les articles Nutrition (8 articles)
+    const nutritionArticles = await Article.bulkCreate([
+      {
+        titre: "L'importance du petit-déjeuner",
+        contenu: `<p>Le petit-déjeuner est le repas le plus important de la journée.</p><h3>Bénéfices</h3><p>Augmente la concentration et l'énergie.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Petit-déjeuner sain",
+        likes: 28
+      },
+      {
+        titre: "Régimes populaires",
+        contenu: `<p>Découvrez les régimes les plus populaires.</p><h3>Régime méditerranéen</h3><p>Riche en fruits et légumes.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Régimes",
+        likes: 32
+      },
+      {
+        titre: "Nutrition et sport",
+        contenu: `<p>Optimisez vos performances avec une nutrition adaptée.</p><h3>Avant l'entraînement</h3><p>Mangez 1-2 heures avant.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Nutrition sport",
+        likes: 25
+      },
+      {
+        titre: "Superaliments",
+        contenu: `<p>Intégrez les superaliments dans votre alimentation.</p><h3>Baies</h3><p>Riches en antioxydants.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Superaliments",
+        likes: 30
+      },
+      {
+        titre: "Hydratation : boire de l'eau",
+        contenu: `<p>L'hydratation est essentielle pour la santé.</p><h3>Quantité recommandée</h3><p>8 verres par jour environ.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Hydratation",
+        likes: 17
+      },
+      {
+        titre: "Collations saines",
+        contenu: `<p>Découvrez des collations délicieuses.</p><h3>Fruits</h3><p>Pommes, bananes, baies.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Collations",
+        likes: 20
+      },
+      {
+        titre: "Cuisson saine",
+        contenu: `<p>Apprenez les meilleures méthodes de cuisson.</p><h3>Vapeur</h3><p>Préserve les vitamines.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Cuisson saine",
+        likes: 19
+      },
+      {
+        titre: "Régime végétalien",
+        contenu: `<p>Comment obtenir tous les nutriments en tant que végétalien.</p><h3>Protéines</h3><p>Légumineuses et tofu.</p>`,
+        categorie_id: nutrition.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Végétalien",
+        likes: 23
+      }
+    ]);
 
-    await Commentaire.create({
-      article_id: createdArticles[0].id,
-      user_id: visitor2.id,
-      nom: visitor2.nom_prenom,
-      contenu: "Très intéressant ! Quelle crème hydratante recommandez-vous pour les peaux sensibles ?",
-      statut: "approved",
-      is_spam: false,
-      date: new Date(Date.now() - 12 * 60 * 60 * 1000)
-    });
+    console.log("✅ Articles Nutrition créés (8)");
 
-    await Commentaire.create({
-      article_id: createdArticles[3].id,
-      user_id: null,
-      nom: "Julie L.",
-      contenu: "Article très complet, merci !",
-      statut: "pending",
-      is_spam: false,
-      date: new Date()
-    });
+    // 5. Créer les articles Développement Personnel (8 articles)
+    const devArticles = await Article.bulkCreate([
+      {
+        titre: "Objectifs SMART",
+        contenu: `<p>Apprenez à définir des objectifs réalistes.</p><h3>Spécifique</h3><p>Définissez clairement ce que vous voulez.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Objectifs",
+        likes: 35
+      },
+      {
+        titre: "Gestion du temps",
+        contenu: `<p>Maîtrisez votre temps pour être plus productif.</p><h3>Technique Pomodoro</h3><p>Travaillez 25 minutes, puis prenez une pause.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Gestion temps",
+        likes: 40
+      },
+      {
+        titre: "Confiance en soi",
+        contenu: `<p>Développez une confiance en vous durable.</p><h3>Reconnaître vos forces</h3><p>Identifiez ce que vous faites bien.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Confiance",
+        likes: 38
+      },
+      {
+        titre: "Méditation",
+        contenu: `<p>Trouvez la paix intérieure grâce à la méditation.</p><h3>Bénéfices</h3><p>Réduit le stress et améliore la concentration.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Méditation",
+        likes: 33
+      },
+      {
+        titre: "Créer des habitudes",
+        contenu: `<p>Construisez des habitudes positives.</p><h3>Le cycle</h3><p>Signal → Routine → Récompense.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Habitudes",
+        likes: 37
+      },
+      {
+        titre: "Résilience",
+        contenu: `<p>Apprenez à vous relever après les difficultés.</p><h3>Accepter</h3><p>Le changement est inévitable.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Résilience",
+        likes: 29
+      },
+      {
+        titre: "Apprendre à apprendre",
+        contenu: `<p>Améliorez votre capacité à apprendre.</p><h3>Apprentissage actif</h3><p>Engagez-vous avec le matériel.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Apprentissage",
+        likes: 26
+      },
+      {
+        titre: "Communication",
+        contenu: `<p>Apprenez à communiquer efficacement.</p><h3>Assertivité</h3><p>Exprimez-vous respectueusement.</p>`,
+        categorie_id: developpement.id,
+        auteur_id: admin.id,
+        image: "/uploads/707833b1-374b-48e5-b9a6-2575b26279a8.webp",
+        image_alt: "Communication",
+        likes: 31
+      }
+    ]);
 
-    console.log("✅ Commentaires créés");
+    console.log("✅ Articles Développement Personnel créés (8)");
 
-    // 5. Créer des abonnés newsletter
-    await NewsletterSubscriber.create({
-      email: visitor1.email,
-      user_id: visitor1.id
-    });
-
-    await NewsletterSubscriber.create({
-      email: "jean.durand@example.com",
-      user_id: null
-    });
+    // 6. Créer les abonnés newsletter
+    await NewsletterSubscriber.bulkCreate([
+      { email: "subscriber1@example.com", confirmed: true, confirmed_at: new Date() },
+      { email: "subscriber2@example.com", confirmed: true, confirmed_at: new Date() },
+      { email: "subscriber3@example.com", confirmed: false },
+      { email: "subscriber4@example.com", confirmed: true, confirmed_at: new Date() },
+      { email: "subscriber5@example.com", confirmed: true, confirmed_at: new Date() }
+    ]);
 
     console.log("✅ Abonnés newsletter créés");
 
-    console.log("\n🎉 Seeding terminé avec succès !");
-    console.log("\n📝 Credentials admin:");
+    // 7. Créer les commentaires
+    await Commentaire.bulkCreate([
+      {
+        article_id: beauteArticles[0].id,
+        nom: "Marie Dupont",
+        contenu: "Article très utile ! J'ai déjà commencé à appliquer ces conseils.",
+        statut: "approved"
+      },
+      {
+        article_id: beauteArticles[0].id,
+        nom: "Jean Martin",
+        contenu: "Merci pour ces recommandations pratiques et faciles à suivre.",
+        statut: "approved"
+      },
+      {
+        article_id: beauteArticles[1].id,
+        nom: "Luc Bernard",
+        contenu: "Ma peau s'est transformée en quelques semaines !",
+        statut: "approved"
+      },
+      {
+        article_id: nutritionArticles[0].id,
+        nom: "Sophie Bernard",
+        contenu: "Le petit-déjeuner est vraiment important ! J'ai remarqué une grosse différence.",
+        statut: "approved"
+      },
+      {
+        article_id: nutritionArticles[1].id,
+        nom: "Thomas Lefevre",
+        contenu: "Très bon guide des régimes, je vais essayer le méditerranéen.",
+        statut: "approved"
+      },
+      {
+        article_id: devArticles[0].id,
+        nom: "Pierre Lefevre",
+        contenu: "Les objectifs SMART m'ont vraiment aidé.",
+        statut: "approved"
+      },
+      {
+        article_id: devArticles[1].id,
+        nom: "Isabelle Garcia",
+        contenu: "La technique Pomodoro change vraiment ma productivité !",
+        statut: "approved"
+      },
+      {
+        article_id: devArticles[2].id,
+        nom: "Antoine Moreau",
+        contenu: "Enfin quelqu'un qui parle de confiance en soi de façon pratique.",
+        statut: "approved"
+      }
+    ]);
+
+    console.log("✅ Commentaires créés");
+
+    console.log("\n✅ 🎉 SEED COMPLÉTÉ AVEC SUCCÈS !");
+    console.log("\n📊 Résumé:");
+    console.log(`   ✓ 3 catégories`);
+    console.log(`   ✓ 8 articles Beauté`);
+    console.log(`   ✓ 8 articles Nutrition`);
+    console.log(`   ✓ 8 articles Développement Personnel`);
+    console.log(`   ✓ Total: 24 articles avec images`);
+    console.log(`   ✓ 5 abonnés newsletter`);
+    console.log(`   ✓ 8 commentaires approuvés`);
+    console.log("\n🔐 Identifiants admin:");
     console.log("   Email: admin@miamor.com");
-    console.log("   Password: Admin123!");
-    console.log("\n📝 Credentials visiteur:");
-    console.log("   Email: marie.dupont@example.com");
-    console.log("   Password: Visiteur123!");
+    console.log("   Mot de passe: Admin123!");
 
   } catch (error) {
-    console.error("❌ Erreur lors du seeding:", error);
-    process.exitCode = 1;
+    console.error("❌ Erreur lors du seed:", error);
+    process.exit(1);
   } finally {
-    await sequelize.close();
+    process.exit(0);
   }
 }
 

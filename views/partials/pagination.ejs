@@ -1,0 +1,47 @@
+<% if (pagination && pagination.total > 1) { %>
+<nav aria-label="Pagination" class="mt-5 mb-4">
+  <ul class="pagination justify-content-center">
+    <!-- Première page -->
+    <li class="page-item <%= !pagination.has_previous ? 'disabled' : '' %>">
+      <a class="page-link" href="<%= pagination.has_previous ? (baseUrl || '#') + '?page=1' : '#' %>" aria-label="Première page">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+    <!-- Page précédente -->
+    <li class="page-item <%= !pagination.has_previous ? 'disabled' : '' %>">
+      <a class="page-link" href="<%= pagination.previous_url || '#' %>" aria-label="Page précédente">
+        <span aria-hidden="true">&lsaquo;</span>
+      </a>
+    </li>
+
+    <!-- Numéros de pages -->
+    <% pagination.pages.forEach(page => { %>
+      <li class="page-item <%= page.isActive ? 'active' : '' %>">
+        <a class="page-link" href="<%= page.url %>" <%= page.isActive ? 'aria-current="page"' : '' %>>
+          <%= page.number %>
+        </a>
+      </li>
+    <% }) %>
+
+    <!-- Page suivante -->
+    <li class="page-item <%= !pagination.has_next ? 'disabled' : '' %>">
+      <a class="page-link" href="<%= pagination.next_url || '#' %>" aria-label="Page suivante">
+        <span aria-hidden="true">&rsaquo;</span>
+      </a>
+    </li>
+
+    <!-- Dernière page -->
+    <li class="page-item <%= !pagination.has_next ? 'disabled' : '' %>">
+      <a class="page-link" href="<%= pagination.has_next ? (baseUrl || '#') + '?page=' + pagination.total : '#' %>" aria-label="Dernière page">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+  
+  <!-- Info pagination -->
+  <div class="text-center text-muted small mt-2">
+    Affichage <%= pagination.start_item %> à <%= pagination.end_item %> sur <%= pagination.total_items %> résultat<%= pagination.total_items > 1 ? 's' : '' %>
+  </div>
+</nav>
+<% } %>
