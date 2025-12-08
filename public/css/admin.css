@@ -1,0 +1,441 @@
+/* ============================================
+   PAGES ADMIN
+   (dashboard, articles, catégories, commentaires, etc.)
+   ============================================ */
+
+.admin-main {
+  margin-top: 60px;
+  min-height: calc(100vh - 200px);
+}
+
+/* En-tête de page admin */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* Dashboard Stats */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.stat-card {
+  background: var(--color-text-white);
+  border-radius: 8px;
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.stat-card h3 {
+  font-size: 0.9rem;
+  color: var(--color-text-mid);
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.stat-change {
+  font-size: 0.85rem;
+  color: var(--color-success);
+}
+
+.stat-change.negative {
+  color: var(--color-danger);
+}
+
+/* Tableau administrateur */
+.admin-table {
+  background: var(--color-text-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.admin-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.admin-table table th {
+  background: var(--color-bg-light);
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.admin-table table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-table table tbody tr:hover {
+  background: var(--color-bg-light);
+}
+
+.admin-table table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Actions dans le tableau */
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.action-btn.edit {
+  background: var(--color-warning);
+  color: var(--color-text-dark);
+}
+
+.action-btn.edit:hover {
+  background: #e0a800;
+}
+
+.action-btn.delete {
+  background: var(--color-danger);
+  color: var(--color-text-white);
+}
+
+.action-btn.delete:hover {
+  background: #c82333;
+}
+
+.action-btn.view {
+  background: var(--color-primary);
+  color: var(--color-text-white);
+}
+
+.action-btn.view:hover {
+  background: var(--color-secondary);
+}
+
+/* Tableau vide */
+.empty-state {
+  background: var(--color-text-white);
+  border-radius: 8px;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-text-mid);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state p {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Formulaires admin */
+.admin-form {
+  background: var(--color-text-white);
+  border-radius: 8px;
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-section:not(:last-child) {
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.form-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-dark);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  transition: border-color 0.3s ease;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249, 146, 133, 0.1);
+}
+
+.form-group input.is-invalid,
+.form-group textarea.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.form-group .form-text {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-top: 0.25rem;
+}
+
+/* Boutons du formulaire */
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-start;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-light);
+  flex-wrap: wrap;
+}
+
+.form-actions .btn {
+  min-width: 120px;
+}
+
+/* Message de statut */
+.admin-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  border-radius: 4px;
+  border-left: 4px solid transparent;
+}
+
+.admin-alert.success {
+  background: #d4edda;
+  color: #155724;
+  border-left-color: #28a745;
+}
+
+.admin-alert.danger {
+  background: #f8d7da;
+  color: #721c24;
+  border-left-color: #dc3545;
+}
+
+.admin-alert.warning {
+  background: #fff3cd;
+  color: #856404;
+  border-left-color: #ffc107;
+}
+
+.admin-alert.info {
+  background: #d1ecf1;
+  color: #0c5460;
+  border-left-color: #17a2b8;
+}
+
+/* Filtres et recherche */
+.admin-filters {
+  background: var(--color-bg-light);
+  padding: var(--spacing-lg);
+  border-radius: 8px;
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: var(--font-size-base);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Pagination admin */
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-text-white);
+  color: var(--color-text-dark);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-text-white);
+  border-color: var(--color-primary);
+}
+
+.pagination-btn.active {
+  background: var(--color-primary);
+  color: var(--color-text-white);
+  border-color: var(--color-primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .admin-header-actions {
+    width: 100%;
+  }
+
+  .admin-header-actions .btn {
+    flex: 1;
+    min-width: auto;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .admin-table table {
+    font-size: 0.9rem;
+  }
+
+  .admin-table table th,
+  .admin-table table td {
+    padding: var(--spacing-sm);
+  }
+
+  .table-actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .action-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}

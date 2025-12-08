@@ -11,9 +11,15 @@
 
 /* Typography */
 .blog-header-logo {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
-  font-size: 2.25rem;
-  color: var(--color-text-dark);
+  background-image: url('../logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  width: 150px;
+  height: 80px;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 
 .blog-header-logo:hover {
