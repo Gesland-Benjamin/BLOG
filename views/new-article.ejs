@@ -1,5 +1,9 @@
 <%- include('partials/head') %>
-<main class="container" style="max-width:500px; margin-top:60px;">
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body>
+    <%- include('partials/header-article') %>
+    <main class="container" style="max-width:500px; margin-top:60px;">
   <div class="card shadow-sm">
     <div class="card-body">
       <h2 class="mb-4 text-center"><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h2>
@@ -17,7 +21,6 @@
       
       <!-- Pour les formulaires multipart, on utilise _method dans la query (body non parsé avant multer) -->
       <form method="POST" action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>" enctype="multipart/form-data">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-3">
           <label for="titre" class="form-label">Titre</label>
           <input type="text" class="form-control <%= (errors && errors.length > 0 && errors.some(e => e.includes('titre'))) ? 'is-invalid' : '' %>" 
@@ -75,3 +78,7 @@
     </div>
   </div>
 </main>
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+  </body>
+</html>

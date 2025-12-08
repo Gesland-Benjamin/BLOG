@@ -131,7 +131,9 @@ export const getArticleById = async (req, res) => {
       user: req.user, 
       commentaires, 
       commentSubmitted,
-      ogImageTags
+      ogImageTags,
+      errors: [],
+      formData: {}
     });
   } catch (error) {
     console.error("Erreur getArticleById:", error);
@@ -164,7 +166,7 @@ export const postComment = async (req, res) => {
       contenu,
       nom: req.user ? req.user.nom_prenom : nom,
       user_id: req.user ? req.user.id : null,
-      statut: looksSpam ? "pending" : "pending",
+      statut: req.user ? "approved" : "pending",
       is_spam: looksSpam
     });
 

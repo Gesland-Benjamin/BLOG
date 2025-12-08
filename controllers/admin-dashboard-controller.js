@@ -13,6 +13,7 @@ export const getDashboard = async (req, res) => {
     
     // Articles récents
     const recentArticles = await Article.findAll({
+      attributes: ['id', 'titre', 'date_publication', 'auteur_id'],
       include: [
         { model: User, as: "auteur", attributes: ['nom_prenom'] }
       ],
@@ -38,6 +39,7 @@ export const getDashboard = async (req, res) => {
 
     // Articles les plus likés
     const topArticles = await Article.findAll({
+      attributes: ['id', 'titre', 'likes', 'auteur_id'],
       include: [
         { model: User, as: "auteur", attributes: ['nom_prenom'] }
       ],

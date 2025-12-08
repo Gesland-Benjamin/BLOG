@@ -46,7 +46,7 @@
                   <br>
                   <div class="mt-2">
                     <a href="/article/<%= article.id %>" class="btn btn-primary btn-sm">Lire l'article</a>
-                    <% if (user && user.role === 'admin') { %>
+                    <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
                       <a href="/admin/articles/<%= article.id %>/edit" class="btn btn-warning btn-sm">Modifier</a>
                       <button class="btn btn-danger btn-sm" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
                     <% } %>
@@ -82,12 +82,15 @@
 
     </main>
     <%- include('partials/footer') %>
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <%- include('partials/scripts') %>
     <script>
       function deleteArticle(articleId) {
         if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
           fetch(`/admin/articles/${articleId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+              'x-csrf-token': '<%= csrfToken %>'
+            }
           })
           .then(response => {
             if (response.ok) {

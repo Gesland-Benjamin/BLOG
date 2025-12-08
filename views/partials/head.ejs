@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
     <!-- Meta dynamiques pour SEO -->
-    <% if (article) { %>
+    <% if (typeof article !== 'undefined' && article && article.titre) { %>
       <title><%= article.titre %> | Blog</title>
       <meta name="description" content="<%= article.description || article.titre %>" />
       <meta name="robots" content="index, follow" />
@@ -14,8 +14,12 @@
       <% if (ogImageTags) { %>
         <%- ogImageTags %>
       <% } %>
-      <meta name="article:published_time" content="<%= new Date(article.date_publication).toISOString() %>" />
-      <meta name="article:author" content="<%= article.auteur %>" />
+      <% if (article.date_publication) { %>
+        <meta name="article:published_time" content="<%= new Date(article.date_publication).toISOString() %>" />
+      <% } %>
+      <% if (article.auteur) { %>
+        <meta name="article:author" content="<%= article.auteur %>" />
+      <% } %>
       <% if (article.categorie) { %>
         <meta name="article:section" content="<%= article.categorie %>" />
       <% } %>
@@ -34,7 +38,7 @@
     <meta name="generator" content="Express.js" />
     <link
       rel="canonical"
-      href="<%= article ? article.url : 'http://localhost:3000' %>"
+      href="<%= (typeof article !== 'undefined' && article) ? article.url : 'http://localhost:3000' %>"
     />
     <script src="/js/color-modes.js"></script>
     <link href="/css/bootstrap.min.css" rel="stylesheet" />

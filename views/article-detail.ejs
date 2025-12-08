@@ -100,7 +100,6 @@
               <% } %>
 
               <form method="POST" action="/article/<%= article.id %>/comment">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <% if (!user) { %>
                   <div class="mb-3">
                     <label for="nom" class="form-label">Votre nom</label>
@@ -124,6 +123,7 @@
       </div>
     </main>
     <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('like-btn');
@@ -140,7 +140,10 @@
           try {
             const response = await fetch(`/article/${articleId}/like`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' }
+              headers: { 
+                'Content-Type': 'application/json',
+                'x-csrf-token': '<%= csrfToken %>'
+              }
             });
 
             if (!response.ok) {
@@ -161,6 +164,5 @@
         });
       });
     </script>
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

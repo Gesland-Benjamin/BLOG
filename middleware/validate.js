@@ -24,7 +24,10 @@ export const validateRequest = (schema) => {
       // Sinon, rediriger avec les erreurs en session
       req.session.errors = errors;
       req.session.formData = req.body; // Sauvegarder les données du formulaire
-      return res.redirect('back');
+      
+      // Redirection intelligente : utiliser referrer ou l'URL précédente
+      const referrer = req.get('referer') || '/article';
+      return res.redirect(referrer);
     }
 
     // Remplacer req.body avec les valeurs validées et nettoyées

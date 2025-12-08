@@ -145,11 +145,7 @@ export const commentSchema = Joi.object({
   nom: Joi.string()
     .min(3)
     .max(150)
-    .when('user_id', {
-      is: Joi.exist(),
-      then: Joi.optional(),
-      otherwise: Joi.required()
-    })
+    .optional()
     .messages({
       'string.empty': 'Votre nom est requis',
       'string.min': 'Le nom doit contenir au moins 3 caractères',
@@ -165,9 +161,8 @@ export const commentSchema = Joi.object({
       'string.min': 'Le commentaire doit contenir au moins 10 caractères',
       'string.max': 'Le commentaire ne peut pas dépasser 1000 caractères',
       'any.required': 'Le commentaire est requis'
-    }),
-  user_id: Joi.number().optional()
-});
+    })
+}).unknown(true);
 
 // Schéma newsletter
 export const newsletterSchema = Joi.object({

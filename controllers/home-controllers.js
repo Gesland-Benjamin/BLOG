@@ -40,7 +40,8 @@ const getHomePage = async (req,res) => {
             message:"Bienvenue sur le site de Mi Amor",
             user: req.user,
             recentPosts,
-            featuredArticle
+            featuredArticle,
+            article: undefined
         });
     } catch (error) {
         console.error("Erreur getHomePage:", error);
@@ -49,7 +50,8 @@ const getHomePage = async (req,res) => {
             message:"Bienvenue sur le site de Mi Amor",
             user: req.user,
             recentPosts: [],
-            featuredArticle: null
+            featuredArticle: null,
+            article: undefined
         });
     }
 }

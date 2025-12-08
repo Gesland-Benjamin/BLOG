@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 export async function showNewArticleForm(req, res) {
   try {
     const categories = await Categorie.findAll();
-    res.render("new-article", { categories, isEditing: false, article: {} });
+    res.render("new-article", { categories, isEditing: false, article: {}, errors: [], formData: {}, ogImageTags: '' });
   } catch (error) {
     console.error("Erreur findAll Categorie:", error);
     res.status(500).send("Erreur lors du chargement des catégories");
@@ -107,7 +107,10 @@ export const showEditArticleForm = async (req, res) => {
         image: article.image,
         image_alt: article.image_alt
       },
-      isEditing: true
+      isEditing: true,
+      errors: [],
+      formData: {},
+      ogImageTags: ''
     });
   } catch (error) {
     console.error("Erreur showEditArticleForm:", error);

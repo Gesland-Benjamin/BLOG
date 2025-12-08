@@ -1,7 +1,6 @@
 import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import csrf from 'csurf';
 
 import indexRoutes from "./routes/index.js";
 import articlesRouter from "./routes/article.js";
@@ -102,6 +101,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Middleware de session avant la protection CSRF
 app.use(session({
   secret: process.env.SESSION_SECRET || 'unSecretParDefautPourDev',
   resave: false,
@@ -113,9 +113,20 @@ app.use(session({
   }
 }));
 
-// Protection CSRF
-const csrfProtection = csrf({ cookie: false });
-app.use(csrfProtection);
+// Protection CSRF - générateur de token simplifié
+import { randomBytes } from 'crypto';
+
+// Middleware personnalisé pour générer le token CSRF
+app.use((req, res, next) => {
+  // Initialiser la session CSRF si nécessaire
+  if (!req.session.csrfToken) {
+    req.session.csrfToken = randomBytes(32).toString('hex');
+  }
+  
+  // Générer le token CSRF pour la réponse
+  res.locals.csrfToken = req.session.csrfToken;
+  next();
+});
 
 app.use((req, res, next) => {
   if (req.session && req.session.user) {
@@ -127,7 +138,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.message = req.session.message;
-  res.locals.csrfToken = req.csrfToken();
+  res.locals.csrfToken = req.session.csrfToken || '';
   delete req.session.message;
   next();
 });
@@ -149,7 +160,7 @@ app.use("/admin", adminNewsletterRoutes);
 
 // ===== Middleware 404 - doit être après toutes les routes =====
 app.use((req, res, next) => {
-  res.status(404).render("404");
+  res.status(404).render("404", { article: undefined });
 });
 
 // ===== Middleware de gestion des erreurs 500 =====
@@ -158,7 +169,7 @@ app.use((err, req, res, next) => {
     globalErrorHandler(err, req, res, next);
   } else {
     console.error("Erreur serveur:", err);
-    res.status(500).render("500", { error: err.stack });
+    res.status(500).render("500", { error: err.stack, article: undefined });
   }
 });
 

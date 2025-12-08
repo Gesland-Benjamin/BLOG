@@ -15,7 +15,7 @@
                 <path d="M21 21l-5.2-5.2"></path>
               </svg>
             </a>
-            <% if (user && user.role === "admin") { %>
+            <% if (typeof user !== 'undefined' && user && user.role === "admin") { %>
               <div class="dropdown">
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" id="adminMenuDropdownArticle" data-bs-toggle="dropdown" aria-expanded="false">
                   Dashboard
@@ -34,7 +34,7 @@
                 </ul>
               </div>
             <% } %>
-            <% if (user) { %>
+            <% if (typeof user !== 'undefined' && user) { %>
               <a class="btn btn-sm btn-outline-secondary" href="/auth/logout">Déconnexion</a>
             <% } else { %>
               <a class="btn btn-sm btn-outline-secondary" href="/auth">Se connecter / S'inscrire</a>

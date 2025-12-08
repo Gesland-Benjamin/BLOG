@@ -57,7 +57,7 @@
 
     </main>
     <%- include('partials/footer') %>
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <%- include('partials/scripts') %>
     <script>
       function deleteCategory(categoryId, categoryName) {
         if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?`)) {
