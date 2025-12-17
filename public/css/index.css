@@ -1,63 +1,59 @@
-/* ===== Carrousel Accueil - Design SMEG ===== */
-#mixedCarousel {
+/* ============================================
+   CARROUSEL ACCUEIL – DESIGN SMEG
+   ============================================ */
+
+/* Conteneur principal + cartes bordées */
+#mixedCarousel,
+.card-bordered {
   position: relative;
-  padding: 18px; /* espace entre corde et carte */
+  padding: 18px;
   padding-right: 30px;
   border-radius: 42px;
-  background: linear-gradient(
-    to bottom,
-    #fffdf5 0%,
-    #fdf6e3 60%,
-    #f7edd2 100%
-  );
-  max-width: 1400px;
-  margin: 0 auto;
 
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.35),
-    inset 0 3px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -6px 12px rgba(0, 0, 0, 0.18);
-    overflow: ;
+  overflow: hidden;
 }
-#mixedCarousel::before {
+
+/* Bordure externe type corde */
+#mixedCarousel::before,
+.card-bordered::before {
   content: "";
   position: absolute;
   inset: -14px;
-  border-radius: 42px;
   z-index: -2;
-
-  background:
-    repeating-linear-gradient(
-      45deg,
-      #111 0px,
-      #111 6px,
-      #2a2a2a 6px,
-      #2a2a2a 12px
-    );
-
-  box-shadow:
-    inset 2px 2px 4px rgba(255, 255, 255, 0.15),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.6),
-    0 12px 22px rgba(0, 0, 0, 0.5);
+  border-radius: 56px;
+  background-color: #0c0808;
 }
 
+/* Spécifique au carrousel */
+#mixedCarousel {
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow: hidden;
+}
 
+/* Ajustement rayon spécifique */
+#mixedCarousel::before {
+  border-radius: 58px;
+}
+
+/* ============================================
+   CARROUSEL – STRUCTURE
+   ============================================ */
 
 #mixedCarousel .carousel-inner {
   position: relative;
-  overflow: visible;
   margin: 0;
+  overflow: visible;
 }
 
 #mixedCarousel .carousel-item {
-  display: none !important;
   position: relative;
   width: 100%;
+  display: none !important;
 }
 
 #mixedCarousel .carousel-item.active {
   display: block !important;
-  opacity: 1;
   animation: fadeIn 0.6s ease-in-out;
 }
 
@@ -70,39 +66,75 @@
   }
 }
 
-/* Zone image collée à la corde */
+/* ============================================
+   IMAGES CARROUSEL
+   ============================================ */
+
+/* Image collée à la corde */
 .carousel-image-wrapper {
   position: absolute;
-  top: -18px;     /* compense le padding du carousel */
-  right: -24px;
-  bottom: -66px;
-  width: 64%;     /* ajuste si besoin */
+  top: -55px;
+  right: -55px;
+  bottom: -90px;
+  left: auto;
+  width: 64%;
   overflow: hidden;
-
-  border-radius: 0 42px 42px 0;
+  
 }
 
-/* Image elle-même */
 .carousel-image-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
-
-  border-radius: 0 42px 42px 0;
+  object-fit: cover;
 }
 
+/* Cas des sections à gauche */
+.left-sections .carousel-image-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  border-radius: 0 28px 28px 0;
+}
 
+/* ============================================
+   LAYOUT SECTIONS GAUCHE
+   ============================================ */
 
+.left-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
-/* Cartes SMEG pour Recent Posts et Archives */
+.left-sections > .card-bordered {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   IMAGES LISTES & UTILITAIRES
+   ============================================ */
+
+.ratio img,
+.object-fit-cover {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ============================================
+   CARTES SMEG (POSTS / ARCHIVES)
+   ============================================ */
+
 .card-smeg {
-  background: white;
+  background: #fff;
   border-radius: 16px;
+  border: 1px solid #f0f0f0;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.3s ease;
 }
 
 .card-smeg:hover {
@@ -115,8 +147,8 @@
 }
 
 .card-smeg-header h4 {
-  color: #4a4a4a;
   font-size: 1.25rem;
+  color: #4a4a4a;
 }
 
 .card-smeg-body {
@@ -131,7 +163,7 @@
   color: #dc2626 !important;
 }
 
-/* Stack cartes verticalement */
+/* Empilement vertical */
 .card-smeg-stack {
   display: flex;
   flex-direction: column;
@@ -141,19 +173,18 @@
 }
 
 /* ============================================
-   PAGE D'ACCUEIL (INDEX)
+   PAGE D’ACCUEIL
    ============================================ */
 
 .bo {
-  background-image: url("/Design sans titre.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   min-height: 100vh;
+  background: url("/Design sans titre.png") center / cover no-repeat fixed;
 }
 
-/* SVG Icons */
+/* ============================================
+   SVG & ICONES
+   ============================================ */
+
 svg {
   width: 100%;
   height: 100%;
@@ -166,7 +197,10 @@ svg {
   fill: currentColor;
 }
 
-/* Mode toggle */
+/* ============================================
+   TOGGLE MODE
+   ============================================ */
+
 .bd-mode-toggle {
   position: fixed;
   bottom: var(--spacing-lg);
@@ -175,10 +209,10 @@ svg {
 }
 
 .bd-mode-toggle .btn {
-  border-radius: 50%;
   width: 44px;
   height: 44px;
   padding: 0;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,11 +222,3 @@ svg {
   width: 1.25rem;
   height: 1.25rem;
 }
-
-@media (max-width: 768px) {
-  .bd-mode-toggle {
-    bottom: var(--spacing-md);
-    right: var(--spacing-md);
-  }
-}
-

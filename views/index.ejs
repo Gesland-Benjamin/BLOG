@@ -137,15 +137,37 @@
       <!-- Cartes Recent Posts et Archives -->
       <div class="row g-4 mt-2">
         <div class="col-lg-8">
-          <!-- Contenu futur à gauche -->
+          <div class="d-flex flex-column gap-4 left-sections">
+            <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
+              <div class="card-bordered">
+                <div class="d-flex align-items-stretch <%= isReverse ? 'flex-row-reverse' : '' %>" style="min-height: 280px; position: relative; gap: 0;">
+                  <div class="p-4" style="flex: 0 0 45%; display: flex; flex-direction: column; justify-content: center;">
+                    <h2 class="display-6 fst-italic mb-2"><%= s.titre %></h2>
+                    <p class="lead my-2"><%= s.extrait %>...</p>
+                    <p class="text-muted mb-3">Par <%= s.auteur %> • <%= s.categorie %></p>
+                    <p class="lead mb-0">
+                      <a href="/article/<%= s.id %>" class="text-body-emphasis fw-bold">Lire plus...</a>
+                    </p>
+                  </div>
+                  <div class="p-0 carousel-image-wrapper" style="flex: 0 0 55%; position: relative;">
+                    <% if (s.image) { %>
+                      <img src="<%= s.image %>" alt="<%= s.titre %>" style="height: 100%; width: 100%; object-fit: cover; display: block; border-radius: <%= isReverse ? '28px 0 0 28px' : '0 28px 28px 0' %>;"/>
+                    <% } else { %>
+                      <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center w-100" style="min-height: 280px;">
+                        <span class="text-muted">Pas d'image</span>
+                      </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
         </div>
         <div class="col-lg-4">
           <div class="card-smeg-stack">
-            <div class="card-smeg">
-              <div class="card-smeg-header">
-                <h4 class="fst-italic mb-0">Derniers articles</h4>
-              </div>
-              <div class="card-smeg-body">
+            <div class="card-bordered">
+              <div class="p-4">
+                <h4 class="fst-italic mb-3">Derniers articles</h4>
               <ul class="list-unstyled mb-0">
                 <% if (recentPosts && recentPosts.length) { %>
                   <% recentPosts.forEach((p, idx) => { %>
@@ -178,11 +200,9 @@
             </div>
           </div>
 
-          <div class="card-smeg">
-            <div class="card-smeg-header">
-              <h4 class="fst-italic mb-0">Archives</h4>
-            </div>
-            <div class="card-smeg-body">
+          <div class="card-bordered">
+            <div class="p-4">
+              <h4 class="fst-italic mb-3">Archives</h4>
               <ol class="list-unstyled mb-0">
                 <li><a href="#">Décembre 2025</a></li>
                 <li><a href="#">Novembre 2025</a></li>

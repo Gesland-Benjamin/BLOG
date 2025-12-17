@@ -35,10 +35,7 @@ const getHomePage = async (req,res) => {
             auteur: latestArticle.auteur ? latestArticle.auteur.nom_prenom : "Inconnu"
         } : null;
 
-        // Récupère les 2 derniers articles des catégories Événements et Nouveautés
-        const Op = Article.sequelize.Sequelize.Op;
-        
-        // Récupération par ID exact des catégories (sans filtre nom)
+        // Récupère les 2 derniers articles des catégories Événements et Nouveautés (IDs fixes 18, 19) pour le carrousel
         const fetchByCatId = async (catId) => {
             const rows = await Article.findAll({
                 where: { categorie_id: catId },
@@ -60,20 +57,36 @@ const getHomePage = async (req,res) => {
             }));
         };
 
-        // DEBUG: Log all categories
-        const allCats = await Categorie.findAll();
-        console.log('[HOME] All categories in DB:', allCats.map(c => ({ id: c.id, nom: c.nom })));
-
-        // IDs fixes pour Évenements (18) et Nouveautés (19)
+        // Carrousel mix Événements (18) + Nouveautés (19)
         const eventsLatest = await fetchByCatId(18);
         const nouveautesLatest = await fetchByCatId(19);
-
-        console.log('[HOME] counts', { eventsLatest: eventsLatest.length, nouveautesLatest: nouveautesLatest.length });
-
-        // Mélange des deux catégories, tri par date desc
         const mixedCarouselItems = [...eventsLatest, ...nouveautesLatest]
             .sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
-        console.log('[HOME] mixedCarouselItems', mixedCarouselItems.map(i => ({ id: i.id, titre: i.titre, cat: i.categorie })));
+
+        // Sections dynamiques à gauche: top liké par catégorie
+        const categories = await Categorie.findAll();
+        const topLikedSectionsRaw = await Promise.all(categories.map(async (c) => {
+            const a = await Article.findOne({
+                where: { categorie_id: c.id },
+                include: [
+                    { model: User, as: "auteur" },
+                    { model: Categorie, as: "categorie" }
+                ],
+                order: [["likes", "DESC"], ["date_publication", "DESC"]]
+            });
+            if (!a) return null;
+            return {
+                id: a.id,
+                titre: a.titre,
+                extrait: (a.contenu || "").substring(0, 160),
+                date_publication: a.date_publication,
+                image: a.image,
+                categorie: a.categorie ? a.categorie.nom : c.nom,
+                auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu",
+                likes: a.likes
+            };
+        }));
+        const topLikedSections = topLikedSectionsRaw.filter(Boolean);
 
         res.render("index", {
             title: "Accueil",
@@ -82,7 +95,8 @@ const getHomePage = async (req,res) => {
             recentPosts,
             featuredArticle,
             carouselItems: mixedCarouselItems,
-            article: undefined
+            article: undefined,
+            topLikedSections
         });
     } catch (error) {
         console.error("Erreur getHomePage:", error);
@@ -93,7 +107,8 @@ const getHomePage = async (req,res) => {
             recentPosts: [],
             featuredArticle: null,
             carouselItems: [],
-            article: undefined
+            article: undefined,
+            topLikedSections: []
         });
     }
 };
