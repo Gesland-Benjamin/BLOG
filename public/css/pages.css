@@ -407,6 +407,74 @@
 }
 
 /* ============================================
+   PAGE RENSEIGNEMENTS / CONTACT
+   ============================================ */
+
+.renseignements-page {
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.contact-card {
+  background: var(--color-text-white);
+  border-radius: 12px;
+  padding: var(--spacing-2xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-form .form-control,
+.contact-form textarea {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-form .form-control:focus,
+.contact-form textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249, 146, 133, 0.12);
+}
+
+.contact-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.contact-aside-card {
+  background: var(--color-text-white);
+  border-radius: 10px;
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
+}
+
+.contact-details li {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-mid);
+}
+
+.contact-details a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.contact-bullets {
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: var(--color-text-mid);
+  display: grid;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.contact-bullets li {
+  line-height: 1.5;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
@@ -437,6 +505,15 @@
 
   .category-articles {
     grid-template-columns: 1fr;
+  }
+
+  .contact-card {
+    padding: var(--spacing-lg);
+  }
+
+  .renseignements-page {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
   }
 
   .search-result-item {

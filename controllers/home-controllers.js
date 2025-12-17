@@ -35,12 +35,53 @@ const getHomePage = async (req,res) => {
             auteur: latestArticle.auteur ? latestArticle.auteur.nom_prenom : "Inconnu"
         } : null;
 
+        // Récupère les 2 derniers articles des catégories Événements et Nouveautés
+        const Op = Article.sequelize.Sequelize.Op;
+        
+        // Récupération par ID exact des catégories (sans filtre nom)
+        const fetchByCatId = async (catId) => {
+            const rows = await Article.findAll({
+                where: { categorie_id: catId },
+                include: [
+                    { model: User, as: "auteur" },
+                    { model: Categorie, as: "categorie" }
+                ],
+                order: [["date_publication", "DESC"]],
+                limit: 2
+            });
+            return rows.map(a => ({
+                id: a.id,
+                titre: a.titre,
+                extrait: (a.contenu || "").substring(0, 160),
+                date_publication: a.date_publication,
+                image: a.image,
+                categorie: a.categorie ? a.categorie.nom : null,
+                auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu"
+            }));
+        };
+
+        // DEBUG: Log all categories
+        const allCats = await Categorie.findAll();
+        console.log('[HOME] All categories in DB:', allCats.map(c => ({ id: c.id, nom: c.nom })));
+
+        // IDs fixes pour Évenements (18) et Nouveautés (19)
+        const eventsLatest = await fetchByCatId(18);
+        const nouveautesLatest = await fetchByCatId(19);
+
+        console.log('[HOME] counts', { eventsLatest: eventsLatest.length, nouveautesLatest: nouveautesLatest.length });
+
+        // Mélange des deux catégories, tri par date desc
+        const mixedCarouselItems = [...eventsLatest, ...nouveautesLatest]
+            .sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
+        console.log('[HOME] mixedCarouselItems', mixedCarouselItems.map(i => ({ id: i.id, titre: i.titre, cat: i.categorie })));
+
         res.render("index", {
             title: "Accueil",
             message:"Bienvenue sur le site de Mi Amor",
             user: req.user,
             recentPosts,
             featuredArticle,
+            carouselItems: mixedCarouselItems,
             article: undefined
         });
     } catch (error) {
@@ -51,9 +92,75 @@ const getHomePage = async (req,res) => {
             user: req.user,
             recentPosts: [],
             featuredArticle: null,
+            carouselItems: [],
             article: undefined
         });
     }
-}
+};
+
+const renderRenseignementsPage = (req, res, options = {}) => {
+    res.render("renseignements", {
+        title: "Demande de renseignements",
+        pageDescription: "Contactez Mi Amor pour toute demande de renseignements, de devis ou de collaboration.",
+        user: req.user,
+        article: undefined,
+        errors: [],
+        formData: { nom: "", email: "", telephone: "", sujet: "", message: "" },
+        message: res.locals.message,
+        ...options
+    });
+};
+
+const getRenseignementsPage = (req, res) => {
+    renderRenseignementsPage(req, res);
+};
+
+const postRenseignements = (req, res) => {
+    const {
+        nom = "",
+        email = "",
+        telephone = "",
+        sujet = "",
+        message: contenuMessage = ""
+    } = req.body || {};
+
+    const formData = {
+        nom: String(nom).trim(),
+        email: String(email).trim(),
+        telephone: String(telephone).trim(),
+        sujet: String(sujet).trim(),
+        message: String(contenuMessage).trim(),
+    };
+
+    const errors = [];
+
+    if (!formData.nom) {
+        errors.push("Le nom est obligatoire.");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+        errors.push("Une adresse email valide est requise.");
+    }
+
+    if (!formData.sujet) {
+        errors.push("Merci de préciser l'objet de votre demande.");
+    }
+
+    if (!formData.message) {
+        errors.push("Le message ne peut pas être vide.");
+    }
+
+    if (formData.message.length > 1200) {
+        errors.push("Le message doit contenir moins de 1200 caractères.");
+    }
+
+    if (errors.length > 0) {
+        return renderRenseignementsPage(req, res, { errors, formData, message: null });
+    }
+
+    req.session.message = "Merci pour votre demande, nous reviendrons vers vous rapidement.";
+    return res.redirect("/renseignements");
+};
     
-export default { getHomePage};
+export default { getHomePage, getRenseignementsPage, postRenseignements};

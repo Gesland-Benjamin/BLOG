@@ -1,0 +1,140 @@
+<%- include('partials/head') %>
+<!doctype html>
+<html lang="fr" data-bs-theme="auto">
+  <body class="bo">
+    <div class="container">
+      <%- include('partials/header', { includeNavbar: true }) %>
+    </div>
+
+    <main class="container renseignements-page">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-7">
+          <div class="contact-card shadow-sm">
+            <h1 class="mb-2">Demande de renseignements</h1>
+            <p class="text-muted mb-4">
+              Partagez votre projet ou vos questions, nous revenons vers vous sous 24h avec une réponse personnalisée.
+            </p>
+
+            <% if (message) { %>
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+              </div>
+            <% } %>
+
+            <% if (errors && errors.length > 0) { %>
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                  <% errors.forEach(err => { %>
+                    <li><%= err %></li>
+                  <% }) %>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+              </div>
+            <% } %>
+
+            <form class="contact-form" action="/renseignements" method="POST" novalidate>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="nom" class="form-label">Nom complet</label>
+                  <input
+                    type="text"
+                    class="form-control <%= errors && errors.some(e => e.toLowerCase().includes('nom')) ? 'is-invalid' : '' %>"
+                    id="nom"
+                    name="nom"
+                    value="<%= formData.nom %>"
+                    required
+                    autocomplete="name"
+                    placeholder="Votre nom et prénom"
+                  >
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control <%= errors && errors.some(e => e.toLowerCase().includes('email')) ? 'is-invalid' : '' %>"
+                    id="email"
+                    name="email"
+                    value="<%= formData.email %>"
+                    required
+                    autocomplete="email"
+                    placeholder="vous@example.com"
+                  >
+                </div>
+                <div class="col-md-6">
+                  <label for="telephone" class="form-label">Téléphone (optionnel)</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="telephone"
+                    name="telephone"
+                    value="<%= formData.telephone %>"
+                    autocomplete="tel"
+                    placeholder="+33 6 12 34 56 78"
+                  >
+                </div>
+                <div class="col-md-6">
+                  <label for="sujet" class="form-label">Objet</label>
+                  <input
+                    type="text"
+                    class="form-control <%= errors && errors.some(e => e.toLowerCase().includes('objet') || e.toLowerCase().includes("l'objet")) ? 'is-invalid' : '' %>"
+                    id="sujet"
+                    name="sujet"
+                    value="<%= formData.sujet %>"
+                    required
+                    placeholder="Ex : Devis, partenariat, question produit"
+                  >
+                </div>
+                <div class="col-12">
+                  <label for="message" class="form-label">Votre message</label>
+                  <textarea
+                    class="form-control <%= errors && errors.some(e => e.toLowerCase().includes('message')) ? 'is-invalid' : '' %>"
+                    id="message"
+                    name="message"
+                    rows="6"
+                    required
+                    placeholder="Détaillez votre besoin ou votre question"
+                  ><%= formData.message %></textarea>
+                  <div class="form-text">1200 caractères maximum.</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between mt-4 flex-wrap gap-2">
+                <div class="text-muted small">
+                  Réponse habituellement sous 24h ouvrées.
+                </div>
+                <button type="submit" class="btn btn-bd-primary">Envoyer ma demande</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="contact-aside">
+            <div class="contact-aside-card">
+              <h3 class="h5 mb-3">Informations utiles</h3>
+              <ul class="list-unstyled mb-0 contact-details">
+                <li><strong>Email :</strong> <a href="mailto:contact@miamor.com">contact@miamor.com</a></li>
+                <li><strong>Téléphone :</strong> <a href="tel:+33600000000">+33 6 00 00 00 00</a></li>
+                <li><strong>Horaires :</strong> Lun - Ven, 9h - 18h</li>
+              </ul>
+            </div>
+            <div class="contact-aside-card">
+              <h4 class="h6 text-uppercase text-muted mb-3">Pourquoi nous écrire ?</h4>
+              <ul class="contact-bullets">
+                <li>Obtenir des conseils personnalisés sur nos offres.</li>
+                <li>Demander un devis ou une collaboration.</li>
+                <li>Être guidé pour trouver le bon produit.</li>
+              </ul>
+              <p class="small text-muted mb-0">
+                Nous respectons vos données : aucune revente, uniquement un suivi pour votre demande.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+  </body>
+</html>

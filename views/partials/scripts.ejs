@@ -1,1 +1,71 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS bundle (inclut Popper) pour carrousel & dropdowns -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpqvCqv1YvF2heq6j0JQ5Gv5Q6XQK" crossorigin="anonymous"></script>
+
+<!-- Scripts personnalisés -->
+<script src="/js/dropdown.js"></script>
+
+<!-- Force autoplay du carrousel -->
+<script>
+(function() {
+  function initCarousel() {
+    var carouselEl = document.getElementById('mixedCarousel');
+    if (!carouselEl) return;
+    
+    var items = carouselEl.querySelectorAll('.carousel-item');
+    var prevBtn = carouselEl.querySelector('.carousel-control-prev');
+    var nextBtn = carouselEl.querySelector('.carousel-control-next');
+    
+    if (items.length <= 1) return;
+    
+    var currentIndex = 0;
+    
+    // Fonction pour afficher un slide
+    function showSlide(index) {
+      items.forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+      
+      // Mettre à jour les indicateurs
+      var indicators = carouselEl.querySelectorAll('.carousel-indicators button');
+      indicators.forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+    }
+    
+    // Suivant
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % items.length;
+      showSlide(currentIndex);
+    }
+    
+    // Précédent
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + items.length) % items.length;
+      showSlide(currentIndex);
+    }
+    
+    // Clic sur boutons
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    
+    // Clic sur indicateurs
+    var indicators = carouselEl.querySelectorAll('.carousel-indicators button');
+    indicators.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        currentIndex = i;
+        showSlide(currentIndex);
+      });
+    });
+    
+    // Autoplay toutes les 5 secondes
+    setInterval(nextSlide, 5000);
+  }
+  
+  // Attendre que le DOM soit prêt
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousel);
+  } else {
+    initCarousel();
+  }
+})();
+</script>

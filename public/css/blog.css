@@ -33,11 +33,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Base */
-body {
-  background: linear-gradient(180deg, var(--color-bg-light) 0%, var(--color-bg-mid) 50%, rgba(249, 146, 133, 0.2) 100%);
-  background-color: var(--color-bg-light);
-  background-attachment: fixed;
-}
+
 
 /* Utilities */
 .flex-auto {
@@ -160,12 +156,4 @@ body {
 
 .bd-mode-toggle .dropdown-menu .active .bi {
   display: block !important;
-}
-
-.bo {
-  background-image: url(../9bbce84a-f305-462c-a3c1-2b346de83195.jpg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 400px;
 }

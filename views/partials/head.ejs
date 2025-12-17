@@ -27,8 +27,9 @@
       <meta name="twitter:title" content="<%= article.titre %>" />
       <meta name="twitter:description" content="<%= article.description || article.titre %>" />
     <% } else { %>
-      <meta name="description" content="Blog - Découvrez nos articles sur la beauté, la nutrition et le développement personnel" />
-      <title>Blog | Accueil</title>
+      <% const pageTitle = (typeof title !== 'undefined' && title) ? `${title} | Blog` : 'Blog | Accueil'; %>
+      <meta name="description" content="<%= (typeof pageDescription !== 'undefined' && pageDescription) ? pageDescription : 'Blog - Découvrez nos articles sur la beauté, la nutrition et le développement personnel' %>" />
+      <title><%= pageTitle %></title>
     <% } %>
     
     <meta
@@ -41,13 +42,21 @@
       href="<%= (typeof article !== 'undefined' && article) ? article.url : 'http://localhost:3000' %>"
     />
     <script src="/js/color-modes.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <meta name="theme-color" content="#F99285" />
     <link
       href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&display=swap"
       rel="stylesheet"
     />
-    <link href="/css/blog.css" rel="stylesheet" />
+    <!-- Fichiers CSS (ordre important) -->
+    <link href="/css/general.css" rel="stylesheet" />
+    <link href="/css/animations.css" rel="stylesheet" />
+    <link href="/css/header.css" rel="stylesheet" />
+    <link href="/css/footer.css" rel="stylesheet" />
+    <link href="/css/index.css" rel="stylesheet" />
+    <link href="/css/article-detail.css" rel="stylesheet" />
+    <link href="/css/auth.css" rel="stylesheet" />
+    <link href="/css/admin.css" rel="stylesheet" />
+    <link href="/css/pages.css" rel="stylesheet" />
     <style>
     </style>
   </head>
