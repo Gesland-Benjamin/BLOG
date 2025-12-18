@@ -131,17 +131,18 @@
     </div>
     <main class="container-fluid px-3">
       <!-- Carrousel mélangé Événements + Nouveautés -->
-      <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+      <div class="carousel-wrapper">
         <%- include('partials/carousel', { carouselItems }) %>
       </div>
       <!-- Cartes Recent Posts et Archives -->
-      <div class="row g-4 mt-2">
+      <div class="sections-wrapper">
+      <div class="row g-4 mt-2" style="width: 100%; max-width: 95%;">
         <div class="col-lg-8">
-          <div class="d-flex flex-column gap-4 left-sections">
+          <section class="d-flex flex-column gap-4 left-sections smeg-frame">
             <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
-              <div class="card-bordered">
-                <div class="d-flex align-items-stretch <%= isReverse ? 'flex-row-reverse' : '' %>" style="min-height: 280px; position: relative; gap: 0;">
-                  <div class="p-4" style="flex: 0 0 45%; display: flex; flex-direction: column; justify-content: center;">
+              <div class="card-bordered smeg-frame" style="min-height: 280px;">
+                <div class="row g-0 align-items-stretch" style="min-height: 280px;">
+                  <div class="col-lg-5 p-4">
                     <h2 class="display-6 fst-italic mb-2"><%= s.titre %></h2>
                     <p class="lead my-2"><%= s.extrait %>...</p>
                     <p class="text-muted mb-3">Par <%= s.auteur %> • <%= s.categorie %></p>
@@ -149,9 +150,9 @@
                       <a href="/article/<%= s.id %>" class="text-body-emphasis fw-bold">Lire plus...</a>
                     </p>
                   </div>
-                  <div class="p-0 carousel-image-wrapper" style="flex: 0 0 55%; position: relative;">
+                  <div class="carousel-image-wrapper">
                     <% if (s.image) { %>
-                      <img src="<%= s.image %>" alt="<%= s.titre %>" style="height: 100%; width: 100%; object-fit: cover; display: block; border-radius: <%= isReverse ? '28px 0 0 28px' : '0 28px 28px 0' %>;"/>
+                      <img src="<%= s.image %>" alt="<%= s.titre %>"/>
                     <% } else { %>
                       <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center w-100" style="min-height: 280px;">
                         <span class="text-muted">Pas d'image</span>
@@ -161,11 +162,11 @@
                 </div>
               </div>
             <% }) %>
-          </div>
+          </section>
         </div>
         <div class="col-lg-4">
           <div class="card-smeg-stack">
-            <div class="card-bordered">
+            <article class="card-smeg smeg-frame">
               <div class="p-4">
                 <h4 class="fst-italic mb-3">Derniers articles</h4>
               <ul class="list-unstyled mb-0">
@@ -198,9 +199,9 @@
                 <% } %>
               </ul>
             </div>
-          </div>
+          </article>
 
-          <div class="card-bordered">
+          <article class="card-smeg smeg-frame">
             <div class="p-4">
               <h4 class="fst-italic mb-3">Archives</h4>
               <ol class="list-unstyled mb-0">
@@ -218,10 +219,10 @@
                 <li><a href="#">Janvier 2025</a></li>
               </ol>
             </div>
-          </div>
+          </article>
         </div>
       </div>
-      
+      </div>
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>

@@ -9,31 +9,44 @@
   padding: 18px;
   padding-right: 30px;
   border-radius: 42px;
-
   overflow: hidden;
-}
-
-/* Bordure externe type corde */
-#mixedCarousel::before,
-.card-bordered::before {
-  content: "";
-  position: absolute;
-  inset: -14px;
-  z-index: -2;
-  border-radius: 56px;
-  background-color: #0c0808;
 }
 
 /* Spécifique au carrousel */
 #mixedCarousel {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   overflow: hidden;
+  border: #d7b897 6px solid;
 }
 
 /* Ajustement rayon spécifique */
 #mixedCarousel::before {
-  border-radius: 58px;
+  content: none;
+}
+
+/* Wrapper pour alignement */
+.carousel-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-wrapper #mixedCarousel {
+  width: 100%;
+  max-width: 95%;
+}
+
+.sections-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.sections-wrapper .row {
+  width: 100%;
+  max-width: 95%;
 }
 
 /* ============================================
@@ -80,22 +93,39 @@
   width: 64%;
   overflow: hidden;
   
+  
+  
 }
 
 .carousel-image-wrapper img {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* Cas des sections à gauche */
 .left-sections .carousel-image-wrapper {
-  position: relative;
+  position: absolute;
+  top: -55px;
+  right: -55px;
+  bottom: -90px;
+  left: auto;
+  width: 64%;
+  overflow: hidden;
+  border-radius: 0 28px 28px 0;
+  
+}
+
+.left-sections .carousel-image-wrapper img {
   width: 100%;
-  min-height: 280px;
+  height: 100%;
+  object-fit: contain;
+  display: block;
   border-radius: 0 28px 28px 0;
 }
+
+
 
 /* ============================================
    LAYOUT SECTIONS GAUCHE
@@ -105,11 +135,15 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  
 }
 
 .left-sections > .card-bordered {
   width: 100%;
   flex-shrink: 0;
+  position: relative;
+  border: #d7b897 6px solid;
+  
 }
 
 /* ============================================
@@ -135,6 +169,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
+  border: #d7b897 6px solid;
 }
 
 .card-smeg:hover {
@@ -178,7 +213,7 @@
 
 .bo {
   min-height: 100vh;
-  background: url("/Design sans titre.png") center / cover no-repeat fixed;
+  background: #000000;
 }
 
 /* ============================================
