@@ -7,6 +7,7 @@
   max-width: 400px;
   margin: var(--spacing-2xl) auto var(--spacing-xl);
   min-height: calc(100vh - 200px);
+ 
 }
 
 .auth-card {
@@ -14,6 +15,7 @@
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+   
 }
 
 .auth-card-body {

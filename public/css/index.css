@@ -17,7 +17,8 @@
   width: 100%;
   margin: 0;
   overflow: hidden;
-  border: #d7b897 6px solid;
+  border: #000000 6px solid;
+  background: #F9E7C4;
 }
 
 /* Ajustement rayon spécifique */
@@ -29,8 +30,7 @@
 .carousel-wrapper {
   display: flex;
   justify-content: center;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .carousel-wrapper #mixedCarousel {
@@ -142,7 +142,19 @@
   width: 100%;
   flex-shrink: 0;
   position: relative;
-  border: #d7b897 6px solid;
+border: 6px solid #000000;
+border-radius: 20px;
+box-shadow: 9px 4px 13px 2px rgba(255,210,145,0.64);
+background: #F9E7C4;
+
+
+
+
+
+
+
+
+
   
 }
 
@@ -163,13 +175,13 @@
    ============================================ */
 
 .card-smeg {
-  background: #fff;
+  background: #F9E7C4;
   border-radius: 16px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #000000;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
-  border: #d7b897 6px solid;
+  border: #090501 6px solid;
 }
 
 .card-smeg:hover {
@@ -213,7 +225,8 @@
 
 .bo {
   min-height: 100vh;
-  background: #000000;
+  background:url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png);
+  background-size: cover;
 }
 
 /* ============================================
@@ -233,27 +246,65 @@ svg {
 }
 
 /* ============================================
-   TOGGLE MODE
+   PAGINATION – STYLE CRÈME / ORANGE
    ============================================ */
-
-.bd-mode-toggle {
-  position: fixed;
-  bottom: var(--spacing-lg);
-  right: var(--spacing-lg);
-  z-index: 1500;
+.blog-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
 }
 
-.bd-mode-toggle .btn {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 50%;
-  display: flex;
+.pagination-link {
+  background: linear-gradient(135deg, #f9eecb, #f6c28b);
+  color: #6a3200;
+  border: 1px solid rgba(122, 62, 0, 0.24);
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  min-width: 44px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 8px 16px rgba(0, 0, 0, 0.14);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.theme-icon-active {
-  width: 1.25rem;
-  height: 1.25rem;
+.pagination-link:hover {
+  background: linear-gradient(135deg, #f6c28b, #f4a261);
+  color: #4a2a00;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 10px 18px rgba(0, 0, 0, 0.16);
 }
+
+.pagination-link:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.12),
+    0 6px 12px rgba(0, 0, 0, 0.14);
+}
+
+.pagination-link.active {
+  background: linear-gradient(135deg, #f4a261, #f28c38);
+  color: white;
+  border-color: rgba(122, 62, 0, 0.35);
+}
+
+.pagination-link.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+

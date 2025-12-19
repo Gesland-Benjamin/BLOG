@@ -3,7 +3,7 @@
    ============================================ */
 
 footer {
-  background: var(--color-text-dark);
+  background:transparent;
   color: var(--color-text-white);
   padding: var(--spacing-2xl) 0 var(--spacing-lg);
   margin-top: var(--spacing-3xl);

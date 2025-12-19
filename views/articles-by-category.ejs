@@ -22,10 +22,10 @@
       <% if (!articles || articles.length === 0) { %>
         <p>Aucun article trouvé<%= search ? ' pour cette recherche' : ' pour cette catégorie' %>.</p>
       <% } else { %>
-        <div class="row">
+        <div class="row g-4">
           <% articles.forEach(function(article) { %>
-            <div class="col-md-6">
-              <div class="card mb-4 shadow-sm">
+            <div class="col-md-6 d-flex mb-4">
+              <div class="card shadow-sm">
                 <% if (article.image) { %>
                   <div class="card-img-top bg-light rounded-top" style="height: 200px; overflow: hidden;">
                     <img 

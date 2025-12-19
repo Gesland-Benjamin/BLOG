@@ -16,29 +16,17 @@ export default { getArticlePage };
 
 export const getArticlesParCategorie = async (req, res) => {
   try {
-    // Récupère le dernier article pour chaque catégorie
-    const categories = [
-      { nom: "Beauté", key: "Beauté" },
-      { nom: "Nutrition", key: "Nutrition" },
-      { nom: "Développement Personnels", key: "DéveloppementPersonnels" }
-    ];
+    // Récupère toutes les catégories de la base de données
+    const toutesCategories = await Categorie.findAll({
+      order: [["nom", "ASC"]]
+    });
 
-    const normalize = (str = "") => str
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    const articlesParCategorie = [];
 
-    const toutesCategories = await Categorie.findAll();
-    const articlesParCategorie = {};
-
-    for (const cat of categories) {
-      const categorieTrouvee = toutesCategories.find(c => normalize(c.nom) === normalize(cat.nom));
-      if (!categorieTrouvee) continue;
-
+    // Pour chaque catégorie, récupère le dernier article
+    for (const categorie of toutesCategories) {
       const article = await Article.findOne({
-        where: { categorie_id: categorieTrouvee.id },
+        where: { categorie_id: categorie.id },
         include: [
           { model: User, as: "auteur" },
           { model: Categorie, as: "categorie" }
@@ -47,16 +35,16 @@ export const getArticlesParCategorie = async (req, res) => {
       });
 
       if (article) {
-        articlesParCategorie[cat.key] = {
+        articlesParCategorie.push({
+          categorie: categorie.nom,
           id: article.id,
           titre: article.titre,
           contenu: article.contenu,
           image: article.image,
           image_alt: article.image_alt || article.titre,
           auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu",
-          date_publication: article.date_publication,
-          categorie: categorieTrouvee.nom
-        };
+          date_publication: article.date_publication
+        });
       }
     }
 

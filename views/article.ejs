@@ -6,97 +6,38 @@
     <%- include('partials/header', { withContainer: true }) %>
     <main class="container" style="margin-top:60px;">
       <h1 class="mb-5 text-center">Derniers articles par catégorie</h1>
-      <div class="row">
-        <!-- Section Beauté -->
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <% if (articlesParCategorie["Beauté"] && articlesParCategorie["Beauté"].image) { %>
-              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
-                <img 
-                  src="<%= articlesParCategorie["Beauté"].image %>" 
-                  alt="<%= articlesParCategorie["Beauté"].image_alt || articlesParCategorie["Beauté"].titre %>"
-                  class="w-100 h-100 object-fit-cover"
-                  loading="lazy"
-                >
+      <div class="row g-4">
+        <% if (articlesParCategorie && articlesParCategorie.length > 0) { %>
+          <% articlesParCategorie.forEach(function(item) { %>
+            <div class="col-md-4 d-flex mb-4">
+              <div class="card shadow-sm">
+                <% if (item.image) { %>
+                  <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
+                    <img 
+                      src="<%= item.image %>" 
+                      alt="<%= item.image_alt || item.titre %>"
+                      class="w-100 h-100 object-fit-cover"
+                      loading="lazy"
+                    >
+                  </div>
+                <% } %>
+                <div class="card-body">
+                  <h3 class="card-title"><%= item.categorie %></h3>
+                  <h5><%= item.titre %></h5>
+                  <p><%= item.contenu.substring(0, 120) %>...</p>
+                  <small>
+                    Par <%= item.auteur %>,
+                    le <%= item.date_publication.toLocaleDateString() %>
+                  </small>
+                  <br>
+                  <a href="/article/<%= item.id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
+                </div>
               </div>
-            <% } %>
-            <div class="card-body">
-              <h3 class="card-title">Beauté</h3>
-              <% if (articlesParCategorie["Beauté"]) { %>
-                <h5><%= articlesParCategorie["Beauté"].titre %></h5>
-                <p><%= articlesParCategorie["Beauté"].contenu.substring(0, 120) %>...</p>
-                <small>
-                  Par <%= articlesParCategorie["Beauté"].auteur %>,
-                  le <%= articlesParCategorie["Beauté"].date_publication.toLocaleDateString() %>
-                </small>
-                <br>
-                <a href="/article/<%= articlesParCategorie["Beauté"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
-              <% } else { %>
-                <p>Aucun article disponible.</p>
-              <% } %>
             </div>
-          </div>
-        </div>
-        <!-- Section Nutrition -->
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <% if (articlesParCategorie["Nutrition"] && articlesParCategorie["Nutrition"].image) { %>
-              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
-                <img 
-                  src="<%= articlesParCategorie["Nutrition"].image %>" 
-                  alt="<%= articlesParCategorie["Nutrition"].image_alt || articlesParCategorie["Nutrition"].titre %>"
-                  class="w-100 h-100 object-fit-cover"
-                  loading="lazy"
-                >
-              </div>
-            <% } %>
-            <div class="card-body">
-              <h3 class="card-title">Nutrition</h3>
-              <% if (articlesParCategorie["Nutrition"]) { %>
-                <h5><%= articlesParCategorie["Nutrition"].titre %></h5>
-                <p><%= articlesParCategorie["Nutrition"].contenu.substring(0, 120) %>...</p>
-                <small>
-                  Par <%= articlesParCategorie["Nutrition"].auteur %>,
-                  le <%= articlesParCategorie["Nutrition"].date_publication.toLocaleDateString() %>
-                </small>
-                <br>
-                <a href="/article/<%= articlesParCategorie["Nutrition"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
-              <% } else { %>
-                <p>Aucun article disponible.</p>
-              <% } %>
-            </div>
-          </div>
-        </div>
-        <!-- Section Developpement personnels -->
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <% if (articlesParCategorie["DéveloppementPersonnels"] && articlesParCategorie["DéveloppementPersonnels"].image) { %>
-              <div class="card-img-top bg-light" style="height: 200px; overflow: hidden;">
-                <img 
-                  src="<%= articlesParCategorie["DéveloppementPersonnels"].image %>" 
-                  alt="<%= articlesParCategorie["DéveloppementPersonnels"].image_alt || articlesParCategorie["DéveloppementPersonnels"].titre %>"
-                  class="w-100 h-100 object-fit-cover"
-                  loading="lazy"
-                >
-              </div>
-            <% } %>
-            <div class="card-body">
-              <h3 class="card-title">Développement Personnels</h3>
-              <% if (articlesParCategorie["DéveloppementPersonnels"]) { %>
-                <h5><%= articlesParCategorie["DéveloppementPersonnels"].titre %></h5>
-                <p><%= articlesParCategorie["DéveloppementPersonnels"].contenu.substring(0, 120) %>...</p>
-                <small>
-                  Par <%= articlesParCategorie["DéveloppementPersonnels"].auteur %>,
-                  le <%= articlesParCategorie["DéveloppementPersonnels"].date_publication.toLocaleDateString() %>
-                </small>
-                <br>
-                <a href="/article/<%= articlesParCategorie["DéveloppementPersonnels"].id %>" class="btn btn-primary btn-sm mt-2">Lire l'article</a>
-              <% } else { %>
-                <p>Aucun article disponible.</p>
-              <% } %>
-            </div>
-          </div>
-        </div>
+          <% }) %>
+        <% } else { %>
+          <p class="text-center">Aucun article disponible pour le moment.</p>
+        <% } %>
       </div>
     </main>
     <%- include('partials/footer') %>

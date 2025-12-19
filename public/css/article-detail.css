@@ -4,12 +4,14 @@
 
 main.article-main {
   margin-top: 60px;
+   
 }
 
 /* Article Container */
 .article-container {
   max-width: 900px;
   margin: 0 auto;
+ 
 }
 
 /* Article Card */
@@ -19,6 +21,7 @@ main.article-main {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: var(--spacing-2xl);
+  
 }
 
 .article-image {
@@ -140,6 +143,7 @@ main.article-main {
 
 .comments-section {
   background: var(--color-text-white);
+  
   border-radius: 8px;
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-sm);
