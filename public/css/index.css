@@ -278,6 +278,9 @@ background: #F9E7C4;
   min-height: 100vh;
   background:url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png);
   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow-x: hidden; /* évite le débordement horizontal causé par des éléments dépassant (ex: header::before à 130%) */
 }
 
 /* ============================================
