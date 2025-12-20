@@ -46,8 +46,7 @@ curl -s -o /dev/null -w "Status: %{http_code}\n" http://localhost:3000/admin/art
 echo "13. Admin Categories (/admin/categories):"
 curl -s -o /dev/null -w "Status: %{http_code}\n" http://localhost:3000/admin/categories
 
-echo "14. Admin Medias (/admin/medias):"
-curl -s -o /dev/null -w "Status: %{http_code}\n" http://localhost:3000/admin/medias
+echo "14. Admin Medias (/admin/medias): route supprimée"
 
 echo "15. Admin Commentaires (/admin/commentaires):"
 curl -s -o /dev/null -w "Status: %{http_code}\n" http://localhost:3000/admin/commentaires

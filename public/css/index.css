@@ -17,7 +17,24 @@
   width: 100%;
   margin: 0;
   overflow: hidden;
-  border: #000000 6px solid;
+  border: 2px solid #7a3e00;
+
+  /* Relief + double liseré */
+  box-shadow:
+    /* Ombre portée externe douce */
+    0 18px 36px rgba(0, 0, 0, 0.18),
+
+    /* Liseré clair intérieur */
+    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
+
+    /* Creux bas (volume) */
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+
+    /* Highlight haut (plastique laqué) */
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+
+    /* Deuxième trait brun intérieur (signature cards) */
+    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
   background: #F9E7C4;
 }
 
@@ -142,9 +159,26 @@
   width: 100%;
   flex-shrink: 0;
   position: relative;
-border: 6px solid #000000;
+border: 2px solid #7a3e00;
+
+  /* Relief + double liseré */
+  box-shadow:
+    /* Ombre portée externe douce */
+    0 18px 36px rgba(0, 0, 0, 0.18),
+
+    /* Liseré clair intérieur */
+    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
+
+    /* Creux bas (volume) */
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+
+    /* Highlight haut (plastique laqué) */
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+
+    /* Deuxième trait brun intérieur (signature cards) */
+    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
 border-radius: 20px;
-box-shadow: 9px 4px 13px 2px rgba(255,210,145,0.64);
+
 background: #F9E7C4;
 
 
@@ -181,7 +215,24 @@ background: #F9E7C4;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
-  border: #090501 6px solid;
+  border: 2px solid #7a3e00;
+
+  /* Relief + double liseré */
+  box-shadow:
+    /* Ombre portée externe douce */
+    0 18px 36px rgba(0, 0, 0, 0.18),
+
+    /* Liseré clair intérieur */
+    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
+
+    /* Creux bas (volume) */
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+
+    /* Highlight haut (plastique laqué) */
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+
+    /* Deuxième trait brun intérieur (signature cards) */
+    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
 }
 
 .card-smeg:hover {

@@ -103,8 +103,15 @@ export const getArticleById = async (req, res) => {
       openGraphImage: article.image || `${process.env.SITE_URL || 'http://localhost:3000'}/default-og-image.png`
     };
 
+    // Pagination des commentaires
+    const commentsPageSize = 10;
+    const { offset: commentsOffset, limit: commentsLimit, page: commentsPage } = getPaginationParams(req.query.page, commentsPageSize);
+    const commentsWhere = { article_id: id, statut: "approved", parent_id: null };
+
+    const totalComments = await Commentaire.count({ where: commentsWhere });
+
     const commentaires = await Commentaire.findAll({
-      where: { article_id: id, statut: "approved", parent_id: null },
+      where: commentsWhere,
       include: [
         { 
           model: Commentaire, 
@@ -115,8 +122,13 @@ export const getArticleById = async (req, res) => {
           order: [["date", "ASC"]]
         }
       ],
-      order: [["date", "DESC"]]
+      order: [["date", "DESC"]],
+      limit: commentsLimit,
+      offset: commentsOffset
     });
+
+    const commentsBaseUrl = `/article/${id}`;
+    const commentsPagination = createPaginationData(totalComments, commentsPage, commentsPageSize, commentsBaseUrl);
 
     const commentSubmitted = req.query && req.query.comment_submitted === "1";
 
@@ -135,7 +147,9 @@ export const getArticleById = async (req, res) => {
       commentSubmitted,
       ogImageTags,
       errors: [],
-      formData: {}
+      formData: {},
+      commentsPagination,
+      commentsBaseUrl
     });
   } catch (error) {
     console.error("Erreur getArticleById:", error);

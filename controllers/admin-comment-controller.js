@@ -5,7 +5,7 @@ import { getPaginationParams, createPaginationData } from "../utils/pagination.j
 
 export const listCommentsAdmin = async (req, res) => {
   try {
-    const pageSize = 20;
+    const pageSize = 10;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
 
     const { count, rows } = await Commentaire.findAndCountAll({

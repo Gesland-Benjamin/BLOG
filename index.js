@@ -8,7 +8,6 @@ import authRoutes from "./routes/auth.js";
 import newsletterRoutes from "./routes/newsletter.js";
 import adminArticleRoutes from "./routes/admin-article-router.js";
 import adminCategorieRoutes from "./routes/admin-categorie-router.js";
-import adminMediaRoutes from "./routes/admin-media-router.js";
 import adminCommentRoutes from "./routes/admin-comment-router.js";
 import adminNewsletterRoutes from "./routes/admin-newsletter-router.js";
 import searchRoutes from "./routes/search.js";
@@ -143,6 +142,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware pour charger les catégories globalement
+app.use(async (req, res, next) => {
+  try {
+    const Categorie = (await import('./models/Categorie.model.js')).default;
+    const categories = await Categorie.findAll({
+      order: [['nom', 'ASC']]
+    });
+    res.locals.categories = categories;
+  } catch (error) {
+    console.error('Erreur lors du chargement des catégories:', error);
+    res.locals.categories = [];
+  }
+  next();
+});
+
 // Middleware pour extraire les erreurs de validation de la session
 app.use(getFlashErrors);
 
@@ -154,7 +168,6 @@ app.use("/newsletter", newsletterRoutes);
 app.use("/search", searchRoutes);
 app.use("/admin", adminArticleRoutes);
 app.use("/admin", adminCategorieRoutes);
-app.use("/admin", adminMediaRoutes);
 app.use("/admin", adminCommentRoutes);
 app.use("/admin", adminNewsletterRoutes);
 

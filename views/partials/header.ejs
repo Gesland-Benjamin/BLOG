@@ -3,42 +3,65 @@
     <% const showNavbar = typeof includeNavbar !== 'undefined' ? includeNavbar :
     false; const useContainer = typeof withContainer !== 'undefined' ?
     withContainer : false; %>
+    
+    <!-- Logos sociaux en haut à gauche -->
+    <div class="header-social-top">
+      <a
+        class="social-icon social-icon-fb"
+        href="https://www.facebook.com/emilie.delbe.3?locale=fr_FR"
+        target="_blank"
+        rel="noopener"
+        aria-label="Facebook"
+      >
+        <i class="bi bi-facebook"></i>
+      </a>
+      <a
+        class="social-icon social-icon-ig"
+        href="https://www.instagram.com/emi_delbe/"
+        target="_blank"
+        rel="noopener"
+        aria-label="Instagram"
+      >
+        <i class="bi bi-instagram"></i>
+      </a>
+    </div>
+    
     <div class="header-content">
-      <!-- Gauche: Articles et Boutique -->
+      <!-- Gauche: Facebook + Articles/Boutique -->
       <div class="header-left">
-        <div class="dropdown">
-          <button
-            class="btn dropdown-toggle"
-            type="button"
-            id="navbarArticleDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Articles
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="navbarArticleDropdown">
-            <li>
-              <a class="dropdown-item" href="/article/categorie/Beauté">Beauté</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/article/categorie/Nutrition"
-                >Nutrition</a
+        <div class="header-left-actions">
+          <div class="left-buttons-stack">
+            <div class="dropdown">
+              <button
+                class="btn dropdown-toggle"
+                type="button"
+                id="navbarArticleDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
-            </li>
-            <li>
-              <a
-                class="dropdown-item"
-                href="/article/categorie/Développement%20Personnels"
-                >Développement Personnels</a
-              >
-            </li>
-          </ul>
+                Articles
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="navbarArticleDropdown">
+                <% if (categories && categories.length) { %>
+                  <% categories.forEach(cat => { %>
+                    <li>
+                      <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
+                        <i class="bi bi-tag-fill me-2"></i><%= cat.nom %>
+                      </a>
+                    </li>
+                  <% }) %>
+                <% } else { %>
+                  <li><span class="dropdown-item text-muted"><i class="bi bi-dash-circle me-2"></i>Aucune catégorie</span></li>
+                <% } %>
+              </ul>
+            </div>
+            <a
+              class="btn"
+              href="https://fr.farmasi.com/emiliedelbe"
+              >Boutique</a
+            >
+          </div>
         </div>
-        <a
-          class="btn"
-          href="https://fr.farmasi.com/emiliedelbe"
-          >Boutique</a
-        >
       </div>
 
       <!-- Centre: Logo + Barre de recherche -->
@@ -93,9 +116,9 @@
             aria-expanded="false"
             aria-label="Dashboard Admin"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 7l-5 5m0 0l-5-5m5 5v8m3-13h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-              <path d="M9 11h6M9 15h6"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
             </svg>
           </button>
           <ul
@@ -103,59 +126,47 @@
             aria-labelledby="adminMenuDropdown"
           >
             <li>
-              <a class="dropdown-item" href="/admin/dashboard">Dashboard</a>
+              <a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             </li>
 
             <li>
               <a class="dropdown-item" href="/admin/articles/new"
-                >Ajouter un article</a
+                ><i class="bi bi-plus-circle me-2"></i>Ajouter un article</a
               >
             </li>
             <li>
               <a class="dropdown-item" href="/admin/categories"
-                >Gérer les catégories</a
+                ><i class="bi bi-tags-fill me-2"></i>Gérer les catégories</a
               >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/medias">Gérer les médias</a>
             </li>
             <li>
               <a class="dropdown-item" href="/admin/commentaires"
-                >Modérer les commentaires</a
+                ><i class="bi bi-chat-dots-fill me-2"></i>Modérer les commentaires</a
               >
             </li>
             <li>
-              <a class="dropdown-item" href="/admin/newsletter">📧 Newsletter</a>
+              <a class="dropdown-item" href="/admin/newsletter"><i class="bi bi-envelope-paper-heart-fill me-2"></i>Newsletter</a>
             </li>
           </ul>
         </div>
         <% } %>
         
-        <div class="header-right-buttons">
-          <% if (typeof user !== 'undefined' && user) { %>
-            <a class="btn" href="/auth/logout"
-              >Déconnexion</a
+        <div class="header-right-actions">
+          <div class="header-right-buttons">
+            <% if (typeof user !== 'undefined' && user) { %>
+              <a class="btn" href="/auth/logout"
+                >Déconnexion</a
+              >
+            <% } else { %>
+              <a class="btn" href="/auth"
+                >se connecter/s'inscrire</a
+              >
+            <% } %>
+            <a class="btn" href="/renseignements"
+              >Renseignements</a
             >
-          <% } else { %>
-            <a class="btn" href="/auth"
-              >se connecter/s'inscrire</a
-            >
-          <% } %>
-          <a class="btn" href="/renseignements"
-            >Renseignements</a
-          >
+          </div>
         </div>
-
-        <% if (typeof user !== 'undefined' && user) { %>
-          <div class="social-icons">
-    <a href="https://www.facebook.com/emilie.delbe.3?locale=fr_FR" target="_blank" aria-label="Facebook">
-      <i class="bi bi-facebook"></i>
-    </a>
-    <a href="https://www.instagram.com/emi_delbe/" target="_blank" aria-label="Instagram">
-      <i class="bi bi-instagram"></i>
-    </a>
-  </div>
-        <% } %>
       </div>
     </div>
   </header>
