@@ -435,6 +435,61 @@ header .btn:active,
   box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 8px 14px rgba(0,0,0,0.12);
 }
 
+/* ----- RESPONSIVE TABLETTE (<= 1024px) ----- */
+@media (max-width: 1024px) {
+  header {
+    padding: 1.1rem 0 2rem;
+  }
+
+  header::before {
+    height: 205px;
+    width: 150%;
+    top: 0.65rem;
+  }
+
+  /* Layout: uniquement le centre (logo + recherche) */
+  .header-content {
+    grid-template-columns: 1fr;
+    row-gap: 0.8rem;
+    padding: 0.85rem 1rem 1.2rem;
+  }
+
+  /* Masquer les éléments latéraux et sociaux */
+  .header-left,
+  .header-right,
+  .header-social-top {
+    display: none !important;
+  }
+
+  /* Centrer logo et recherche */
+  .header-center { display: flex; justify-content: center; }
+  .header-center-content { align-items: center; gap: 0.65rem; }
+
+  /* Logo tablette (légèrement plus grand que mobile) */
+  .blog-header-logo {
+    width: 280px;
+    height: 105px;
+  }
+  .blog-header-logo .logo-text {
+    font-size: 1.55rem;
+    letter-spacing: 0.2rem;
+  }
+
+  /* Recherche pleine largeur sous le logo */
+  .search-form-center {
+    max-width: 100%;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+  }
+
+  /* Afficher la rangée logo + réseaux; cacher le logo desktop */
+  .mobile-logo-row { display: flex; }
+  .logo-desktop { display: none; }
+
+  /* Afficher le duo d’actions en mobile/tablette */
+  .mobile-duo-actions { display: flex; }
+}
+
 /* ----- RESPONSIVE MOBILE (<= 640px) ----- */
 @media (max-width: 640px) {
   header {
