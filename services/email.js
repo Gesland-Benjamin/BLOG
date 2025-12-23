@@ -3,18 +3,33 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configuration du transporteur email
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+// Construction du transporteur email
+// Priorité : si EMAIL_HOST est défini, on utilise host/port/secure ; sinon service
+const hasHostConfig = !!process.env.EMAIL_HOST;
+const user = process.env.EMAIL_USER;
+const pass = process.env.EMAIL_PASSWORD;
+
+if (!user || !pass) {
+  console.warn('⚠️  Email: identifiants manquants (EMAIL_USER / EMAIL_PASSWORD)');
+}
+
+const transporter = nodemailer.createTransport(
+  hasHostConfig
+    ? {
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT) || 587,
+        secure: process.env.EMAIL_SECURE === 'true',
+        auth: user && pass ? { user, pass } : undefined,
+      }
+    : {
+        service: process.env.EMAIL_SERVICE || 'gmail',
+        auth: user && pass ? { user, pass } : undefined,
+      }
+);
 
 // Vérifier la connexion
-if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-  transporter.verify((error, success) => {
+if (user && pass) {
+  transporter.verify((error) => {
     if (error) {
       console.warn('⚠️  Email service non disponible:', error.message);
     } else {

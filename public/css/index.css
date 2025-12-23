@@ -1,84 +1,118 @@
 /* ============================================
-   CARROUSEL ACCUEIL – DESIGN SMEG
+   SMEG – BASE CARD UNIFIÉE (SOURCE UNIQUE)
    ============================================ */
 
-/* Conteneur principal + cartes bordées */
-#mixedCarousel,
-.card-bordered {
+.smeg-card {
   position: relative;
-  padding: 18px;
-  padding-right: 30px;
   border-radius: 42px;
-  overflow: hidden;
-}
-
-/* Spécifique au carrousel */
-#mixedCarousel {
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
   border: 2px solid #7a3e00;
+  overflow: hidden;
+  
 
-  /* Relief + double liseré */
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+
   box-shadow:
-    /* Ombre portée externe douce */
     0 18px 36px rgba(0, 0, 0, 0.18),
-
-    /* Liseré clair intérieur */
-    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
-
-    /* Creux bas (volume) */
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
     inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-
-    /* Highlight haut (plastique laqué) */
     inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
 
-    /* Deuxième trait brun intérieur (signature cards) */
-    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
-  background: #F9E7C4;
-}
-
-/* Ajustement rayon spécifique */
-#mixedCarousel::before {
-  content: none;
-}
-
-/* Wrapper pour alignement */
-.carousel-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.carousel-wrapper #mixedCarousel {
-  width: 100%;
-  max-width: 95%;
-}
-
-.sections-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 0 1rem;
-}
-
-.sections-wrapper .row {
-  width: 100%;
-  max-width: 95%;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    filter 0.35s ease;
 }
 
 /* ============================================
-   CARROUSEL – STRUCTURE
+   SMEG – ANIMATION HOVER UNIVERSELLE
    ============================================ */
 
+.smeg-card:hover {
+  transform: translateY(-6px);
+  filter: brightness(1.03);
+  border: 2.5px solid #9a4f18;
+  box-shadow:
+    0 28px 52px rgba(0, 0, 0, 0.28),
+  background: radial-gradient(
+    ellipse at center,
+    #fff4e4 0%,
+    #f9ddb5 42%,
+    #efc48d 72%,
+    #e19a4f 100%
+  );
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
+    inset 0 9px 16px rgba(255, 255, 255, 0.6),
+    inset 0 0 0 8px rgba(154, 79, 24, 0.22);
+  @apply smeg-card;
+}
+
+/* fallback si @apply non supporté */
+#mixedCarousel,
+.card-bordered,
+.card-smeg,
+.left-sections > .card-bordered {
+position: relative;
+border-radius: 42px;
+border: 2.5px solid #9a4f18;
+overflow: hidden;
+
+background: radial-gradient(
+  ellipse at center,
+  #fff4e4 0%,
+  #f9ddb5 42%,
+  #efc48d 72%,
+  #e19a4f 100%
+);
+
+box-shadow:
+  0 20px 40px rgba(0, 0, 0, 0.22),
+  inset 0 0 0 5px rgba(255, 248, 230, 0.9),
+  inset 0 -7px 12px rgba(0, 0, 0, 0.12),
+  inset 0 9px 16px rgba(255, 255, 255, 0.6),
+  inset 0 0 0 8px rgba(154, 79, 24, 0.22);
+
+transition:
+  transform 0.35s ease,
+  box-shadow 0.35s ease,
+  filter 0.35s ease;
+
+
+
+}
+
+#mixedCarousel:hover,
+.card-bordered:hover,
+.card-smeg:hover,
+.left-sections > .card-bordered:hover {
+  transform: translateY(-6px);
+  filter: brightness(1.03);
+}
+
+/* ============================================
+   CARROUSEL STRUCTURE
+   ============================================ */
+
+#mixedCarousel {
+  width: 100%;
+  padding: 18px 30px 18px 18px;
+}
+
 #mixedCarousel .carousel-inner {
-  position: relative;
-  margin: 0;
   overflow: visible;
 }
 
 #mixedCarousel .carousel-item {
-  position: relative;
-  width: 100%;
   display: none !important;
 }
 
@@ -88,165 +122,63 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
+
+/* Masquer complètement les indicateurs du carrousel */
+.carousel-indicators,
+.carousel-indicators * {
+  display: none !important;
+}
+
 
 /* ============================================
    IMAGES CARROUSEL
    ============================================ */
 
-/* Image collée à la corde */
 .carousel-image-wrapper {
   position: absolute;
   top: -55px;
   right: -55px;
   bottom: -90px;
-  left: auto;
   width: 64%;
-  overflow: hidden;
-  
-  
+  background-size: cover;
   
 }
 
 .carousel-image-wrapper img {
   width: 100%;
   height: 100%;
-  display: block;
-  object-fit: contain;
-}
-
-/* Cas des sections à gauche */
-.left-sections .carousel-image-wrapper {
-  position: absolute;
-  top: -55px;
-  right: -55px;
-  bottom: -90px;
-  left: auto;
-  width: 64%;
-  overflow: hidden;
-  border-radius: 0 28px 28px 0;
   
+  transform: none !important;
+  transition: none !important;
 }
-
-.left-sections .carousel-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  border-radius: 0 28px 28px 0;
-}
-
-
 
 /* ============================================
-   LAYOUT SECTIONS GAUCHE
+   SECTIONS GAUCHE
    ============================================ */
 
 .left-sections {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  
 }
 
-.left-sections > .card-bordered {
-  width: 100%;
-  flex-shrink: 0;
-  position: relative;
-border: 2px solid #7a3e00;
-
-  /* Relief + double liseré */
-  box-shadow:
-    /* Ombre portée externe douce */
-    0 18px 36px rgba(0, 0, 0, 0.18),
-
-    /* Liseré clair intérieur */
-    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
-
-    /* Creux bas (volume) */
-    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-
-    /* Highlight haut (plastique laqué) */
-    inset 0 8px 14px rgba(255, 255, 255, 0.55),
-
-    /* Deuxième trait brun intérieur (signature cards) */
-    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
-border-radius: 20px;
-
-background: #F9E7C4;
-
-
-
-
-
-
-
-
-
-  
+/* Espace entre la colonne articles et la colonne sidebar (Derniers/Archives) */
+@media (min-width: 992px) {
+  .sections-wrapper .row {
+    gap: 2.5rem; /* espace horizontal supplémentaire entre colonnes */
+  }
 }
 
 /* ============================================
-   IMAGES LISTES & UTILITAIRES
+   CARDS SMEG CONTENU
    ============================================ */
-
-.ratio img,
-.object-fit-cover {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* ============================================
-   CARTES SMEG (POSTS / ARCHIVES)
-   ============================================ */
-
-.card-smeg {
-  background: #F9E7C4;
-  border-radius: 16px;
-  border: 1px solid #000000;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.3s ease;
-  border: 2px solid #7a3e00;
-
-  /* Relief + double liseré */
-  box-shadow:
-    /* Ombre portée externe douce */
-    0 18px 36px rgba(0, 0, 0, 0.18),
-
-    /* Liseré clair intérieur */
-    inset 0 0 0 2px rgba(255, 245, 220, 0.9),
-
-    /* Creux bas (volume) */
-    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-
-    /* Highlight haut (plastique laqué) */
-    inset 0 8px 14px rgba(255, 255, 255, 0.55),
-
-    /* Deuxième trait brun intérieur (signature cards) */
-    inset 0 0 0 4px rgba(122, 62, 0, 0.22);
-}
-
-.card-smeg:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
 
 .card-smeg-header {
   padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 2px solid #f5f0e8;
-}
-
-.card-smeg-header h4 {
-  font-size: 1.25rem;
-  color: #4a4a4a;
+  
 }
 
 .card-smeg-body {
@@ -258,107 +190,40 @@ background: #F9E7C4;
 }
 
 .card-smeg-body a:hover {
-  color: #dc2626 !important;
+  color: #dc2626;
 }
 
-/* Empilement vertical */
+/* Espacement entre les cartes verticales */
 .card-smeg-stack {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 350px;
-  margin-left: auto;
+  gap: 3rem;
+}
+
+/* Liens cliquables (archives, lire plus, lire l'article) */
+#mixedCarousel a,
+.sections-wrapper a,
+.card-smeg a,
+.card-bordered a {
+  color: #9a4f18 !important;
+  text-decoration: none;
+}
+
+#mixedCarousel a:hover,
+.sections-wrapper a:hover,
+.card-smeg a:hover,
+.card-bordered a:hover {
+  color: #7a3e00 !important;
+  text-decoration: underline;
 }
 
 /* ============================================
-   PAGE D’ACCUEIL
+   PAGE ACCUEIL
    ============================================ */
 
 .bo {
   min-height: 100vh;
-  background:url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow-x: hidden; /* évite le débordement horizontal causé par des éléments dépassant (ex: header::before à 130%) */
+  background: url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png)
+    center / cover no-repeat;
+  overflow-x: hidden;
 }
-
-/* ============================================
-   SVG & ICONES
-   ============================================ */
-
-svg {
-  width: 100%;
-  height: 100%;
-}
-
-.bi {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.125em;
-  fill: currentColor;
-}
-
-/* ============================================
-   PAGINATION – STYLE CRÈME / ORANGE
-   ============================================ */
-.blog-pagination {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin: 2rem 0;
-  flex-wrap: wrap;
-}
-
-.pagination-link {
-  background: linear-gradient(135deg, #f9eecb, #f6c28b);
-  color: #6a3200;
-  border: 1px solid rgba(122, 62, 0, 0.24);
-  border-radius: 999px;
-  padding: 0.55rem 1.15rem;
-  min-width: 44px;
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    0 8px 16px rgba(0, 0, 0, 0.14);
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pagination-link:hover {
-  background: linear-gradient(135deg, #f6c28b, #f4a261);
-  color: #4a2a00;
-  transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 10px 18px rgba(0, 0, 0, 0.16);
-}
-
-.pagination-link:active {
-  transform: translateY(0);
-  box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.12),
-    0 6px 12px rgba(0, 0, 0, 0.14);
-}
-
-.pagination-link.active {
-  background: linear-gradient(135deg, #f4a261, #f28c38);
-  color: white;
-  border-color: rgba(122, 62, 0, 0.35);
-}
-
-.pagination-link.disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 6px 12px rgba(0, 0, 0, 0.08);
-}
-
-

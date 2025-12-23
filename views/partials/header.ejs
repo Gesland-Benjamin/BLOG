@@ -1,7 +1,7 @@
 <header-wrapper>
   <header>
     <% const showNavbar = typeof includeNavbar !== 'undefined' ? includeNavbar :
-    false; const useContainer = typeof withContainer !== 'undefined' ?
+    true; const useContainer = typeof withContainer !== 'undefined' ?
     withContainer : false; %>
     
     <!-- Logos sociaux en haut à gauche -->
@@ -67,9 +67,33 @@
       <!-- Centre: Logo + Barre de recherche -->
       <div class="header-center">
         <div class="header-center-content">
-          <a class="blog-header-logo" href="/" aria-label="Accueil">
+          <a class="blog-header-logo logo-desktop" href="/" aria-label="Accueil">
             <span class="logo-text">MI AMOR</span>
           </a>
+          <!-- Version mobile : logo centré avec réseaux à gauche/droite -->
+          <div class="mobile-logo-row">
+            <a
+              class="social-icon social-icon-fb"
+              href="https://www.facebook.com/emilie.delbe.3?locale=fr_FR"
+              target="_blank"
+              rel="noopener"
+              aria-label="Facebook"
+            >
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a class="blog-header-logo mobile" href="/" aria-label="Accueil">
+              <span class="logo-text">MI AMOR</span>
+            </a>
+            <a
+              class="social-icon social-icon-ig"
+              href="https://www.instagram.com/emi_delbe/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Instagram"
+            >
+              <i class="bi bi-instagram"></i>
+            </a>
+          </div>
           <% if (showNavbar) { %>
           <form method="GET" action="/search" class="search-form-center">
             <input
@@ -101,6 +125,82 @@
             </button>
           </form>
           <% } %>
+          <% if (showNavbar) { %>
+          <!-- Actions mobiles: deux menus déroulants côte à côte -->
+          <div class="mobile-duo-actions">
+            <!-- Dropdown Articles (catégories) -->
+            <div class="dropdown">
+              <button
+                class="btn dropdown-toggle w-100"
+                type="button"
+                id="navbarArticleDropdownMobileBar"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Articles
+              </button>
+              <ul class="dropdown-menu w-100" aria-labelledby="navbarArticleDropdownMobileBar">
+                <% if (categories && categories.length) { %>
+                  <% categories.forEach(cat => { %>
+                    <li>
+                      <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
+                        <i class="bi bi-tag-fill me-2"></i><%= cat.nom %>
+                      </a>
+                    </li>
+                  <% }) %>
+                <% } else { %>
+                  <li><span class="dropdown-item text-muted"><i class="bi bi-dash-circle me-2"></i>Aucune catégorie</span></li>
+                <% } %>
+              </ul>
+            </div>
+
+            <!-- Dropdown Menu (reste des boutons) -->
+            <div class="dropdown">
+              <button
+                class="btn dropdown-toggle w-100"
+                type="button"
+                id="navbarMoreDropdownMobileBar"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Menu
+              </button>
+              <ul class="dropdown-menu w-100" aria-labelledby="navbarMoreDropdownMobileBar">
+                <li>
+                  <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
+                    <i class="bi bi-bag-heart-fill me-2"></i>Boutique
+                  </a>
+                </li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                  <li>
+                    <a class="dropdown-item" href="/auth/logout">
+                      <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                    </a>
+                  </li>
+                <% } else { %>
+                  <li>
+                    <a class="dropdown-item" href="/auth">
+                      <i class="bi bi-person-circle me-2"></i>Se connecter / S'inscrire
+                    </a>
+                  </li>
+                <% } %>
+                <li>
+                  <a class="dropdown-item" href="/renseignements">
+                    <i class="bi bi-info-circle-fill me-2"></i>Renseignements
+                  </a>
+                </li>
+                <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                  <li>
+                    <a class="dropdown-item" href="/admin/dashboard">
+                      <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                  </li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+          <% } %>
+
         </div>
       </div>
 

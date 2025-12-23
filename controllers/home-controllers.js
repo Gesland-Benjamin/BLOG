@@ -1,6 +1,7 @@
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
+import { Op } from "sequelize";
 
 const getHomePage = async (req,res) => {
     try {
@@ -177,5 +178,74 @@ const postRenseignements = (req, res) => {
     req.session.message = "Merci pour votre demande, nous reviendrons vers vous rapidement.";
     return res.redirect("/renseignements");
 };
+
+/**
+ * Afficher les articles d'un mois/année spécifique
+ */
+export const getArticlesByMonth = async (req, res) => {
+    try {
+        const { year, month } = req.params;
+        
+        // Valider les paramètres
+        const monthNum = parseInt(month, 10);
+        const yearNum = parseInt(year, 10);
+        
+        if (isNaN(monthNum) || isNaN(yearNum) || monthNum < 1 || monthNum > 12) {
+            return res.status(400).render('404');
+        }
+
+        // Calculer les dates du début et fin du mois
+        const startDate = new Date(yearNum, monthNum - 1, 1);
+        const endDate = new Date(yearNum, monthNum, 0, 23, 59, 59);
+
+        // Récupérer les articles du mois
+        const articles = await Article.findAll({
+            where: {
+                date_publication: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate
+                }
+            },
+            include: [
+                { model: User, as: 'auteur' },
+                { model: Categorie, as: 'categorie' }
+            ],
+            order: [['date_publication', 'DESC']]
+        });
+
+        // Formater le nom du mois
+        const monthNames = [
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        ];
+        const monthName = monthNames[monthNum - 1];
+        const title = `Articles de ${monthName} ${yearNum}`;
+
+        res.render('articles-by-month', {
+            articles: articles.map(a => ({
+                id: a.id,
+                titre: a.titre,
+                extrait: (a.contenu || '').substring(0, 160),
+                date_publication: a.date_publication,
+                image: a.image,
+                categorie: a.categorie ? a.categorie.nom : null,
+                auteur: a.auteur ? a.auteur.nom_prenom : 'Inconnu'
+            })),
+            recentPosts: articles.slice(0, 3).map(a => ({
+                id: a.id,
+                titre: a.titre,
+                date_publication: a.date_publication
+            })),
+            title,
+            monthName,
+            year: yearNum,
+            month: monthNum,
+            categories: await Categorie.findAll({ order: [['nom', 'ASC']] })
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des articles du mois:', error);
+        res.status(500).render('500');
+    }
+};
     
-export default { getHomePage, getRenseignementsPage, postRenseignements};
+export default { getHomePage, getRenseignementsPage, postRenseignements, getArticlesByMonth };

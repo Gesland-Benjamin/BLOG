@@ -20,7 +20,7 @@
         class="carousel-article-card row g-0 align-items-stretch"
         style="min-height: 280px; position: relative"
       >
-        <div class="col-lg-5 p-4">
+        <div class="col-lg-5 p-4 carousel-text">
           <h1 class="display-6 fst-italic"><%= item.titre %></h1>
           <p class="lead my-3"><%= item.extrait %>...</p>
           <p class="text-muted mb-3">Par <%= item.auteur %></p>
@@ -56,37 +56,7 @@
     </div>
     <% }) %>
   </div>
-    <% if (_count > 1) { %>
-    <button
-      class="carousel-control-prev"
-      type="button"
-      data-bs-target="#mixedCarousel"
-      data-bs-slide="prev"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Précédent</span>
-    </button>
-    <button
-      class="carousel-control-next"
-      type="button"
-      data-bs-target="#mixedCarousel"
-      data-bs-slide="next"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Suivant</span>
-    </button>
-    <div class="carousel-indicators">
-      <% carouselItems.forEach((_, i) => { %>
-      <button
-        type="button"
-        data-bs-target="#mixedCarousel"
-        data-bs-slide-to="<%= i %>"
-        class="<%= i === 0 ? 'active' : '' %>"
-        aria-label="Slide <%= i+1 %>"
-      ></button>
-      <% }) %>
-    </div>
-    <% } %>
+    
   </div>
   <% } %>
 </div>

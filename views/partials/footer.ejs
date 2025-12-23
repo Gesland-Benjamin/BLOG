@@ -1,6 +1,34 @@
 <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
-      <p class="mb-0"><a href="#">Back to top</a></p>
-    </footer>
+  <div class="footer-container">
+    <!-- Newsletter Signup -->
+    <div class="footer-newsletter">
+      <h5>S'inscrire à la Newsletter</h5>
+      <form action="/newsletter/subscribe" method="POST" class="newsletter-form">
+        <input 
+          type="email" 
+          name="email" 
+          placeholder="Votre adresse email" 
+          required
+          class="newsletter-input"
+        />
+        <button type="submit" class="newsletter-btn">S'inscrire</button>
+      </form>
+    </div>
+
+    <!-- Links -->
+    <div class="footer-links">
+      <ul>
+        <li><a href="/renseignements">Renseignements</a></li>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="footer-copyright-section">
+    <p class="mb-0">© Emi'Pulse - 2025</p>
+  </div>
+</footer>
 
 
 

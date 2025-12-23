@@ -1,0 +1,146 @@
+/* ============================================
+   PAGE MENTIONS LÉGALES
+   ============================================ */
+
+.mentions-legales {
+  max-width: 900px;
+  margin: var(--spacing-2xl) auto;
+  padding: var(--spacing-2xl);
+  line-height: var(--line-height-base);
+  
+  /* Card beige */
+  background: #F9E7C4;
+  
+  border-radius: 12px;
+  
+  border: 2px solid #E6EDE8;
+  box-shadow: var(--shadow-md);
+}
+
+.mentions-legales h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--color-text-dark);
+  text-align: center;
+  margin-top: var(--spacing-2xl);
+}
+
+.mentions-legales section {
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.mentions-legales section:last-child {
+  border-bottom: none;
+}
+
+.mentions-legales h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mentions-legales p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-mid);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.8;
+}
+
+.mentions-legales p strong {
+  color: var(--color-text-dark);
+  font-weight: 700;
+}
+
+.mentions-legales a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.mentions-legales a:hover {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+/* Bouton retour */
+.mentions-legales .btn {
+  display: inline-block;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--color-primary);
+  color: var(--color-text-white);
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+.mentions-legales .btn:hover {
+  background: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.mentions-legales .btn:active {
+  transform: translateY(0);
+}
+
+.mentions-legales .btn-primary {
+  background: var(--color-primary);
+}
+
+.mentions-legales .btn-primary:hover {
+  background: var(--color-secondary);
+}
+
+/* Layout responsive */
+@media (max-width: 768px) {
+  .mentions-legales {
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-xl);
+  }
+
+  .mentions-legales h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .mentions-legales h2 {
+    font-size: 1.25rem;
+    margin-top: var(--spacing-lg);
+  }
+
+  .mentions-legales p {
+    font-size: var(--font-size-sm);
+  }
+
+  .mentions-legales section {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .mentions-legales {
+    padding: var(--spacing-lg);
+  }
+
+  .mentions-legales h1 {
+    font-size: 1.75rem;
+  }
+
+  .mentions-legales h2 {
+    font-size: 1.1rem;
+  }
+}

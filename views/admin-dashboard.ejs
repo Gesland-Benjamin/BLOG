@@ -3,18 +3,18 @@
 <html lang="fr" data-bs-theme="auto">
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="container" style="margin-top:60px;">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+    <main class="container admin-dashboard" style="margin-top:60px;">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-4">
         <h1 class="h3">Dashboard Admin</h1>
-        <div class="d-flex gap-2">
-          <a href="/admin/articles/new" class="btn btn-bd-primary btn-sm">Nouvel article</a>
-          <a href="/" class="btn btn-outline-secondary btn-sm">Voir le site</a>
+        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+          <a href="/admin/articles/new" class="btn btn-bd-primary btn-sm w-100 w-md-auto">Nouvel article</a>
+          <a href="/" class="btn btn-outline-secondary btn-sm w-100 w-md-auto">Voir le site</a>
         </div>
       </div>
 
       <!-- Statistiques -->
       <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-lg-3">
           <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
               <div class="display-6 text-primary mb-2"><%= stats.totalArticles %></div>
@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-lg-3">
           <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
               <div class="display-6 text-warning mb-2"><%= stats.commentairesPending %></div>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-lg-3">
           <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
               <div class="display-6 text-info mb-2"><%= stats.totalCommentaires %></div>
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-lg-3">
           <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
               <div class="display-6 text-success mb-2"><%= stats.totalAbonnes %></div>
@@ -54,11 +54,11 @@
 
       <!-- Accès rapide -->
       <div class="row g-4 mb-4">
-        <div class="col-md-6">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">Articles récents</h5>
-              <a href="/admin/articles/new" class="btn btn-sm btn-outline-primary">Créer</a>
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Articles récents</h5>
+                <a href="/admin/articles/new" class="btn btn-sm btn-outline-primary w-100 w-md-auto">Créer</a>
             </div>
             <div class="list-group list-group-flush">
               <% if (recentArticles.length === 0) { %>
@@ -84,11 +84,11 @@
           </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-12 col-lg-6">
           <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">Commentaires en attente</h5>
-              <a href="/admin/commentaires" class="btn btn-sm btn-outline-warning">Voir tout</a>
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Commentaires en attente</h5>
+                <a href="/admin/commentaires" class="btn btn-sm btn-outline-warning w-100 w-md-auto">Voir tout</a>
             </div>
             <div class="list-group list-group-flush">
               <% if (pendingComments.length === 0) { %>
@@ -129,9 +129,9 @@
 
       <!-- Tableaux supplémentaires -->
       <div class="row g-4">
-        <div class="col-md-6">
+          <div class="col-12 col-lg-6">
           <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white">
+            <div class="card-header">
               <h5 class="mb-0">Articles les plus aimés</h5>
             </div>
             <div class="list-group list-group-flush">
@@ -153,11 +153,11 @@
           </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-12 col-lg-6">
           <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center">
               <h5 class="mb-0">Derniers abonnés newsletter</h5>
-              <a href="/admin/newsletter" class="btn btn-sm btn-outline-success">Gérer</a>
+              <a href="/admin/newsletter" class="btn btn-sm btn-outline-success w-100 w-md-auto">Gérer</a>
             </div>
             <div class="list-group list-group-flush">
               <% if (recentSubscribers.length === 0) { %>

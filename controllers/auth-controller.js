@@ -27,9 +27,10 @@ export const getRegisterPage = (req, res) => {
 // Traiter l’inscription
 export const register = async (req, res) => {
   try {
-    const { nom_prenom, email, mot_de_passe, confirm_password } = req.body;
+    const { nom_prenom, email, mot_de_passe, mot_de_passe_confirm } = req.body;
 
-    if (mot_de_passe !== confirm_password) {
+    // Double sécurité côté serveur (au cas où la validation serait contournée)
+    if (mot_de_passe !== mot_de_passe_confirm) {
       return res.status(400).send("Les mots de passe ne correspondent pas.");
     }
 

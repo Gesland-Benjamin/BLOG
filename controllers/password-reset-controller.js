@@ -59,15 +59,8 @@ export const sendPasswordReset = async (req, res) => {
     try {
       await sendResetEmail(user.email, resetToken, resetUrl);
     } catch (emailError) {
-      console.warn('Email non envoyé, affichage du token en dev:', emailError);
-      // En développement, afficher le token
-      if (process.env.NODE_ENV !== 'production') {
-        return res.render('forgot-password', {
-          error: null,
-          message: `Email de réinitialisation envoyé à ${user.email}`,
-          devToken: resetToken // À supprimer en production
-        });
-      }
+      // Ne pas exposer le token ; journaliser uniquement l'erreur d'envoi
+      console.warn('Email non envoyé (reset):', emailError?.message || emailError);
     }
 
     res.render('forgot-password', {
