@@ -1,65 +1,57 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body class="bo">
-    <div class="container">
-      <%- include('partials/header', { includeNavbar: true }) %>
-    </div>
+    <%- include('partials/header', { includeNavbar: true }) %>
 
-    <main class="container py-5">
-      <div class="row g-4">
+    <main class="content-wrapper archive-layout">
+      <div class="content-container">
         <!-- Articles du mois -->
-        <div class="col-lg-8">
+        <div class="archive-main-content">
           <article>
-            <h1 class="display-5 mb-4"><%= monthName %> <%= year %></h1>
+            <h1 class="archive-title"><%= monthName %> <%= year %></h1>
             
             <% if (articles && articles.length > 0) { %>
-              <div class="row g-4">
+              <div class="archive-articles">
                 <% articles.forEach(article => { %>
-                  <div class="col-12">
-                    <div class="card shadow-sm card-article">
-                      <div class="row g-0 align-items-stretch">
-                        <% if (article.image) { %>
-                          <div class="col-md-4">
-                            <img 
-                              src="<%= article.image %>" 
-                              alt="<%= article.titre %>" 
-                              class="img-fluid h-100"
-                              style="object-fit: cover; border-radius: 4px 0 0 4px;"
-                            />
-                          </div>
-                        <% } %>
-                        <div class="col-md-<%= article.image ? 8 : 12 %>">
-                          <div class="card-body">
-                            <h2 class="card-title h5">
-                              <a href="/article/<%= article.id %>" class="text-decoration-none">
-                                <%= article.titre %>
-                              </a>
-                            </h2>
-                            
-                            <p class="card-text text-muted small mb-2">
-                              <strong><%= article.categorie || 'Non catégorisé' %></strong> | 
-                              <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                              }) %>
-                            </p>
-                            
-                            <p class="card-text"><%= article.extrait %>...</p>
-                            
-                            <a href="/article/<%= article.id %>" class="btn btn-sm btn-primary">
-                              Lire la suite →
-                            </a>
-                          </div>
+                  <article class="archive-article-card">
+                    <div class="archive-article-layout">
+                      <% if (article.image) { %>
+                        <div class="archive-article-image">
+                          <img 
+                            src="<%= article.image %>" 
+                            alt="<%= article.titre %>"
+                          />
                         </div>
+                      <% } %>
+                      <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
+                        <h2 class="archive-article-title">
+                          <a href="/article/<%= article.id %>">
+                            <%= article.titre %>
+                          </a>
+                        </h2>
+                        
+                        <p class="archive-article-meta">
+                          <strong><%= article.categorie || 'Non catégorisé' %></strong> | 
+                          <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          }) %>
+                        </p>
+                        
+                        <p class="archive-article-excerpt"><%= article.extrait %>...</p>
+                        
+                        <a href="/article/<%= article.id %>" class="archive-article-btn">
+                          Lire la suite →
+                        </a>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 <% }) %>
               </div>
             <% } else { %>
-              <div class="alert alert-info">
+              <div class="archive-no-articles">
                 Aucun article publié en <%= monthName %> <%= year %>.
               </div>
             <% } %>
@@ -67,25 +59,25 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="col-lg-4">
+        <aside class="archive-sidebar">
           <!-- Recent Posts -->
           <article class="card-smeg smeg-frame">
-            <div class="p-4">
-              <h4 class="fst-italic mb-3">Articles récents</h4>
-              <ul class="list-unstyled">
+            <div class="sidebar-section">
+              <h4 class="sidebar-title">Articles récents</h4>
+              <ul class="sidebar-list">
                 <% if (recentPosts && recentPosts.length > 0) { %>
                   <% recentPosts.forEach(post => { %>
-                    <li class="border-top py-3 text-body-secondary">
-                      <a href="/article/<%= post.id %>" class="text-decoration-none text-body-emphasis fw-bold">
+                    <li class="sidebar-list-item">
+                      <a href="/article/<%= post.id %>" class="sidebar-link">
                         <%= post.titre %>
                       </a>
-                      <div class="small text-muted">
+                      <div class="sidebar-date">
                         <%= new Date(post.date_publication).toLocaleDateString('fr-FR') %>
                       </div>
                     </li>
                   <% }) %>
                 <% } else { %>
-                  <li class="border-top py-3 text-body-secondary">Aucun article récent.</li>
+                  <li class="sidebar-list-item">Aucun article récent.</li>
                 <% } %>
               </ul>
             </div>
@@ -93,9 +85,9 @@
 
           <!-- Archives -->
           <article class="card-smeg smeg-frame">
-            <div class="p-4">
-              <h4 class="fst-italic mb-3">Archives</h4>
-              <ol class="list-unstyled mb-0">
+            <div class="sidebar-section">
+              <h4 class="sidebar-title">Archives</h4>
+              <ol class="sidebar-list">
                 <li><a href="/archive/2025/12">Décembre 2025</a></li>
                 <li><a href="/archive/2025/11">Novembre 2025</a></li>
                 <li><a href="/archive/2025/10">Octobre 2025</a></li>

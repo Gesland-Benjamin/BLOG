@@ -25,6 +25,8 @@ header {
   justify-content: center;
   padding: 1.25rem 0 2rem;
   background: transparent;
+  max-width: 1320px;
+  margin: 0 auto;
 }
 
 header::before {
@@ -490,10 +492,12 @@ header .btn:active,
   .mobile-duo-actions { display: flex; }
 }
 
-/* ----- RESPONSIVE MOBILE (<= 640px) ----- */
-@media (max-width: 640px) {
+/* ----- RESPONSIVE MOBILE (<= 576px) ----- */
+@media (max-width: 576px) {
   header {
     padding: 1rem 0 2rem;
+    max-width: 540px;
+    margin: 0 auto;
   }
 
   header::before {

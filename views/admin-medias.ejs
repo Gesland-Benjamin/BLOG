@@ -1,83 +1,68 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="container" style="margin-top:60px;">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Gestion des médias</h1>
-        <% if (orphanMedia.length > 0) { %>
-          <button class="btn btn-danger btn-sm" onclick="cleanOrphans()">Nettoyer les fichiers orphelins</button>
+    <main class="admin-wrapper">
+      <div class="admin-container">
+        <div class="admin-header">
+          <h1>Gestion des médias</h1>
+          <% if (orphanMedia.length > 0) { %>
+            <button class="admin-btn danger" onclick="cleanOrphans()">Nettoyer les fichiers orphelins</button>
+          <% } %>
+        </div>
+
+        <% if (message) { %>
+          <div class="admin-alert <%= message.type === 'success' ? 'success' : 'error' %>" role="alert">
+            <%= message.text %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
         <% } %>
-      </div>
 
-      <% if (message) { %>
-        <div class="alert alert-<%= message.type === 'success' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
-          <%= message.text %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <!-- Statistiques -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">Fichiers utilisés</div>
+            <div class="admin-stat-value"><%= usedMedia.length %></div>
+          </div>
+          <div class="admin-stat-card warning">
+            <div class="admin-stat-label">Fichiers orphelins</div>
+            <div class="admin-stat-value"><%= orphanMedia.length %></div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-label">Espace total</div>
+            <div class="admin-stat-value-text"><%= (totalSize / 1024 / 1024).toFixed(2) %> MB</div>
+          </div>
+          <div class="admin-stat-card danger">
+            <div class="admin-stat-label">À libérer</div>
+            <div class="admin-stat-value-text"><%= (orphanSize / 1024 / 1024).toFixed(2) %> MB</div>
+          </div>
         </div>
-      <% } %>
 
-      <!-- Statistiques -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <div class="text-muted small mb-1">Fichiers utilisés</div>
-              <div class="display-6"><%= usedMedia.length %></div>
+        <!-- Fichiers utilisés -->
+        <div class="admin-table-card">
+          <div class="admin-table-header">
+            <h5>Fichiers utilisés (<%= usedMedia.length %>)</h5>
+          </div>
+          <% if (usedMedia.length === 0) { %>
+            <div class="admin-empty-state">
+              Aucun fichier utilisé
             </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <div class="text-muted small mb-1">Fichiers orphelins</div>
-              <div class="display-6 text-warning"><%= orphanMedia.length %></div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <div class="text-muted small mb-1">Espace total</div>
-              <div class="h5"><%= (totalSize / 1024 / 1024).toFixed(2) %> MB</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <div class="text-muted small mb-1">À libérer</div>
-              <div class="h5 text-danger"><%= (orphanSize / 1024 / 1024).toFixed(2) %> MB</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fichiers utilisés -->
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white">
-          <h5 class="mb-0">Fichiers utilisés (<%= usedMedia.length %>)</h5>
-        </div>
-        <% if (usedMedia.length === 0) { %>
-          <div class="card-body text-muted text-center py-4">
-            Aucun fichier utilisé
-          </div>
-        <% } else { %>
-          <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th>Nom du fichier</th>
-                  <th class="text-end">Taille</th>
-                  <th>Date</th>
-                  <th class="text-end">Utilisé par</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% usedMedia.forEach(media => { %>
+          <% } else { %>
+            <div class="admin-table-responsive">
+              <table class="admin-table">
+                <thead>
                   <tr>
-                    <td class="font-monospace small"><%= media.filename %></td>
+                    <th>Nom du fichier</th>
+                    <th class="text-end">Taille</th>
+                    <th>Date</th>
+                    <th class="text-end">Utilisé par</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% usedMedia.forEach(media => { %>
+                    <tr>
+                      <td class="admin-table-filename"><%= media.filename %></td>
                     <td class="text-end"><%= media.sizeFormatted %></td>
                     <td><%= media.createdAtFormatted %></td>
                     <td class="text-end">

@@ -1,18 +1,16 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
-  <body class="bo">
-    <div class="container">
-      <%- include('partials/header', { includeNavbar: true }) %>
-    </div>
+  <%- include('partials/head') %>
+  <body class="mentions-legales">
+    <%- include('partials/header', { includeNavbar: true }) %>
 
     <link rel="stylesheet" href="/css/mentions_legales.css">
 
-    <main class="container py-5">
-      <div class="mentions-legales">
+    <main class="content-wrapper">
+      <div class="legal-content">
         <h1>Mentions Légales</h1>
 
-    <section>
+    <section class="legal-section">
       <h2>Éditeur du site</h2>
       <p>
         <strong>Emi'Pulse</strong><br>
@@ -20,21 +18,21 @@
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Hébergement</h2>
       <p>
         Ce site est hébergé par un service web professionnel assurant la disponibilité et la sécurité des données.
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Propriété intellectuelle</h2>
       <p>
         L'ensemble du contenu présent sur ce site (textes, images, vidéos, graphismes) est la propriété exclusive d'Emi'Pulse ou de ses partenaires. Toute reproduction, distribution ou transmission du contenu sans autorisation préalable est strictement interdite.
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Données personnelles et RGPD</h2>
       <p>
         Nous respectons le Règlement Général sur la Protection des Données (RGPD). Les informations que vous nous fournissez lors de votre inscription à la newsletter ou via le formulaire de contact sont traitées de manière confidentielle et ne sont jamais partagées avec des tiers sans votre consentement.
@@ -44,29 +42,29 @@
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Responsabilité</h2>
       <p>
         Emi'Pulse décline toute responsabilité en cas d'erreur, d'omission ou d'interruption du service. Le contenu est fourni à titre informatif et n'engage pas la responsabilité du site.
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Cookies</h2>
       <p>
         Ce site peut utiliser des cookies pour améliorer votre expérience utilisateur. Vous pouvez désactiver les cookies dans les paramètres de votre navigateur.
       </p>
     </section>
 
-    <section>
+    <section class="legal-section">
       <h2>Contact</h2>
       <p>
         Pour toute question ou remarque concernant ces mentions légales, veuillez nous <a href="/renseignements">contacter via le formulaire de renseignements</a>.
       </p>
     </section>
 
-    <div class="mt-5">
-      <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+    <div class="error-actions">
+      <a href="/" class="error-btn primary">Retour à l'accueil</a>
     </div>
   </div>
 </main>

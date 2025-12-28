@@ -1,103 +1,100 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
-    <main class="container" style="margin-top:60px;">
-      <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-9">
-          <article class="card shadow-sm border-0 mb-4">
-            <% if (article.image) { %>
-              <div class="ratio ratio-16x9 bg-light rounded-top" style="overflow:hidden;">
-                <img 
-                  src="<%= article.image %>" 
-                  alt="<%= article.image_alt || article.titre %>"
-                  title="<%= article.titre %>"
-                  class="w-100 h-100 object-fit-cover"
-                  loading="lazy"
-                  srcset="<%= article.image %> 600w, <%= article.image.replace('_md', '_lg') %> 1200w"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
-                  style="background-color: #f0f0f0;"
-                >
+    <main class="content-wrapper">
+      <div class="article-detail-container">
+        <article class="article-detail-card">
+          <% if (article.image) { %>
+            <div class="article-detail-image">
+              <img 
+                src="<%= article.image %>" 
+                alt="<%= article.image_alt || article.titre %>"
+                title="<%= article.titre %>"
+                loading="lazy"
+                srcset="<%= article.image %> 600w, <%= article.image.replace('_md', '_lg') %> 1200w"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
+              >
+            </div>
+          <% } %>
+          <div class="article-detail-content">
+            <p class="article-detail-date"><%= new Date(article.date_publication).toLocaleDateString() %></p>
+            <h1 class="article-detail-title"><%= article.titre %></h1>
+            <p class="article-detail-meta">Par <%= article.auteur %><% if (article.categorie) { %> — <%= article.categorie %><% } %></p>
+            <div class="article-detail-body">
+              <%= article.contenu %>
+            </div>
+
+            <% if (article.video) { %>
+              <div class="article-detail-video">
+                <div class="video-container">
+                  <% if (article.videoType === 'youtube') { %>
+                    <!-- YouTube iframe -->
+                    <iframe 
+                      src="<%= article.video %>" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen>
+                    </iframe>
+                  <% } else if (article.videoType === 'vimeo') { %>
+                    <!-- Vimeo iframe -->
+                    <iframe 
+                      src="<%= article.video %>" 
+                      frameborder="0" 
+                      allow="autoplay; fullscreen; picture-in-picture" 
+                      allowfullscreen>
+                    </iframe>
+                  <% } else { %>
+                    <!-- HTML5 video player for direct video files -->
+                    <video controls>
+                      <source src="<%= article.video %>" type="video/mp4">
+                      Votre navigateur ne supporte pas la lecture vidéo.
+                    </video>
+                  <% } %>
+                </div>
               </div>
             <% } %>
-            <div class="card-body p-4">
-              <p class="text-muted mb-2"><%= new Date(article.date_publication).toLocaleDateString() %></p>
-              <h1 class="mb-3"><%= article.titre %></h1>
-              <p class="text-muted">Par <%= article.auteur %><% if (article.categorie) { %> — <%= article.categorie %><% } %></p>
-              <div class="mt-4 fs-5" style="line-height:1.7;">
-                <%= article.contenu %>
-              </div>
 
-              <% if (article.video) { %>
-                <div class="mt-4">
-                  <div class="ratio ratio-16x9 rounded overflow-hidden">
-                    <% if (article.videoType === 'youtube') { %>
-                      <!-- YouTube iframe -->
-                      <iframe 
-                        src="<%= article.video %>" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen>
-                      </iframe>
-                    <% } else if (article.videoType === 'vimeo') { %>
-                      <!-- Vimeo iframe -->
-                      <iframe 
-                        src="<%= article.video %>" 
-                        frameborder="0" 
-                        allow="autoplay; fullscreen; picture-in-picture" 
-                        allowfullscreen>
-                      </iframe>
-                    <% } else { %>
-                      <!-- HTML5 video player for direct video files -->
-                      <video controls class="w-100 h-100">
-                        <source src="<%= article.video %>" type="video/mp4">
-                        Votre navigateur ne supporte pas la lecture vidéo.
-                      </video>
-                    <% } %>
-                  </div>
-                </div>
-              <% } %>
-
-              <div class="d-flex align-items-center gap-3 mt-4">
-                <button
-                  id="like-btn"
-                  class="btn <%= article.liked ? 'btn-success' : 'btn-outline-secondary' %>"
-                  data-article-id="<%= article.id %>"
-                  <%= article.liked ? 'disabled' : '' %>
-                >
-                  <%= article.liked ? 'Merci pour votre j\'aime' : 'Je laisse un j\'aime' %>
-                </button>
-                <span id="like-count" class="text-muted small">
-                  <%= article.likes %> j'aime<%= article.likes > 1 ? 's' : '' %>
-                </span>
-              </div>
-
-              <div class="d-flex gap-2 mt-4">
-                <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="btn btn-outline-secondary">Retour à la catégorie</a>
-                <a href="/article" class="btn btn-primary">Tous les articles</a>
-              </div>
+            <div class="article-detail-actions">
+              <button
+                id="like-btn"
+                class="article-like-btn <%= article.liked ? 'liked' : '' %>"
+                data-article-id="<%= article.id %>"
+                <%= article.liked ? 'disabled' : '' %>
+              >
+                <%= article.liked ? 'Merci pour votre j\'aime' : 'Je laisse un j\'aime' %>
+              </button>
+              <span id="like-count" class="article-like-count">
+                <%= article.likes %> j'aime<%= article.likes > 1 ? 's' : '' %>
+              </span>
             </div>
-          </article>
 
-          <section class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h4 mb-0">Commentaires</h2>
-                <span class="text-muted small"><%= commentaires.length %> commentaire<%= commentaires.length > 1 ? 's' : '' %></span>
-              </div>
+            <div class="article-detail-links">
+              <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="article-link-btn secondary">Retour à la catégorie</a>
+              <a href="/article" class="article-link-btn primary">Tous les articles</a>
+            </div>
+          </div>
+        </article>
 
-              <% if (commentaires.length === 0) { %>
-                <p class="text-muted">Soyez le premier à commenter cet article.</p>
-              <% } else { %>
-                <div class="list-group mb-4">
-                  <% commentaires.forEach(c => { %>
-                    <div class="list-group-item border-0 border-bottom pb-3">
-                      <div class="d-flex justify-content-between">
-                        <strong><%= c.nom || 'Lecteur' %></strong>
-                        <small class="text-muted"><%= new Date(c.date).toLocaleDateString() %></small>
-                      </div>
+        <section class="comments-section">
+          <div class="comments-content">
+            <div class="comments-header">
+              <h2>Commentaires</h2>
+              <span class="comments-count"><%= commentaires.length %> commentaire<%= commentaires.length > 1 ? 's' : '' %></span>
+            </div>
+
+            <% if (commentaires.length === 0) { %>
+              <p class="comments-empty">Soyez le premier à commenter cet article.</p>
+            <% } else { %>
+              <div class="comments-list">
+                <% commentaires.forEach(c => { %>
+                  <div class="comment-item">
+                    <div class="comment-header">
+                      <strong class="comment-author"><%= c.nom || 'Lecteur' %></strong>
+                      <span class="comment-date"><%= new Date(c.date).toLocaleDateString() %></span>
+                    </div>
                       <p class="mb-1"><%= c.contenu %></p>
                       
                       <!-- Affichage des réponses -->

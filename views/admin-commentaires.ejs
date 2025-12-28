@@ -1,82 +1,82 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="container" style="margin-top:60px;">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Modération des commentaires</h1>
-        <a href="/article" class="btn btn-outline-secondary">Voir les articles</a>
-      </div>
+    <main class="admin-wrapper">
+      <div class="admin-container">
+        <div class="admin-header">
+          <h1>Modération des commentaires</h1>
+          <a href="/article" class="admin-btn secondary">Voir les articles</a>
+        </div>
 
-      <% if (comments.length === 0) { %>
-        <div class="alert alert-info">Aucun commentaire</div>
-      <% } %>
+        <% if (comments.length === 0) { %>
+          <div class="admin-alert info">Aucun commentaire</div>
+        <% } %>
 
-      <% comments.forEach(c => { %>
-        <div class="card shadow-sm mb-3">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div>
-                <h6 class="mb-1">
+        <% comments.forEach(c => { %>
+          <div class="admin-comment-card">
+            <div class="admin-comment-header">
+              <div class="admin-comment-author-section">
+                <h6>
                   <strong><%= c.nom || (c.user ? c.user.nom_prenom : 'Lecteur') %></strong>
-                  <% if (c.user) { %><span class="badge text-bg-info ms-2">Utilisateur</span><% } %>
+                  <% if (c.user) { %><span class="admin-badge info">Utilisateur</span><% } %>
                   <% if (c.statut === 'approved') { %>
-                    <span class="badge text-bg-success ms-2">Approuvé</span>
+                    <span class="admin-badge success">Approuvé</span>
                   <% } else if (c.statut === 'pending') { %>
-                    <span class="badge text-bg-warning text-dark ms-2">En attente</span>
+                    <span class="admin-badge warning">En attente</span>
                   <% } else { %>
-                    <span class="badge text-bg-secondary ms-2">Rejeté</span>
+                    <span class="admin-badge secondary">Rejeté</span>
                   <% } %>
                   <% if (c.is_spam) { %>
-                    <span class="badge text-bg-danger ms-2">Spam</span>
+                    <span class="admin-badge danger">Spam</span>
                   <% } %>
                 </h6>
-                <small class="text-muted">
+                <div class="admin-comment-meta">
                   <% if (c.article) { %>
                     Article: <a href="/article/<%= c.article.id %>"><%= c.article.titre %></a> •
                   <% } %>
                   <%= new Date(c.date).toLocaleString('fr-FR') %>
-                </small>
+                </div>
               </div>
             </div>
             
-            <p class="mb-3"><%= c.contenu %></p>
+            <p class="admin-comment-content"><%= c.contenu %></p>
 
             <!-- Actions du commentaire -->
-            <div class="d-flex gap-2 flex-wrap">
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/approve" class="d-inline">
+            <div class="admin-comment-actions">
+              <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="btn btn-sm btn-success" type="submit">✓ Approuver</button>
+                <button class="admin-btn-sm success" type="submit">✓ Approuver</button>
               </form>
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/reject" class="d-inline">
+              <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="btn btn-sm btn-outline-secondary" type="submit">✗ Rejeter</button>
+                <button class="admin-btn-sm secondary" type="submit">✗ Rejeter</button>
               </form>
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/spam" class="d-inline">
+              <form method="POST" action="/admin/commentaires/<%= c.id %>/spam">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="btn btn-sm btn-outline-danger" type="submit">🚫 Spam</button>
+                <button class="admin-btn-sm danger" type="submit">🚫 Spam</button>
               </form>
-              <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">
+              <button class="admin-btn-sm primary" type="button" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">
                 💬 Répondre
               </button>
-              <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE" class="d-inline">
+              <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Supprimer ce commentaire ?');">🗑️ Supprimer</button>
+                <button class="admin-btn-sm danger" type="submit" onclick="return confirm('Supprimer ce commentaire ?');">🗑️ Supprimer</button>
               </form>
             </div>
 
             <!-- Formulaire de réponse (collapsé) -->
-            <div class="collapse mt-3" id="reply-form-<%= c.id %>">
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/reply" class="bg-light p-3 rounded">
+            <div class="collapse" id="reply-form-<%= c.id %>">
+              <form method="POST" action="/admin/commentaires/<%= c.id %>/reply" class="admin-reply-form">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="mb-2">
-                  <label for="contenu-<%= c.id %>" class="form-label fw-bold">Votre réponse</label>
-                  <textarea class="form-control" id="contenu-<%= c.id %>" name="contenu" rows="3" required placeholder="Écrivez votre réponse..."></textarea>
+                <div class="admin-form-group">
+                  <label for="contenu-<%= c.id %>">Votre réponse</label>
+                  <textarea id="contenu-<%= c.id %>" name="contenu" rows="3" required placeholder="Écrivez votre réponse..."></textarea>
                 </div>
-                <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-sm btn-primary">Envoyer la réponse</button>
-                  <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">Annuler</button>
+                <div class="admin-form-actions">
+                  <button type="submit" class="admin-btn-sm primary">Envoyer la réponse</button>
+                  <button type="button" class="admin-btn-sm secondary" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">Annuler</button>
                 </div>
               </form>
             </div>

@@ -56,16 +56,31 @@
   rel="stylesheet"
 />
 
-    <!-- Fichiers CSS (ordre important) -->
-    <link href="/css/general.css" rel="stylesheet" />
-    <link href="/css/animations.css" rel="stylesheet" />
-    <link href="/css/header.css" rel="stylesheet" />
-    <link href="/css/footer.css" rel="stylesheet" />
-    <link href="/css/index.css" rel="stylesheet" />
-    <link href="/css/article-detail.css" rel="stylesheet" />
-    <link href="/css/auth.css" rel="stylesheet" />
-    <link href="/css/admin.css" rel="stylesheet" />
-    <link href="/css/pages.css" rel="stylesheet" />
+    <!-- Fichiers CSS - Architecture modulaire (12 fichiers) -->
+    <!-- 1. Base: Variables, reset, typographie -->
+    <link href="/css/1-base.css" rel="stylesheet" />
+    
+    <!-- 2. Layout: Grille, flexbox, spacing utilitaires -->
+    <link href="/css/2-layout.css" rel="stylesheet" />
+    
+    <!-- 3. Composants: Boutons, cartes, formulaires, etc. -->
+    <link href="/css/3-components.css" rel="stylesheet" />
+    
+    <!-- 4-5. Header & Footer -->
+    <link href="/css/4-header.css" rel="stylesheet" />
+    <link href="/css/5-footer.css" rel="stylesheet" />
+    
+    <!-- 6. Carousel -->
+    <link href="/css/6-carousel.css" rel="stylesheet" />
+    
+    <!-- 7-12. Pages spécifiques -->
+    <link href="/css/7-pages-home.css" rel="stylesheet" />
+    <link href="/css/8-pages-article.css" rel="stylesheet" />
+    <link href="/css/9-pages-admin.css" rel="stylesheet" />
+    <link href="/css/10-pages-auth.css" rel="stylesheet" />
+    <link href="/css/11-pages-error.css" rel="stylesheet" />
+    <link href="/css/12-pages-other.css" rel="stylesheet" />
+    
     <style>
     </style>
   </head>

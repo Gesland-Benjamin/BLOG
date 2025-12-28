@@ -1,123 +1,101 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="container admin-dashboard" style="margin-top:60px;">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-4">
-        <h1 class="h3">Dashboard Admin</h1>
-        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
-          <a href="/admin/articles/new" class="btn btn-bd-primary btn-sm w-100 w-md-auto">Nouvel article</a>
-          <a href="/" class="btn btn-outline-secondary btn-sm w-100 w-md-auto">Voir le site</a>
+    <main class="admin-wrapper">
+      <div class="admin-container">
+        <div class="admin-header">
+          <h1>Dashboard Admin</h1>
+          <div class="admin-header-actions">
+            <a href="/admin/articles/new" class="admin-btn primary">Nouvel article</a>
+            <a href="/" class="admin-btn secondary">Voir le site</a>
+          </div>
         </div>
-      </div>
 
-      <!-- Statistiques -->
-      <div class="row g-3 mb-4">
-        <div class="col-12 col-sm-6 col-lg-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body text-center">
-              <div class="display-6 text-primary mb-2"><%= stats.totalArticles %></div>
-              <div class="text-muted small">Articles publiés</div>
-              <a href="/article" class="stretched-link"></a>
-            </div>
+        <!-- Statistiques -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card primary">
+            <div class="admin-stat-value"><%= stats.totalArticles %></div>
+            <div class="admin-stat-label">Articles publiés</div>
+            <a href="/article" class="stretched-link"></a>
+          </div>
+          <div class="admin-stat-card warning">
+            <div class="admin-stat-value"><%= stats.commentairesPending %></div>
+            <div class="admin-stat-label">Commentaires en attente</div>
+            <a href="/admin/commentaires" class="stretched-link"></a>
+          </div>
+          <div class="admin-stat-card info">
+            <div class="admin-stat-value"><%= stats.totalCommentaires %></div>
+            <div class="admin-stat-label">Commentaires total</div>
+            <a href="/admin/commentaires" class="stretched-link"></a>
+          </div>
+          <div class="admin-stat-card success">
+            <div class="admin-stat-value"><%= stats.totalAbonnes %></div>
+            <div class="admin-stat-label">Abonnés newsletter</div>
+            <a href="/admin/newsletter" class="stretched-link"></a>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body text-center">
-              <div class="display-6 text-warning mb-2"><%= stats.commentairesPending %></div>
-              <div class="text-muted small">Commentaires en attente</div>
-              <a href="/admin/commentaires" class="stretched-link"></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body text-center">
-              <div class="display-6 text-info mb-2"><%= stats.totalCommentaires %></div>
-              <div class="text-muted small">Commentaires total</div>
-              <a href="/admin/commentaires" class="stretched-link"></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body text-center">
-              <div class="display-6 text-success mb-2"><%= stats.totalAbonnes %></div>
-              <div class="text-muted small">Abonnés newsletter</div>
-              <a href="/admin/newsletter" class="stretched-link"></a>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Accès rapide -->
-      <div class="row g-4 mb-4">
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-              <div class="card-header bg-d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Articles récents</h5>
-                <a href="/admin/articles/new" class="btn btn-sm btn-outline-primary w-100 w-md-auto">Créer</a>
+        <!-- Accès rapide -->
+        <div class="admin-content-grid">
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Articles récents</h5>
+              <a href="/admin/articles/new" class="admin-btn-sm primary">Créer</a>
             </div>
-            <div class="list-group list-group-flush">
+            <div class="admin-list">
               <% if (recentArticles.length === 0) { %>
-                <div class="list-group-item text-muted text-center py-4">Aucun article</div>
+                <div class="admin-list-empty">Aucun article</div>
               <% } else { %>
                 <% recentArticles.forEach(a => { %>
-                  <div class="list-group-item list-group-item-action">
-                    <div class="d-flex justify-content-between align-items-start">
-                      <div class="flex-grow-1">
-                        <a href="/article/<%= a.id %>" class="text-decoration-none text-dark fw-semibold"><%= a.titre %></a>
-                        <div class="small text-muted mt-1">
-                          <%= new Date(a.date_publication).toLocaleDateString() %> — <%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %>
-                        </div>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
+                      <div class="admin-list-meta">
+                        <%= new Date(a.date_publication).toLocaleDateString() %> — <%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %>
                       </div>
-                      <div class="d-flex gap-1">
-                        <a href="/admin/articles/<%= a.id %>/edit" class="btn btn-sm btn-outline-secondary">Éditer</a>
-                      </div>
+                    </div>
+                    <div class="admin-list-actions">
+                      <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
                     </div>
                   </div>
                 <% }) %>
               <% } %>
             </div>
           </div>
-        </div>
 
-        <div class="col-12 col-lg-6">
-          <div class="card border-0 shadow-sm">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Commentaires en attente</h5>
-                <a href="/admin/commentaires" class="btn btn-sm btn-outline-warning w-100 w-md-auto">Voir tout</a>
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Commentaires en attente</h5>
+              <a href="/admin/commentaires" class="admin-btn-sm warning">Voir tout</a>
             </div>
-            <div class="list-group list-group-flush">
+            <div class="admin-list">
               <% if (pendingComments.length === 0) { %>
-                <div class="list-group-item text-muted text-center py-4">Aucun commentaire en attente</div>
+                <div class="admin-list-empty">Aucun commentaire en attente</div>
               <% } else { %>
                 <% pendingComments.forEach(c => { %>
-                  <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-start">
-                      <div class="flex-grow-1">
-                        <div class="fw-semibold"><%= c.nom || 'Lecteur' %></div>
-                        <div class="small text-muted mb-1">
-                          <% if (c.article) { %>
-                            Sur : <a href="/article/<%= c.article.id %>"><%= c.article.titre %></a>
-                          <% } else { %>
-                            Article supprimé
-                          <% } %>
-                        </div>
-                        <div class="small"><%= c.contenu.substring(0, 80) %><%= c.contenu.length > 80 ? '...' : '' %></div>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <div class="admin-comment-author"><%= c.nom || 'Lecteur' %></div>
+                      <div class="admin-comment-meta">
+                        <% if (c.article) { %>
+                          Sur : <a href="/article/<%= c.article.id %>"><%= c.article.titre %></a>
+                        <% } else { %>
+                          Article supprimé
+                        <% } %>
                       </div>
-                      <div class="d-flex gap-1 ms-2">
-                        <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                          <button class="btn btn-sm btn-success" type="submit">✓</button>
-                        </form>
-                        <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
-                          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                          <button class="btn btn-sm btn-outline-danger" type="submit">✕</button>
-                        </form>
-                      </div>
+                      <div class="admin-comment-excerpt"><%= c.contenu.substring(0, 80) %><%= c.contenu.length > 80 ? '...' : '' %></div>
+                    </div>
+                    <div class="admin-list-actions">
+                      <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="admin-btn-sm success" type="submit">✓</button>
+                      </form>
+                      <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="admin-btn-sm danger" type="submit">✕</button>
+                      </form>
                     </div>
                   </div>
                 <% }) %>
@@ -125,61 +103,52 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Tableaux supplémentaires -->
-      <div class="row g-4">
-          <div class="col-12 col-lg-6">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header">
-              <h5 class="mb-0">Articles les plus aimés</h5>
+        <!-- Tableaux supplémentaires -->
+        <div class="admin-content-grid">
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Articles les plus aimés</h5>
             </div>
-            <div class="list-group list-group-flush">
+            <div class="admin-list">
               <% if (topArticles.length === 0) { %>
-                <div class="list-group-item text-muted text-center py-4">Aucun article</div>
+                <div class="admin-list-empty">Aucun article</div>
               <% } else { %>
                 <% topArticles.forEach(a => { %>
-                  <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <a href="/article/<%= a.id %>" class="text-decoration-none text-dark"><%= a.titre %></a>
-                      </div>
-                      <span class="badge text-bg-primary"><%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %></span>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
                     </div>
+                    <span class="admin-badge primary"><%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %></span>
                   </div>
                 <% }) %>
               <% } %>
             </div>
           </div>
-        </div>
 
-        <div class="col-12 col-lg-6">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">Derniers abonnés newsletter</h5>
-              <a href="/admin/newsletter" class="btn btn-sm btn-outline-success w-100 w-md-auto">Gérer</a>
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Derniers abonnés newsletter</h5>
+              <a href="/admin/newsletter" class="admin-btn-sm success">Gérer</a>
             </div>
-            <div class="list-group list-group-flush">
+            <div class="admin-list">
               <% if (recentSubscribers.length === 0) { %>
-                <div class="list-group-item text-muted text-center py-4">Aucun abonné</div>
+                <div class="admin-list-empty">Aucun abonné</div>
               <% } else { %>
                 <% recentSubscribers.forEach(s => { %>
-                  <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <strong><%= s.email %></strong>
-                      </div>
-                      <small class="text-muted"><%= new Date(s.date_inscription).toLocaleDateString() %></small>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <strong><%= s.email %></strong>
                     </div>
+                    <div class="admin-list-date"><%= new Date(s.date_inscription).toLocaleDateString() %></div>
                   </div>
                 <% }) %>
               <% } %>
             </div>
           </div>
         </div>
-      </div>
 
-    </main>
+      </div>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

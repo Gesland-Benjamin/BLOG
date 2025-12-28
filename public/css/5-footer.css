@@ -2,6 +2,7 @@
    FOOTER – SMEG 70–80 PREMIUM (HTML ADAPTÉ)
 ============================================ */
 
+.footer-wrapper,
 footer {
   position: relative;
   margin-top: 6rem;
@@ -9,6 +10,7 @@ footer {
   background: transparent;
   color: #4a2600;
   overflow: hidden;
+  text-align: center;
 }
 
 /* Coque plastique beige */
@@ -173,7 +175,8 @@ footer::before {
   text-align: center;
 }
 
-.footer-copyright-section p {
+.footer-copyright-section p,
+.footer-copyright-text {
   margin: 0;
   font-size: 0.85rem;
   font-weight: 700;

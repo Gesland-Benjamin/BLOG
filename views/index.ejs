@@ -1,10 +1,9 @@
 
-<%- include('partials/head') %>
 <!doctype html>
-<html lang="fr">
-  
+<html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body class="bo">
-    <%- include('partials/header', { includeNavbar: true }) %>
+    <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol
         id="aperture"
@@ -32,99 +31,97 @@
         ></path>
       </symbol>
     </svg>
-    <main class="container-fluid px-3">
+    <main class="home-wrapper">
       <!-- Carrousel mélangé Événements + Nouveautés -->
       <div class="carousel-wrapper">
         <%- include('partials/carousel', { carouselItems }) %>
       </div>
       <!-- Cartes Recent Posts et Archives -->
       <div class="sections-wrapper">
-      <div class="row g-5 mt-2" style="width: 100%; max-width: 95%;">
-        <div class="col-lg-8">
-          <section class="d-flex flex-column gap-4 left-sections smeg-frame">
-            <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
-              <div class="card-bordered smeg-frame" style="min-height: 280px;">
-                <div class="row g-0 align-items-stretch" style="min-height: 280px;">
-                  <div class="col-lg-5 p-4">
-                    <h2 class="display-6 fst-italic mb-2"><%= s.titre %></h2>
-                    <p class="lead my-2"><%= s.extrait %>...</p>
-                    <p class="text-muted mb-3">Par <%= s.auteur %> • <%= s.categorie %></p>
-                    <p class="lead mb-0">
-                      <a href="/article/<%= s.id %>" class="text-body-emphasis fw-bold">Lire plus...</a>
-                    </p>
-                  </div>
-                  <div class="carousel-image-wrapper">
-                    <% if (s.image) { %>
-                      <img src="<%= s.image %>" alt="<%= s.titre %>"/>
-                    <% } else { %>
-                      <div class="bg-body-secondary rounded d-flex align-items-center justify-content-center w-100" style="min-height: 280px;">
-                        <span class="text-muted">Pas d'image</span>
-                      </div>
-                    <% } %>
+        <div class="home-content-grid">
+          <div class="home-main-content">
+            <section class="home-featured-articles left-sections smeg-frame">
+              <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
+                <div class="home-featured-card card-bordered smeg-frame">
+                  <div class="home-featured-layout">
+                    <div class="home-featured-text">
+                      <h2 class="home-featured-title"><%= s.titre %></h2>
+                      <p class="home-featured-excerpt"><%= s.extrait %>...</p>
+                      <p class="home-featured-meta">Par <%= s.auteur %> • <%= s.categorie %></p>
+                      <p class="home-featured-link">
+                        <a href="/article/<%= s.id %>">Lire plus...</a>
+                      </p>
+                    </div>
+                    <div class="carousel-image-wrapper">
+                      <% if (s.image) { %>
+                        <img src="<%= s.image %>" alt="<%= s.titre %>"/>
+                      <% } else { %>
+                        <div class="home-featured-placeholder">
+                          <span>Pas d'image</span>
+                        </div>
+                      <% } %>
+                    </div>
                   </div>
                 </div>
-              </div>
-            <% }) %>
-          </section>
-        </div>
-        <div class="col-lg-3">
-          <div class="card-smeg-stack gap-5">
-            <article class="card-smeg smeg-frame">
-              <div class="p-4">
-                <h4 class="fst-italic mb-3">Derniers articles</h4>
-              <ul class="list-unstyled mb-0">
-                <% if (recentPosts && recentPosts.length) { %>
-                  <% recentPosts.forEach((p, idx) => { %>
-                    <li>
-                      <a
-                        class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
-                        href="/article/<%= p.id %>"
-                      >
-                        <% if (p.image) { %>
-                          <div class="ratio ratio-4x3 flex-shrink-0" style="width:120px;">
-                            <img src="<%= p.image %>" alt="<%= p.titre %>" class="w-100 h-100 object-fit-cover rounded">
-                          </div>
-                        <% } else { %>
-                          <svg aria-hidden="true" class="bd-placeholder-img flex-shrink-0 rounded" height="96" preserveAspectRatio="xMidYMid slice" width="120" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100%" height="100%" fill="#e9ecef"></rect>
-                            <text x="50%" y="50%" fill="#adb5bd" dy=".3em" font-size="12" text-anchor="middle">Article</text>
-                          </svg>
-                        <% } %>
-                        <div class="col-lg-8">
-                          <h6 class="mb-1"><%= p.titre %></h6>
-                          <small class="text-body-secondary">Par <%= p.auteur %></small>
-                        </div>
-                      </a>
-                    </li>
-                  <% }); %>
-                <% } else { %>
-                  <li class="border-top py-3 text-body-secondary">Aucun article récent.</li>
-                <% } %>
-              </ul>
-            </div>
-          </article>
+              <% }) %>
+            </section>
+          </div>
+          <aside class="home-sidebar">
+            <div class="card-smeg-stack">
+              <article class="card-smeg smeg-frame">
+                <div class="sidebar-section">
+                  <h4 class="sidebar-title">Derniers articles</h4>
+                  <ul class="sidebar-list">
+                    <% if (recentPosts && recentPosts.length) { %>
+                      <% recentPosts.forEach((p, idx) => { %>
+                        <li class="sidebar-post-item">
+                          <a href="/article/<%= p.id %>">
+                            <% if (p.image) { %>
+                              <div class="sidebar-post-image">
+                                <img src="<%= p.image %>" alt="<%= p.titre %>">
+                              </div>
+                            <% } else { %>
+                              <svg aria-hidden="true" class="sidebar-post-placeholder" height="96" preserveAspectRatio="xMidYMid slice" width="120" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100%" height="100%" fill="#e9ecef"></rect>
+                                <text x="50%" y="50%" fill="#adb5bd" dy=".3em" font-size="12" text-anchor="middle">Article</text>
+                              </svg>
+                            <% } %>
+                            <div class="sidebar-post-content">
+                              <h6 class="sidebar-post-title"><%= p.titre %></h6>
+                              <div class="sidebar-post-author">Par <%= p.auteur %></div>
+                            </div>
+                          </a>
+                        </li>
+                      <% }); %>
+                    <% } else { %>
+                      <li class="sidebar-list-empty">Aucun article récent.</li>
+                    <% } %>
+                  </ul>
+                </div>
+              </article>
 
-          <article class="card-smeg smeg-frame">
-            <div class="p-4">
-              <h4 class="fst-italic mb-3">Archives</h4>
-              <ol class="list-unstyled mb-0">
-                <li><a href="/archive/2025/12">Décembre 2025</a></li>
-                <li><a href="/archive/2025/11">Novembre 2025</a></li>
-                <li><a href="/archive/2025/10">Octobre 2025</a></li>
-                <li><a href="/archive/2025/9">Septembre 2025</a></li>
-                <li><a href="/archive/2025/8">Août 2025</a></li>
-                <li><a href="/archive/2025/7">Juillet 2025</a></li>
-                <li><a href="/archive/2025/6">Juin 2025</a></li>
-                <li><a href="/archive/2025/5">Mai 2025</a></li>
-                <li><a href="/archive/2025/4">Avril 2025</a></li>
-                <li><a href="/archive/2025/3">Mars 2025</a></li>
-                <li><a href="/archive/2025/2">Février 2025</a></li>
-                <li><a href="/archive/2025/1">Janvier 2025</a></li>
-              </ol>
+              <article class="card-smeg smeg-frame">
+                <div class="sidebar-section">
+                  <h4 class="sidebar-title">Archives</h4>
+                  <ol class="sidebar-list">
+                    <li><a href="/archive/2025/12">Décembre 2025</a></li>
+                    <li><a href="/archive/2025/11">Novembre 2025</a></li>
+                    <li><a href="/archive/2025/10">Octobre 2025</a></li>
+                    <li><a href="/archive/2025/9">Septembre 2025</a></li>
+                    <li><a href="/archive/2025/8">Août 2025</a></li>
+                    <li><a href="/archive/2025/7">Juillet 2025</a></li>
+                    <li><a href="/archive/2025/6">Juin 2025</a></li>
+                    <li><a href="/archive/2025/5">Mai 2025</a></li>
+                    <li><a href="/archive/2025/4">Avril 2025</a></li>
+                    <li><a href="/archive/2025/3">Mars 2025</a></li>
+                    <li><a href="/archive/2025/2">Février 2025</a></li>
+                    <li><a href="/archive/2025/1">Janvier 2025</a></li>
+                  </ol>
+                </div>
+              </article>
             </div>
-          </article>
+          </aside>
         </div>
-      </div>
       </div>
     </main>
     <%- include('partials/footer') %>

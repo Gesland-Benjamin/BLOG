@@ -1,69 +1,66 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
-    <main class="container" style="margin-top:60px;">
-      <h1 class="mb-4">Recherche d'articles</h1>
+    <main class="content-wrapper">
+      <div class="content-container">
+        <h1 class="page-title">Recherche d'articles</h1>
 
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-          <form method="GET" action="/search">
-            <div class="row g-3">
-              <div class="col-md-5">
-                <label for="q" class="form-label">Recherche par titre</label>
-                <input type="search" name="q" id="q" class="form-control" placeholder="Titre de l'article..." value="<%= filters.q %>">
+        <div class="search-form-card">
+          <form method="GET" action="/search" class="search-form">
+            <div class="search-form-grid">
+              <div class="search-form-group">
+                <label for="q">Recherche par titre</label>
+                <input type="search" name="q" id="q" placeholder="Titre de l'article..." value="<%= filters.q %>">
               </div>
-              <div class="col-md-4">
-                <label for="categorie" class="form-label">Catégorie</label>
-                <select name="categorie" id="categorie" class="form-select">
+              <div class="search-form-group">
+                <label for="categorie">Catégorie</label>
+                <select name="categorie" id="categorie">
                   <option value="">Toutes</option>
                   <% categories.forEach(cat => { %>
                     <option value="<%= cat.id %>" <%= filters.categorie == cat.id ? 'selected' : '' %>><%= cat.nom %></option>
                   <% }) %>
                 </select>
               </div>
-              <div class="col-md-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-bd-primary w-100">Rechercher</button>
+              <div class="search-form-submit-wrapper">
+                <button type="submit" class="search-submit">Rechercher</button>
               </div>
             </div>
           </form>
         </div>
-      </div>
 
-      <% if (filters.q || filters.categorie || filters.auteur) { %>
-        <p class="text-muted mb-3">
-          <%= pagination.total %> résultat<%= pagination.total > 1 ? 's' : '' %> trouvé<%= pagination.total > 1 ? 's' : '' %>
-        </p>
-      <% } %>
+        <% if (filters.q || filters.categorie || filters.auteur) { %>
+          <p class="search-results-count">
+            <%= pagination.total %> résultat<%= pagination.total > 1 ? 's' : '' %> trouvé<%= pagination.total > 1 ? 's' : '' %>
+          </p>
+        <% } %>
 
-      <% if (articles.length === 0) { %>
-        <div class="alert alert-secondary">Aucun article trouvé. Essayez de modifier vos critères de recherche.</div>
-      <% } else { %>
-        <div class="row">
-          <% articles.forEach(article => { %>
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
+        <% if (articles.length === 0) { %>
+          <div class="search-no-results">Aucun article trouvé. Essayez de modifier vos critères de recherche.</div>
+        <% } else { %>
+          <div class="article-grid">
+            <% articles.forEach(article => { %>
+              <article class="article-card">
                 <% if (article.image) { %>
-                  <div class="ratio ratio-16x9 bg-light" style="overflow:hidden;">
-                    <img src="<%= article.image %>" alt="<%= article.titre %>" class="w-100 h-100 object-fit-cover">
+                  <div class="article-card-image">
+                    <img src="<%= article.image %>" alt="<%= article.titre %>">
                   </div>
                 <% } %>
-                <div class="card-body">
-                  <h5 class="card-title"><%= article.titre %></h5>
-                  <p class="card-text"><%= (article.contenu || '').substring(0, 120) %>...</p>
-                  <small class="text-muted">
+                <div class="article-card-content">
+                  <h5 class="article-card-title"><%= article.titre %></h5>
+                  <p class="article-card-excerpt"><%= (article.contenu || '').substring(0, 120) %>...</p>
+                  <div class="article-card-meta">
                     Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %>
                     <% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %>
-                  </small>
-                  <div class="mt-3">
-                    <a href="/article/<%= article.id %>" class="btn btn-primary btn-sm">Lire l'article</a>
+                  </div>
+                  <div class="article-card-actions">
+                    <a href="/article/<%= article.id %>" class="article-card-btn">Lire l'article</a>
                   </div>
                 </div>
-              </div>
-            </div>
-          <% }) %>
-        </div>
+              </article>
+            <% }) %>
+          </div>
 
         <%- include('partials/pagination', { pagination, baseUrl }) %>
       <% } %>

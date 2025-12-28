@@ -16,38 +16,26 @@
   <div class="carousel-inner">
     <% carouselItems.forEach((item, idx) => { %>
     <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
-      <div
-        class="carousel-article-card row g-0 align-items-stretch"
-        style="min-height: 280px; position: relative"
-      >
-        <div class="col-lg-5 p-4 carousel-text">
-          <h1 class="display-6 fst-italic"><%= item.titre %></h1>
-          <p class="lead my-3"><%= item.extrait %>...</p>
-          <p class="text-muted mb-3">Par <%= item.auteur %></p>
-          <p class="lead mb-0">
-            <a href="/article/<%= item.id %>" class="text-body-emphasis fw-bold"
+      <div class="carousel-article-card">
+        <div class="carousel-text">
+          <h1 class="carousel-title"><%= item.titre %></h1>
+          <p class="carousel-excerpt"><%= item.extrait %>...</p>
+          <p class="carousel-author">Par <%= item.auteur %></p>
+          <p class="carousel-link">
+            <a href="/article/<%= item.id %>"
               >Lire l'article complet...</a
             >
           </p>
         </div>
-        <div class="col-lg-7 p-0 carousel-image-wrapper">
+        <div class="carousel-image-wrapper">
           <% if (item.image) { %>
             <img
               src="<%= item.image %>"
               alt="<%= item.titre %>"
               class="card-bordered"
-              style="
-                height: 100%;
-                width: 100%;
-                object-fit: cover;
-                display: block;
-                border-radius: 0 28px 28px 0;
-              "
             />
             <% } else { %>
-            <div
-              class="bg-body-secondary rounded d-flex align-items-center justify-content-center w-100"
-            >
+            <div class="carousel-placeholder">
               Aucune image
             </div>
             <% } %>

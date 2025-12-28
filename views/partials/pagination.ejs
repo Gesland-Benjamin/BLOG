@@ -1,6 +1,6 @@
 <% if (pagination && pagination.total > 1) { %>
-<nav aria-label="Pagination" class="mt-5 mb-4">
-  <ul class="pagination justify-content-center">
+<nav aria-label="Pagination" class="pagination-nav">
+  <ul class="pagination pagination-center">
     <!-- Première page -->
     <li class="page-item <%= !pagination.has_previous ? 'disabled' : '' %>">
       <a class="page-link" href="<%= pagination.has_previous ? (baseUrl || '#') + '?page=1' : '#' %>" aria-label="Première page">
@@ -40,7 +40,7 @@
   </ul>
   
   <!-- Info pagination -->
-  <div class="text-center text-muted small mt-2">
+  <div class="pagination-info">
     Affichage <%= pagination.start_item %> à <%= pagination.end_item %> sur <%= pagination.total_items %> résultat<%= pagination.total_items > 1 ? 's' : '' %>
   </div>
 </nav>

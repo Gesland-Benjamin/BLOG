@@ -1,25 +1,25 @@
-<%- include('partials/head') %>
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
+  <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="container text-center" style="margin-top:120px; margin-bottom:120px;">
-      <div class="row justify-content-center">
-        <div class="col-lg-6">
-          <h1 class="display-1 fw-bold text-danger">500</h1>
-          <h2 class="mb-4">Erreur du serveur</h2>
-          <p class="lead text-muted mb-4">
+    <main class="error-wrapper">
+      <div class="error-container">
+        <div class="error-content">
+          <h1 class="error-code code-500">500</h1>
+          <h2 class="error-title">Erreur du serveur</h2>
+          <p class="error-description">
             Une erreur inattendue s'est produite. Nos équipes ont été notifiées et travaillent à résoudre le problème.
           </p>
           <% if (typeof error !== 'undefined' && error && process.env.NODE_ENV === 'development') { %>
-            <div class="alert alert-danger text-start mt-4">
-              <strong>Détails de l'erreur (mode développement) :</strong>
-              <pre class="mt-2 mb-0"><%= error %></pre>
+            <div class="error-details">
+              <h4>Détails de l'erreur (mode développement) :</h4>
+              <pre><%= error %></pre>
             </div>
           <% } %>
-          <div class="d-flex gap-3 justify-content-center mt-4">
-            <a href="/" class="btn btn-bd-primary">Retour à l'accueil</a>
-            <button onclick="location.reload()" class="btn btn-outline-secondary">Réessayer</button>
+          <div class="error-actions">
+            <a href="/" class="error-btn primary">Retour à l'accueil</a>
+            <button onclick="location.reload()" class="error-btn secondary">Réessayer</button>
           </div>
         </div>
       </div>
