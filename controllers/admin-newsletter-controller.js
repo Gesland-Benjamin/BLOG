@@ -73,16 +73,21 @@ export const exportSubscribersCSV = async (req, res) => {
     
     // Définir les headers pour le téléchargement
     const filename = `newsletter_${status || 'all'}_${new Date().toISOString().split('T')[0]}.csv`;
-    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    const bom = '\uFEFF';
+    const csvWithBom = bom + csv;
+    res.set('Content-Type', 'text/csv; charset=utf-8');
+    res.set('Content-Disposition', `attachment; filename="${filename}"`);
     
-    // Ajouter le BOM UTF-8 pour Excel
-    res.write('\uFEFF');
-    res.send(csv);
+    // Envoyer le CSV (avec BOM) en une seule fois et sortir
+    return res.send(csvWithBom);
     
   } catch (error) {
     console.error('Erreur export CSV:', error);
-    res.status(500).send('Erreur lors de l\'export');
+    if (res.headersSent) {
+      // Réponse déjà envoyée, ne pas renvoyer
+      return;
+    }
+    return res.status(500).send('Erreur lors de l\'export');
   }
 };
 

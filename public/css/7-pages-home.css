@@ -2,28 +2,80 @@
    7. PAGE ACCUEIL (INDEX)
    ============================================ */
 
-.bo {
-  min-height: 100vh;
-  background: url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png)
-    center / cover no-repeat;
-  overflow-x: hidden;
-}
-
-.carousel-wrapper {
-  margin-bottom: 3rem;
-}
-
-.sections-wrapper {
-  margin-bottom: 5rem;
+.home-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 1,5rem;
   width: 100%;
+  padding: 30px 30px 0 30px;
+}
+
+.home-main-content {
+  grid-column: 1;
   max-width: 95%;
 }
 
-.sections-wrapper .row {
-  width: 100%;
-  gap: 3rem;
-  margin: 2rem auto 0;
-  padding: 0 var(--spacing-md);
+.home-sidebar {
+  grid-column: 2;
+}
+
+.home-wrapper {
+  max-width: 85%;
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+/* ============================================
+   BLOC VEDETTE (HOME FEATURED)
+   ============================================ */
+
+.home-featured-card {
+  position: relative;
+  height: 300px;
+}
+
+.home-featured-layout {
+  position: relative;
+  min-height: 280px;
+}
+
+.home-featured-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 2rem;
+  /* Laisser la place à l'image à droite (même logique que carrousel) */
+  padding-right: calc(50% + 16px);
+  position: relative;
+  z-index: 10;
+}
+
+.home-featured-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.home-featured-excerpt {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.home-featured-meta,
+.home-featured-link {
+  margin: 0;
+}
+
+.home-featured-layout > .carousel-image-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  border-radius: 0 42px 42px 0;
 }
 
 /* ============================================
@@ -56,8 +108,8 @@
     inset 0 0 0 8px rgba(154, 79, 24, 0.22);
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
   min-height: 280px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: row;
   align-items: stretch;
 }
 
@@ -75,9 +127,13 @@
 
 .left-sections > .card-bordered > div:first-child {
   padding: 2rem 2rem;
+  padding-right: calc(50% + 16px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
+  position: relative;
+  z-index: 10;
 }
 
 .left-sections > .card-bordered h2 {
@@ -103,14 +159,21 @@
 }
 
 .left-sections > .card-bordered > div:last-child {
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
   overflow: hidden;
+  border-radius: 0 42px 42px 0;
 }
 
 .left-sections > .card-bordered img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  border-radius: 0 42px 42px 0 !important;
 }
 
 /* ============================================
@@ -223,9 +286,19 @@
    ============================================ */
 
 @media (max-width: 992px) {
-  .sections-wrapper .row {
-    flex-direction: column;
+  .home-content-grid {
+    grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .home-main-content {
+    grid-column: 1;
+    order: 1;
+  }
+
+  .home-sidebar {
+    grid-column: 1;
+    order: 2;
   }
 
   .left-sections {
@@ -244,6 +317,20 @@
 
   .left-sections > .card-bordered > div:last-child {
     max-height: 200px;
+    border-radius: 0 0 42px 42px;
+  }
+
+  .left-sections > .card-bordered > div:last-child img {
+    border-radius: 0 0 42px 42px !important;
+  }
+
+  /* Vedette: conserver l'image à droite et le texte lisible */
+  .home-featured-layout {
+    min-height: 220px;
+  }
+  .home-featured-text {
+    padding: 1.25rem 1.25rem;
+    padding-right: calc(50% + 12px);
   }
 }
 
@@ -252,10 +339,7 @@
     max-width: 100%;
   }
 
-  .sections-wrapper .row {
-    padding: 0;
-    margin-left: 0;
-    margin-right: 0;
+  .home-content-grid {
     gap: 1.5rem;
   }
 
@@ -273,5 +357,14 @@
 
   .card-smeg-stack {
     gap: 1.5rem;
+  }
+
+  /* Vedette mobile: image passe en bloc séparé (géré par .carousel-image-wrapper mobile) */
+  .home-featured-layout {
+    min-height: initial;
+  }
+  .home-featured-text {
+    padding: 1rem;
+    padding-right: 1rem;
   }
 }

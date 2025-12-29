@@ -277,6 +277,84 @@
    PAGE RENSEIGNEMENTS & CONTACT
    ============================================ */
 
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.contact-main {
+  grid-column: 1;
+}
+
+.contact-aside {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  
+}
+
+.contact-aside-card {
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-aside-card h3,
+.contact-aside-card h4 {
+  margin-bottom: 1rem;
+}
+
+.contact-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-details li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.contact-details strong {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.contact-details a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.contact-details a:hover {
+  text-decoration: underline;
+}
+
+.contact-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.contact-bullets li {
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.contact-bullets li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
 .contact-section {
   margin-bottom: 4rem;
 }
@@ -344,7 +422,29 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+    width: 100%;
+  padding: 18px 30px 18px 18px;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 42px;
+  border: 2px solid #7a3e00;
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
+
 
 .contact-form-group {
   display: flex;
@@ -511,6 +611,21 @@
     gap: 2rem;
   }
 
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contact-main {
+    grid-column: 1;
+    order: 1;
+  }
+
+  .contact-aside {
+    grid-column: 1;
+    order: 2;
+  }
+
   .contact-content {
     grid-template-columns: 1fr;
   }
@@ -574,6 +689,14 @@
 @media (max-width: 576px) {
   .content-container {
     padding: 0 var(--spacing-sm);
+  }
+
+  .contact-layout {
+    padding: 1rem;
+  }
+
+  .contact-aside-card {
+    padding: 1.5rem;
   }
 
   .search-header {

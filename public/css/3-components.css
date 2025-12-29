@@ -453,6 +453,7 @@
 
 .dropdown-menu.show {
   display: block;
+  margin: 0.5rem 0;
 }
 
 .dropdown-item {
@@ -639,4 +640,37 @@
 .lead {
   font-size: 1.25rem;
   font-weight: 300;
+}
+
+/* ============================================
+   BOUTONS SMEG (UTILISATEUR)
+   ============================================ */
+
+.btn-smeg,
+a.btn-smeg {
+  display: inline-block;
+  background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%);
+  color: #fff !important;
+  border-radius: 42px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(225,154,79,0.12);
+  border: none;
+  padding: 0.7rem 2rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.btn-smeg.primary { background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%); }
+.btn-smeg.secondary { background: #efc48d; color: #6b3500 !important; }
+.btn-smeg.danger { background: #991b1b; color: #fff !important; }
+.btn-smeg:hover {
+  background: linear-gradient(90deg, #efc48d 0%, #e19a4f 100%);
+  box-shadow: 0 4px 16px rgba(225,154,79,0.18);
+  color: #fff !important;
+}
+.btn-smeg:disabled,
+.btn-smeg[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

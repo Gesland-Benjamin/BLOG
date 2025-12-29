@@ -7,39 +7,39 @@
       <div class="content-container">
         <h1 class="page-title">Articles — <%= categorie %></h1>
 
-
-
         <% if (!articles || articles.length === 0) { %>
           <p class="no-articles-message">Aucun article trouvé<%= search ? ' pour cette recherche' : ' pour cette catégorie' %>.</p>
         <% } else { %>
           <div class="article-grid">
             <% articles.forEach(function(article) { %>
-              <article class="article-card">
-                <% if (article.image) { %>
-                  <div class="article-card-image">
-                    <img 
-                      src="<%= article.image %>" 
-                      alt="<%= article.image_alt || article.titre %>"
-                      title="<%= article.titre %>"
-                      loading="lazy"
-                      srcset="<%= article.image %> 300w, <%= article.image.replace('_sm', '_md') %> 600w"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    >
+              <% if (article.titre && article.titre.trim() !== '' && (article.contenu && article.contenu.trim() !== '')) { %>
+                <article class="article-card">
+                  <% if (article.image) { %>
+                    <div class="article-card-image">
+                      <img 
+                        src="<%= article.image %>" 
+                        alt="<%= article.image_alt || article.titre %>"
+                        title="<%= article.titre %>"
+                        loading="lazy"
+                        srcset="<%= article.image %> 300w, <%= article.image.replace('_sm', '_md') %> 600w"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      >
+                    </div>
+                  <% } %>
+                  <div class="article-card-content">
+                    <h5 class="article-card-title"><%= article.titre %></h5>
+                    <p class="article-card-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
+                    <div class="article-card-meta">Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %></div>
+                    <div class="article-card-actions">
+                      <a href="/article/<%= article.id %>" class="btn-smeg primary">Lire l'article</a>
+                      <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                        <a href="/admin/articles/<%= article.id %>/edit" class="admin-btn warning">Modifier</a>
+                        <button class="admin-btn danger" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
+                      <% } %>
+                    </div>
                   </div>
-                <% } %>
-                <div class="article-card-content">
-                  <h5 class="article-card-title"><%= article.titre %></h5>
-                  <p class="article-card-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
-                  <div class="article-card-meta">Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %></div>
-                  <div class="article-card-actions">
-                    <a href="/article/<%= article.id %>" class="article-card-btn">Lire l'article</a>
-                    <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
-                      <a href="/admin/articles/<%= article.id %>/edit" class="admin-btn warning">Modifier</a>
-                      <button class="admin-btn danger" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
-                    <% } %>
-                  </div>
-                </div>
-              </article>
+                </article>
+              <% } %>
             <% }) %>
           </div>
         <% } %>

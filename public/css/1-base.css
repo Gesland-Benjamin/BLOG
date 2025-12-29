@@ -79,7 +79,9 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text-dark);
-  background: #fdf1e3;
+  background: url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png) center / cover no-repeat fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ============================================

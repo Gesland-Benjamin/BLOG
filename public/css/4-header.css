@@ -399,7 +399,10 @@ header .btn:active,
 .dropdown-item {
   border-radius: 14px;
   color: #6a3200;
-  padding: 0.45rem 0.9rem;
+  padding: 0.65rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .dropdown-item:hover {
