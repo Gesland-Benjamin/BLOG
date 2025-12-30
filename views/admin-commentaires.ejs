@@ -14,6 +14,7 @@
           <div class="admin-alert info">Aucun commentaire</div>
         <% } %>
 
+        <div class="admin-comments-grid">
         <% comments.forEach(c => { %>
           <div class="admin-comment-card">
             <div class="admin-comment-header">
@@ -140,6 +141,7 @@
           </div>
         </div>
       <% }) %>
+        </div>
 
       <%- include('partials/pagination', { pagination, baseUrl }) %>
     </main>

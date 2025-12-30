@@ -56,7 +56,7 @@
                         <%= new Date(a.date_publication).toLocaleDateString() %> — <%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %>
                       </div>
                     </div>
-                    <div class="admin-list-actions">
+                    <div class="admin-list-actions" style="margin-top:0.7rem;">
                       <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
                     </div>
                   </div>

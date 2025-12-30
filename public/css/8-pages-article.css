@@ -884,3 +884,19 @@
     border-radius: 8px;
   }
 }
+
+/* ============================================
+   GRILLE D'ARTICLES (2 par ligne sur desktop)
+   ============================================ */
+.article-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.2rem 2.2rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 992px) {
+  .article-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,3 +1,10 @@
+/* Grille pour les cards de commentaires admin */
+.admin-comments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
 /* ============================================
    9. PAGES ADMINISTRATION
    ============================================ */

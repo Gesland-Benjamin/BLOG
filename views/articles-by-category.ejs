@@ -12,7 +12,7 @@
         <% } else { %>
           <div class="article-grid">
             <% articles.forEach(function(article) { %>
-              <% if (article.titre && article.titre.trim() !== '' && (article.contenu && article.contenu.trim() !== '')) { %>
+              <% if (article.titre && article.titre.trim() !== '' && article.contenu && article.contenu.trim() !== '') { %>
                 <article class="article-card">
                   <% if (article.image) { %>
                     <div class="article-card-image">

@@ -44,20 +44,20 @@
               <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
                 <div class="home-featured-card card-bordered smeg-frame">
                   <div class="home-featured-layout">
-                    <div class="home-featured-text">
-                      <h2 class="home-featured-title"><%= s.titre %></h2>
-                      <p class="home-featured-excerpt"><%= s.extrait %>...</p>
-                      <p class="home-featured-meta">Par <%= s.auteur %> • <%= s.categorie %></p>
-                      <p class="home-featured-link">
+                    <div class="carousel-text">
+                      <h1 class="carousel-title"><%= s.titre %></h1>
+                      <p class="carousel-excerpt"><%= s.extrait %>...</p>
+                      <p class="carousel-author">Par <%= s.auteur %> • <%= s.categorie %></p>
+                      <p class="carousel-link">
                         <a href="/article/<%= s.id %>">Lire plus...</a>
                       </p>
                     </div>
                     <div class="carousel-image-wrapper">
                       <% if (s.image) { %>
-                        <img src="<%= s.image %>" alt="<%= s.titre %>"/>
+                        <img src="<%= s.image %>" alt="<%= s.titre %>" class="card-bordered" />
                       <% } else { %>
-                        <div class="home-featured-placeholder">
-                          <span>Pas d'image</span>
+                        <div class="carousel-placeholder">
+                          Aucune image
                         </div>
                       <% } %>
                     </div>
