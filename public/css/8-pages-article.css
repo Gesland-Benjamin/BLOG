@@ -371,6 +371,7 @@
 }
 
 .article-card {
+
   background: radial-gradient(
     ellipse at center,
     #fff4e4 0%,
@@ -421,9 +422,10 @@
 }
 
 .article-card-content {
-  padding: 2rem 2rem 1.5rem 2rem;
+  padding: 1rem 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   flex-grow: 1;
 }
 

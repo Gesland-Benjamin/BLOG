@@ -50,6 +50,20 @@
   object-position: center;
   border-radius: 0 42px 42px 0 !important;
 }
+.home-featured-layout > .carousel-image-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 0 42px 42px 0;
+  pointer-events: none;
+  z-index: 2;
+  /* Bordure beige fine et régulière */
+  box-shadow:
+    0 0 0 6px #fff8e6 inset;
+}
 
 
 /* ============================================
@@ -290,6 +304,114 @@
 }
 
 /* ============================================
+   CARDS DERNIERS ARTICLES & ARCHIVES
+   ============================================ */
+
+.card-smeg {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.2s;
+}
+
+.card-smeg:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+}
+
+.card-smeg-header {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #9a4f18;
+  letter-spacing: 0.5px;
+}
+
+.card-smeg .list-group,
+.card-smeg ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-smeg .list-group-item,
+.card-smeg ol li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f2e6d8;
+  font-size: 1rem;
+  color: #7a3e00;
+  transition: background 0.15s;
+}
+
+.card-smeg .list-group-item:last-child,
+.card-smeg ol li:last-child {
+  border-bottom: none;
+}
+
+.card-smeg .list-group-item a,
+.card-smeg ol li a {
+  color: #9a4f18;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.card-smeg .list-group-item a:hover,
+.card-smeg ol li a:hover {
+  color: #7a3e00;
+  text-decoration: underline;
+}
+
+/* ============================================
+   DERNIERS ARTICLES : IMAGE À GAUCHE, TEXTE À DROITE
+   ============================================ */
+.card-smeg .list-group-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: radial-gradient(ellipse at center, #fff6df 0%, #f8ddb0 45%, #ebc58c 75%, #d4a468 100%);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-smeg .list-group-item:last-child {
+  margin-bottom: 0;
+}
+
+.card-smeg .list-group-item img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.card-smeg .list-group-item .article-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.card-smeg .list-group-item .article-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7a3e00;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-smeg .list-group-item .article-meta {
+  font-size: 0.85rem;
+  color: #b88a4a;
+}
+
+/* ============================================
    RESPONSIVE ACCUEIL
    ============================================ */
 
@@ -375,4 +497,20 @@
     padding: 1rem;
     padding-right: 1rem;
   }
+}
+
+
+.heart-button{
+  background-image: url(../Boutton_coeur-Photoroom.png);
+  height: 50px;
+  width: 50px;
+  background-size: cover;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.heart-button:hover {
+  transform: translateY(-4px) scale(1.08);
+  transition: all 0.25s cubic-bezier(.4,2,.3,1);
 }

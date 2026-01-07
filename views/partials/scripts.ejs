@@ -1,8 +1,36 @@
-<!-- Bootstrap JS bundle (inclut Popper) pour carrousel & dropdowns -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpqvCqv1YvF2heq6j0JQ5Gv5Q6XQK" crossorigin="anonymous"></script>
+<!-- Script de test universel pour debug dropdown mobile (log + couleur) -->
+<script>
+window.addEventListener('load', function() {
+  console.log('Script de test chargé !');
+  setTimeout(function() {
+    var found = false;
+    document.querySelectorAll('.dropdown-toggle').forEach(function(btn) {
+      found = true;
+      console.log('Bouton dropdown trouvé :', btn.id || btn.className);
+      btn.addEventListener('click', function() {
+        this.style.background = '#ff4444';
+        this.style.color = '#fff';
+        console.log('Événement JS capté sur le bouton :', this.id || this.className);
+      });
+    });
+    if (!found) {
+      console.warn('Aucun bouton .dropdown-toggle trouvé dans le DOM !');
+    }
+  }, 200);
+});
+</script>
+<!-- Bootstrap JS désactivé pour test dropdown custom -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> -->
 
-<!-- Scripts personnalisés -->
-<script src="/js/dropdown.js"></script>
+<!-- Désactive le dropdown Bootstrap pour éviter les conflits -->
+<script>
+  if (window.bootstrap && window.bootstrap.Dropdown) {
+    window.bootstrap.Dropdown = function() {};
+  }
+</script>
+
+<!-- Scripts personnalisés (versionné pour forcer le rechargement) -->
+<script src="/js/dropdown.js?v=<%= Date.now() %>"></script>
 
 <!-- Force autoplay du carrousel -->
 <script>

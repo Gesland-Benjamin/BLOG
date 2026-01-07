@@ -33,13 +33,14 @@
           <div class="left-buttons-stack">
             <div class="dropdown">
               <button
-                class="btn dropdown-toggle"
+                class="btn dropdown-toggle btn-chrome-articles"
                 type="button"
                 id="navbarArticleDropdown"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                title="Articles"
               >
-                Articles
+                <span class="visually-hidden">Articles</span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="navbarArticleDropdown">
                 <% if (categories && categories.length) { %>
@@ -56,7 +57,7 @@
               </ul>
             </div>
             <a
-              class="btn"
+              class="btn-chrome-boutique"
               href="https://fr.farmasi.com/emiliedelbe"
               >Boutique</a
             >
@@ -162,43 +163,43 @@
                 id="navbarMoreDropdownMobileBar"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                title="Menu"
               >
-                Menu
+                <span class="visually-hidden">Menu</span>
               </button>
               <ul class="dropdown-menu header-full-width" aria-labelledby="navbarMoreDropdownMobileBar">
+              <li>
+                <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
+                  <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
+                </a>
+              </li>
+              <% if (typeof user !== 'undefined' && user) { %>
                 <li>
-                  <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
-                    <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
+                  <a class="dropdown-item" href="/auth/logout">
+                    <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
                   </a>
                 </li>
-                <% if (typeof user !== 'undefined' && user) { %>
-                  <li>
-                    <a class="dropdown-item" href="/auth/logout">
-                      <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-                    </a>
-                  </li>
-                <% } else { %>
-                  <li>
-                    <a class="dropdown-item" href="/auth">
-                      <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
-                    </a>
-                  </li>
-                <% } %>
+              <% } else { %>
                 <li>
-                  <a class="dropdown-item" href="/renseignements">
-                    <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
+                  <a class="dropdown-item" href="/auth">
+                    <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
                   </a>
                 </li>
-                <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
-                  <li>
-                    <a class="dropdown-item" href="/admin/dashboard">
-                      <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
-                    </a>
-                  </li>
-                <% } %>
-              </ul>
+              <% } %>
+              <li>
+                <a class="dropdown-item" href="/renseignements">
+                  <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
+                </a>
+              </li>
+              <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                <li>
+                  <a class="dropdown-item" href="/admin/dashboard">
+                    <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
+                  </a>
+                </li>
+              <% } %>
+            </ul>
             </div>
-          </div>
           <% } %>
 
         </div>
@@ -209,7 +210,7 @@
         <% if (typeof user !== 'undefined' && user && user.role === "admin") { %>
         <div class="dropdown gear-dropdown">
           <button
-            class="btn-gear"
+            class="btn-gear dropdown-toggle"
             type="button"
             id="adminMenuDropdown"
             data-bs-toggle="dropdown"
@@ -254,15 +255,15 @@
         <div class="header-right-actions">
           <div class="header-right-buttons">
             <% if (typeof user !== 'undefined' && user) { %>
-              <a class="btn" href="/auth/logout"
-                >Déconnexion</a
-              >
+              <a class="btn-chrome-deconnexion" href="/auth/logout">
+                <span class="visually-hidden">Déconnexion</span>
+              </a>
             <% } else { %>
-              <a class="btn" href="/auth"
+              <a class="btn-chrome-connexion" href="/auth"
                 >se connecter/s'inscrire</a
               >
             <% } %>
-            <a class="btn" href="/renseignements"
+            <a class="btn-chrome-contactes" href="/renseignements"
               >Renseignements</a
             >
           </div>

@@ -57,6 +57,80 @@ header::before {
 
   /* Bordure principale (comme les cards) */
   border: 2px solid #7a3e00;
+  /* Relief + double liseré */
+  box-shadow:
+    /* Ombre portée externe douce */ 0 18px 36px
+      rgba(0, 0, 0, 0.18),
+    /* Liseré clair intérieur */ inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    /* Creux bas (volume) */ inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    /* Highlight haut (plastique laqué) */ inset 0 8px 14px
+      rgba(255, 255, 255, 0.55),
+    /* Deuxième trait brun intérieur (signature cards) */ inset 0 0 0 10px
+      rgba(122, 62, 0, 0.22);
+
+  z-index: 0;
+}
+// ...existing code...
+
+/* Empêche le fond bleu lors de la sélection dans l'input de recherche */
+.search-form-center input:focus {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* =========================================
+   HEADER – STYLE SMEG 70–80 PREMIUM
+========================================= */
+
+:root {
+  --bg-main: #f29a4a;
+  --bg-light: #f7c992;
+  --bg-dark: #6b3500;
+  --bg-pill: #fff1cf;
+  --text-dark: #4a2600;
+  --radius-pill: 999px;
+}
+
+/* ----- HEADER WRAPPER ----- */
+header-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ----- HEADER GLOBAL ----- */
+header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem 0 2rem;
+  background: transparent;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+header::before {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130%;
+  height: 210px;
+  box-shadow: #000000 0 18px 36px rgba(2, 2, 2, 2);
+
+  /* Dégradé plastique SMEG */
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+
+  border-radius: 999px;
+
+  /* Bordure principale (comme les cards) */
+  border: 2px solid #7a3e00;
 
   /* Relief + double liseré */
   box-shadow:
@@ -146,6 +220,7 @@ header::before {
   flex-direction: column;
   gap: 0.65rem;
   align-items: center;
+  
 }
 
 .header-right-actions {
@@ -153,7 +228,7 @@ header::before {
 
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  
 }
 
 .gear-dropdown {
@@ -311,21 +386,24 @@ header .btn:active,
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.4rem;
   opacity: 0.75;
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
+ 
 }
-
-.btn-gear:hover {
-  opacity: 1;
+.img-gear {
+ 
+  display: block;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+  border-radius: 50%;
+    width: 200px;
+  height: 200px;
+}
+.btn-gear:hover .img-gear {
   transform: rotate(360deg);
 }
 
-.btn-gear svg {
-  width: 26px;
-  height: 26px;
-  stroke: currentColor;
-}
+
 
 /* ----- BARRE DE RECHERCHE CENTRÉE ----- */
 .search-form-center {
@@ -384,6 +462,16 @@ header .btn:active,
   padding: 0.6rem;
   background: #fff7ec;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.14);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 180px;
+  z-index: 1000;
+  display: none;
+}
+.dropdown-menu.show {
+  display: block !important;
+}
 }
 
 .dropdown-item {
@@ -404,7 +492,7 @@ header .btn:active,
 .mobile-duo-actions {
   display: none; /* visible uniquement en mobile via media query */
   width: 100%;
-  gap: 0.6rem;
+ 
 }
 .mobile-duo-actions .dropdown {
   flex: 1;
@@ -414,9 +502,23 @@ header .btn:active,
 }
 .mobile-duo-actions .dropdown-menu {
   width: 100%;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 9999;
+  display: none;
+}
+.mobile-duo-actions .dropdown-menu.show {
+  display: block !important;
+}
+.mobile-duo-actions {
+  position: relative;
+  overflow: visible;
+  z-index: 9999;
 }
 
-/* Rangée logo + réseaux en mobile */
+
+/* Rangée logo + réseaux en mobile : masquée par défaut (desktop) */
 .mobile-logo-row {
   display: none;
   align-items: center;
@@ -514,7 +616,7 @@ header .btn:active,
 
   header::before {
     height: 200px;
-    width: 150%;
+    width: 90%;
     top: 0.6rem;
   }
 
@@ -554,8 +656,8 @@ header .btn:active,
 
   /* Recherche pleine largeur sous le logo */
   .search-form-center {
-    max-width: 100%;
-    width: 100%;
+    max-width: 50%;
+    width: 50%;
     padding: 0.7rem 1.2rem;
   }
 

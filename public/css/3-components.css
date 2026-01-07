@@ -1,3 +1,24 @@
+/* MENU */
+.btn-chrome-menu {
+  display: inline-block;
+  background-image: url("../menu.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-menu:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
 /* ============================================
    3. COMPOSANTS – BOUTONS, CARTES, FORMULAIRES
    ============================================ */
@@ -5,44 +26,138 @@
 /* ============================================
    BOUTONS
    ============================================ */
-
-.btn {
-  background: linear-gradient(135deg, #f7e3bc, #e9c897);
-  color: #6a3200;
-  border-radius: 999px;
-  padding: 0.6rem 1.55rem;
-  border: 1.8px solid rgba(107, 53, 0, 0.32);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.75),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.07),
-              0 10px 18px rgba(0, 0, 0, 0.16);
-  transition: all 0.2s ease;
-  text-decoration: none;
-  white-space: nowrap;
+/* ARTICLES */
+.btn-chrome-articles,
+button.btn-chrome-articles,
+button.btn.btn-chrome-articles,
+button.dropdown-toggle.btn-chrome-articles {
   display: inline-block;
-  cursor: pointer;
+  background-image: url("/ARTICLES.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
   border: none;
-  text-align: center;
-  min-width: 150px;
-  justify-content: center;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
+.btn-chrome-articles:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+
+/* BOUTIQUE */
+.btn-chrome-boutique{  
+  display: inline-block;
+  background-image: url("/BOUTIQUE.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-boutique:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+
+/* DECONNEXION */
+.btn-chrome-deconnexion {  
+  display: inline-block;
+  background-image: url(../DECONNEXION.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-deconnexion:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+/* CONTACTES */
+.btn-chrome-contactes {  
+  display: inline-block;
+  background-image: url(../contacts.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-contactes:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+/* CONNEXION/INSCRIPTION */
+.btn-chrome-connexion {  
+  display: inline-block;
+  background-image: url(../connexion.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-connexion:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+/* S'INSCRIRE */
+
+
+
+
 
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.82), 0 12px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.82),
+    0 12px 20px rgba(0, 0, 0, 0.18);
 }
 
 .btn:active {
   transform: translateY(0);
-  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.12), 0 7px 14px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 14px rgba(0, 0, 0, 0.16);
 }
 
 .btn:focus {
   outline: none;
   box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.75),
-              0 10px 18px rgba(0, 0, 0, 0.16),
-              0 0 0 3px rgba(249, 146, 133, 0.2);
+    0 10px 18px rgba(0, 0, 0, 0.16), 0 0 0 3px rgba(249, 146, 133, 0.2);
 }
 
 .btn:disabled {
@@ -65,7 +180,11 @@
 .btn-bd-primary {
   --bs-btn-font-weight: 600;
   --bs-btn-color: #fff;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
   color: white;
   border: 2px solid var(--color-primary);
 }
@@ -208,12 +327,18 @@
   position: relative;
   border-radius: 42px;
   border: 2.5px solid #9a4f18;
-  background: radial-gradient(ellipse at center, #fff4e4 0%, #f9ddb5 42%, #efc48d 72%, #e19a4f 100%);
+  background: radial-gradient(
+    ellipse at center,
+    #fff4e4 0%,
+    #f9ddb5 42%,
+    #efc48d 72%,
+    #e19a4f 100%
+  );
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22),
-              inset 0 0 0 5px rgba(255, 248, 230, 0.9),
-              inset 0 -7px 12px rgba(0, 0, 0, 0.12),
-              inset 0 9px 16px rgba(255, 255, 255, 0.6),
-              inset 0 0 0 8px rgba(154, 79, 24, 0.22);
+    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
+    inset 0 9px 16px rgba(255, 255, 255, 0.6),
+    inset 0 0 0 8px rgba(154, 79, 24, 0.22);
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
@@ -227,12 +352,18 @@
   position: relative;
   border-radius: 42px;
   border: 2px solid #7a3e00;
-  background: radial-gradient(ellipse at center, #fff6df 0%, #f8ddb0 45%, #ebc58c 75%, #d4a468 100%);
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18),
-              inset 0 0 0 5px rgba(255, 245, 220, 0.9),
-              inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-              inset 0 8px 14px rgba(255, 255, 255, 0.55),
-              inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
@@ -432,7 +563,7 @@
 }
 
 .dropdown-toggle::after {
-  content: '▼';
+  content: "▼";
   margin-left: 0.5rem;
   font-size: 0.75rem;
 }
@@ -449,6 +580,7 @@
   box-shadow: var(--shadow-md);
   z-index: 1000;
   margin-top: 0.5rem;
+  list-style: none;
 }
 
 .dropdown-menu.show {
@@ -591,11 +723,21 @@
   text-decoration: none;
 }
 
-.badge-secondary { background: var(--color-secondary); }
-.badge-success { background: var(--color-success); }
-.badge-danger { background: var(--color-danger); }
-.badge-warning { background: var(--color-warning); }
-.badge-info { background: var(--color-info); }
+.badge-secondary {
+  background: var(--color-secondary);
+}
+.badge-success {
+  background: var(--color-success);
+}
+.badge-danger {
+  background: var(--color-danger);
+}
+.badge-warning {
+  background: var(--color-warning);
+}
+.badge-info {
+  background: var(--color-info);
+}
 
 .link-body-emphasis {
   color: var(--color-text-dark) !important;
@@ -627,15 +769,31 @@
   font-size: var(--font-size-sm);
 }
 
-.display-1 { font-size: 3.5rem; }
-.display-2 { font-size: 3rem; }
-.display-3 { font-size: 2.5rem; }
-.display-4 { font-size: 2rem; }
-.display-5 { font-size: 1.75rem; }
-.display-6 { font-size: 1.5rem; }
+.display-1 {
+  font-size: 3.5rem;
+}
+.display-2 {
+  font-size: 3rem;
+}
+.display-3 {
+  font-size: 2.5rem;
+}
+.display-4 {
+  font-size: 2rem;
+}
+.display-5 {
+  font-size: 1.75rem;
+}
+.display-6 {
+  font-size: 1.5rem;
+}
 
-.h3 { font-size: 1.75rem; }
-.h5 { font-size: 1.25rem; }
+.h3 {
+  font-size: 1.75rem;
+}
+.h5 {
+  font-size: 1.25rem;
+}
 
 .lead {
   font-size: 1.25rem;
@@ -653,7 +811,7 @@ a.btn-smeg {
   color: #fff !important;
   border-radius: 42px;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(225,154,79,0.12);
+  box-shadow: 0 2px 8px rgba(225, 154, 79, 0.12);
   border: none;
   padding: 0.7rem 2rem;
   transition: background 0.2s, box-shadow 0.2s;
@@ -661,12 +819,20 @@ a.btn-smeg {
   font-size: 1rem;
   cursor: pointer;
 }
-.btn-smeg.primary { background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%); }
-.btn-smeg.secondary { background: #efc48d; color: #6b3500 !important; }
-.btn-smeg.danger { background: #991b1b; color: #fff !important; }
+.btn-smeg.primary {
+  background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%);
+}
+.btn-smeg.secondary {
+  background: #efc48d;
+  color: #6b3500 !important;
+}
+.btn-smeg.danger {
+  background: #991b1b;
+  color: #fff !important;
+}
 .btn-smeg:hover {
   background: linear-gradient(90deg, #efc48d 0%, #e19a4f 100%);
-  box-shadow: 0 4px 16px rgba(225,154,79,0.18);
+  box-shadow: 0 4px 16px rgba(225, 154, 79, 0.18);
   color: #fff !important;
 }
 .btn-smeg:disabled,
@@ -674,3 +840,8 @@ a.btn-smeg {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+
+
+

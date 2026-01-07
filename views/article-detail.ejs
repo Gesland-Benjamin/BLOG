@@ -60,11 +60,11 @@
             <div class="article-detail-actions">
               <button
                 id="like-btn"
-                class="article-like-btn <%= article.liked ? 'liked' : '' %>"
+                class="heart-button <%= article.liked ? 'liked' : '' %>"
                 data-article-id="<%= article.id %>"
                 <%= article.liked ? 'disabled' : '' %>
               >
-                <%= article.liked ? 'Merci pour votre j\'aime' : 'Je laisse un j\'aime' %>
+                <%= article.liked ? "Merci" : "J'aime" %>
               </button>
               <span id="like-count" class="article-like-count">
                 <%= article.likes %> j'aime<%= article.likes > 1 ? 's' : '' %>
@@ -119,7 +119,6 @@
                           <% } else { %>
                             <!-- Menu déroulant si plus de 3 réponses -->
 
-                        <%- include('partials/pagination', { pagination: commentsPagination, baseUrl: commentsBaseUrl }) %>
                             <div class="accordion accordion-flush" id="accordion-comment-<%= c.id %>">
                               <div class="accordion-item border-0">
                                 <h2 class="accordion-header">
@@ -154,6 +153,9 @@
                   <% }) %>
                 </div>
               <% } %>
+
+              <!-- Pagination des commentaires en dehors de la boucle -->
+              <%- include('partials/pagination', { pagination: commentsPagination, baseUrl: commentsBaseUrl }) %>
 
               <% if (typeof commentSubmitted !== 'undefined' && commentSubmitted) { %>
                 <div class="alert alert-success">Merci ! Votre commentaire est en attente de validation.</div>

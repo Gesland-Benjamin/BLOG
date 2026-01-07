@@ -36,6 +36,7 @@
       <div class="carousel-wrapper">
         <%- include('partials/carousel', { carouselItems }) %>
       </div>
+      <div><button class="heart-button"></button></div>
       <!-- Cartes Recent Posts et Archives -->
       <div class="sections-wrapper">
         <div class="home-content-grid">
@@ -71,24 +72,22 @@
               <article class="card-smeg smeg-frame">
                 <div class="sidebar-section">
                   <h4 class="sidebar-title">Derniers articles</h4>
-                  <ul class="sidebar-list">
+                  <ul class="list-group">
                     <% if (recentPosts && recentPosts.length) { %>
                       <% recentPosts.forEach((p, idx) => { %>
-                        <li class="sidebar-post-item">
-                          <a href="/article/<%= p.id %>">
+                        <li class="list-group-item">
+                          <a href="/article/<%= p.id %>" style="display:flex;align-items:center;gap:1rem;">
                             <% if (p.image) { %>
-                              <div class="sidebar-post-image">
-                                <img src="<%= p.image %>" alt="<%= p.titre %>">
-                              </div>
+                              <img src="<%= p.image %>" alt="<%= p.titre %>">
                             <% } else { %>
-                              <svg aria-hidden="true" class="sidebar-post-placeholder" height="96" preserveAspectRatio="xMidYMid slice" width="120" xmlns="http://www.w3.org/2000/svg">
+                              <svg aria-hidden="true" width="56" height="56" style="border-radius:10px;background:#e9ecef;display:block;" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="100%" height="100%" fill="#e9ecef"></rect>
                                 <text x="50%" y="50%" fill="#adb5bd" dy=".3em" font-size="12" text-anchor="middle">Article</text>
                               </svg>
                             <% } %>
-                            <div class="sidebar-post-content">
-                              <h6 class="sidebar-post-title"><%= p.titre %></h6>
-                              <div class="sidebar-post-author">Par <%= p.auteur %></div>
+                            <div class="article-info">
+                              <span class="article-title"><%= p.titre %></span>
+                              <span class="article-meta">Par <%= p.auteur %></span>
                             </div>
                           </a>
                         </li>
@@ -123,8 +122,30 @@
           </aside>
         </div>
       </div>
+      
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
+      <!-- Script de test inline pour debug JS -->
+      <script>
+        window.addEventListener('load', function() {
+          console.log('Script inline chargé !');
+          setTimeout(function() {
+            var found = false;
+            document.querySelectorAll('.dropdown-toggle').forEach(function(btn) {
+              found = true;
+              console.log('Bouton dropdown trouvé :', btn.id || btn.className);
+              btn.addEventListener('click', function() {
+                this.style.background = '#ff4444';
+                this.style.color = '#fff';
+                console.log('Événement JS capté sur le bouton :', this.id || this.className);
+              });
+            });
+            if (!found) {
+              console.warn('Aucun bouton .dropdown-toggle trouvé dans le DOM !');
+            }
+          }, 200);
+        });
+      </script>
   </body>
 </html>
