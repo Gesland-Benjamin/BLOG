@@ -1,3 +1,17 @@
+/* ============================================
+   SOMMAIRE DU FICHIER CSS (pages-home.css)
+   ============================================
+   1. Harmonisation carrousel/articles
+   2. Grille et wrapper de la page d'accueil
+   3. Bloc vedette (home featured)
+   4. Sections gauche (articles)
+   5. Sidebar droite
+   6. Cards derniers articles & archives
+   7. Responsive accueil
+   8. Bouton coeur
+   (Chaque section est repérée par un commentaire ============)
+*/
+
 /* Harmonisation avec le carrousel : texte à gauche, image à droite */
 .home-featured-layout {
   display: flex;
@@ -54,6 +68,7 @@
 
 .home-sidebar {
   grid-column: 2;
+  max-width: 100%;
 }
 
 .home-wrapper {
@@ -80,7 +95,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  gap: 2rem;
   padding: 2rem 2rem;
   /* Laisser la place à l'image à droite (même logique que carrousel) */
   padding-right: calc(50% + 16px);
@@ -185,6 +200,7 @@
   display: flex;
   flex-direction: column;
   gap: 3rem;
+
 }
 
 .card-smeg-header {
@@ -302,6 +318,7 @@
     inset 0 8px 14px rgba(255, 255, 255, 0.55),
     inset 0 0 0 10px rgba(122, 62, 0, 0.22);
   overflow: hidden;
+  padding: 25px;
 }
 
 .card-smeg .list-group,
@@ -313,8 +330,8 @@
 
 .card-smeg .list-group-item,
 .card-smeg ol li {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f2e6d8;
+  padding:  0;
+  
   font-size: 1rem;
   color: #7a3e00;
   transition: background 0.15s;
@@ -481,7 +498,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: space-between;
-  gap: 1rem;
+  gap: 2rem;
   width: 50%;
   padding: 1.25rem 1rem 1.25rem 1.25rem;
 }
