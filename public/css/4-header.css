@@ -1,3 +1,15 @@
+/* Boutons icônes mobiles : image prend toute la place du bouton */
+.mobile-icon-btn {
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  height: 48px;
+  max-width: max-content                                                                               ;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Empêche le fond bleu lors de la sélection dans l'input de recherche */
 .search-form-center input:focus {
   background: transparent !important;
@@ -18,9 +30,11 @@
 
 /* ----- HEADER WRAPPER ----- */
 header-wrapper {
-  width: 100%;
+  max-width: 30%;
+  margin: auto;
   display: flex;
   justify-content: center;
+
 }
 
 /* ----- HEADER GLOBAL ----- */
@@ -30,7 +44,7 @@ header {
   justify-content: center;
   padding: 1.25rem 0 2rem;
   background: transparent;
-  max-width: 1320px;
+  
   margin: 0 auto;
 }
 
@@ -70,13 +84,7 @@ header::before {
 
   z-index: 0;
 }
-// ...existing code...
 
-/* Empêche le fond bleu lors de la sélection dans l'input de recherche */
-.search-form-center input:focus {
-  background: transparent !important;
-  box-shadow: none !important;
-}
 /* =========================================
    HEADER – STYLE SMEG 70–80 PREMIUM
 ========================================= */
@@ -472,7 +480,7 @@ header .btn:active,
 .dropdown-menu.show {
   display: block !important;
 }
-}
+
 
 .dropdown-item {
   border-radius: 14px;
@@ -608,6 +616,42 @@ header .btn:active,
 
 /* ----- RESPONSIVE MOBILE (<= 576px) ----- */
 @media (max-width: 576px) {
+    /* Header plus compact et input recherche en bas */
+    .header-search-and-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+    .header-search-bottom {
+      width: 100%;
+      max-width: 90vw;
+      margin: 0 auto 0.2rem auto;
+      padding: 0.4rem 0.5rem;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .header-actions-bottom {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+    .header-actions-bottom .dropdown {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .header-actions-bottom .mobile-icon-btn {
+      width: 100%;
+      height: 38px;
+      min-width: 38px;
+      max-width: 100%;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
   header {
     padding: 1rem 0 2rem;
     max-width: 540px;

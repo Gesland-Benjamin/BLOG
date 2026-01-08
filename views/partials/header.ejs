@@ -96,110 +96,111 @@
             </a>
           </div>
           <% if (showNavbar) { %>
-          <form method="GET" action="/search" class="search-form-center">
-            <input
-              type="search"
-              name="q"
-              placeholder="Rechercher..."
-              aria-label="Rechercher"
-            />
-            <button
-              type="submit"
-              class="btn-search-center"
-              aria-label="Rechercher"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <title>Search</title>
-                <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                <path d="M21 21l-5.2-5.2"></path>
-              </svg>
-            </button>
-          </form>
-          <% } %>
-          <% if (showNavbar) { %>
-          <!-- Actions mobiles: deux menus déroulants côte à côte -->
-          <div class="mobile-duo-actions">
-            <!-- Dropdown Articles (catégories) -->
-            <div class="dropdown">
+          <div class="header-search-and-actions">
+            <form method="GET" action="/search" class="search-form-center header-search-bottom">
+              <input
+                type="search"
+                name="q"
+                placeholder="Rechercher..."
+                aria-label="Rechercher"
+              />
               <button
-                class="btn dropdown-toggle header-full-width"
-                type="button"
-                id="navbarArticleDropdownMobileBar"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+                type="submit"
+                class="btn-search-center"
+                aria-label="Rechercher"
               >
-                Articles
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <title>Search</title>
+                  <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                  <path d="M21 21l-5.2-5.2"></path>
+                </svg>
               </button>
-              <ul class="dropdown-menu header-full-width" aria-labelledby="navbarArticleDropdownMobileBar">
-                <% if (categories && categories.length) { %>
-                  <% categories.forEach(cat => { %>
-                    <li>
-                      <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
-                        <i class="bi bi-tag-fill header-icon-spacer"></i><%= cat.nom %>
-                      </a>
-                    </li>
-                  <% }) %>
+            </form>
+            <div class="mobile-duo-actions header-actions-bottom">
+              <!-- Dropdown Articles (catégories) -->
+              <div class="dropdown">
+                <button
+                  class="btn dropdown-toggle btn-chrome-articles"
+                  type="button"
+                  id="navbarArticleDropdownMobileBar"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  aria-label="Articles"
+                >
+                  Articles
+                </button>
+                <ul class="dropdown-menu header-full-width" aria-labelledby="navbarArticleDropdownMobileBar">
+                  <% if (categories && categories.length) { %>
+                    <% categories.forEach(cat => { %>
+                      <li>
+                        <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
+                          <i class="bi bi-tag-fill header-icon-spacer"></i><%= cat.nom %>
+                        </a>
+                      </li>
+                    <% }) %>
+                  <% } else { %>
+                    <li><span class="dropdown-item header-text-muted"><i class="bi bi-dash-circle header-icon-spacer"></i>Aucune catégorie</span></li>
+                  <% } %>
+                </ul>
+              </div>
+              <!-- Dropdown Menu (reste des boutons) -->
+              <div class="dropdown">
+                <button
+                  class="btn dropdown-toggle btn-chrome-menu"
+                  type="button"
+                  id="navbarMoreDropdownMobileBar"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  title="Menu"
+                  aria-label="Menu"
+                >
+                  Menu
+                </button>
+                <ul class="dropdown-menu header-full-width" aria-labelledby="navbarMoreDropdownMobileBar">
+                <li>
+                  <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
+                    <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
+                  </a>
+                </li>
+                <% if (typeof user !== 'undefined' && user) { %>
+                  <li>
+                    <a class="dropdown-item" href="/auth/logout">
+                      <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
+                    </a>
+                  </li>
                 <% } else { %>
-                  <li><span class="dropdown-item header-text-muted"><i class="bi bi-dash-circle header-icon-spacer"></i>Aucune catégorie</span></li>
+                  <li>
+                    <a class="dropdown-item" href="/auth">
+                      <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
+                    </a>
+                  </li>
+                <% } %>
+                <li>
+                  <a class="dropdown-item" href="/renseignements">
+                    <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
+                  </a>
+                </li>
+                <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                  <li>
+                    <a class="dropdown-item" href="/admin/dashboard">
+                      <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
+                    </a>
+                  </li>
                 <% } %>
               </ul>
+              </div>
             </div>
-
-            <!-- Dropdown Menu (reste des boutons) -->
-            <div class="dropdown">
-              <button
-                class="btn dropdown-toggle header-full-width"
-                type="button"
-                id="navbarMoreDropdownMobileBar"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                title="Menu"
-              >
-                <span class="visually-hidden">Menu</span>
-              </button>
-              <ul class="dropdown-menu header-full-width" aria-labelledby="navbarMoreDropdownMobileBar">
-              <li>
-                <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
-                  <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
-                </a>
-              </li>
-              <% if (typeof user !== 'undefined' && user) { %>
-                <li>
-                  <a class="dropdown-item" href="/auth/logout">
-                    <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-                  </a>
-                </li>
-              <% } else { %>
-                <li>
-                  <a class="dropdown-item" href="/auth">
-                    <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
-                  </a>
-                </li>
-              <% } %>
-              <li>
-                <a class="dropdown-item" href="/renseignements">
-                  <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
-                </a>
-              </li>
-              <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
-                <li>
-                  <a class="dropdown-item" href="/admin/dashboard">
-                    <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
-                  </a>
-                </li>
-              <% } %>
-            </ul>
-            </div>
+          </div>
           <% } %>
 
         </div>

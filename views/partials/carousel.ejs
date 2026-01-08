@@ -16,26 +16,25 @@
   <div class="carousel-inner">
     <% carouselItems.forEach((item, idx) => { %>
     <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
-      <div class="carousel-article-card">
-        <div class="carousel-text">
-          <h1 class="carousel-title"><%= item.titre %></h1>
-          <p class="carousel-excerpt"><%= item.extrait %>...</p>
-          <p class="carousel-author">Par <%= item.auteur %></p>
-          <p class="carousel-link">
+      <div class="main-carousel-article-card">
+        <div class="main-carousel-text">
+          <h1 class="main-carousel-title"><%= item.titre %></h1>
+          <p class="main-carousel-excerpt"><%= item.extrait %>...</p>
+          <p class="main-carousel-author">Par <%= item.auteur %></p>
+          <p class="main-carousel-link">
             <a href="/article/<%= item.id %>"
               >Lire l'article complet...</a
             >
           </p>
         </div>
-        <div class="carousel-image-wrapper">
+        <div class="main-carousel-image-wrapper">
           <% if (item.image) { %>
             <img
               src="<%= item.image %>"
               alt="<%= item.titre %>"
-              class="card-bordered"
             />
             <% } else { %>
-            <div class="carousel-placeholder">
+            <div class="main-carousel-placeholder">
               Aucune image
             </div>
             <% } %>

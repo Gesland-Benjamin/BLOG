@@ -1,10 +1,76 @@
-/* MENU */
+/*
+============================================================
+  3-COMPONENTS.CSS — COMPOSANTS, BOUTONS, CARTES, FORMULAIRES
+============================================================
+
+  TABLE DES MATIÈRES :
+  1. Boutons principaux (Articles, Menu, Connexion, etc.)
+  2. Boutons utilitaires (taille, variantes)
+  3. Cartes
+  4. Formulaires
+  5. Alertes
+  6. Pagination
+  7. Divers utilitaires
+============================================================
+*/
+
+/* ===================== 1. BOUTONS PRINCIPAUX ===================== */
+
+/* --- Bouton Articles --- */
+.btn-chrome-articles,
+button.btn-chrome-articles,
+button.btn.btn-chrome-articles,
+button.dropdown-toggle.btn-chrome-articles {
+  display: inline-block;
+  background-image: url(../articles.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+/* États spéciaux pour bouton Articles (menu ouvert, focus, etc.) */
+.btn-chrome-articles.show,
+button.btn-chrome-articles.show,
+button.btn.btn-chrome-articles.show,
+button.dropdown-toggle.btn-chrome-articles.show,
+.btn-chrome-articles:active,
+button.btn-chrome-articles:active,
+button.btn.btn-chrome-articles:active,
+button.dropdown-toggle.btn-chrome-articles:active,
+.btn-chrome-articles[aria-expanded="true"],
+button.btn-chrome-articles[aria-expanded="true"],
+button.btn.btn-chrome-articles[aria-expanded="true"],
+button.dropdown-toggle.btn-chrome-articles[aria-expanded="true"],
+.btn-chrome-articles:focus,
+button.btn-chrome-articles:focus,
+button.btn.btn-chrome-articles:focus,
+button.dropdown-toggle.btn-chrome-articles:focus,
+.btn-chrome-articles:focus-visible,
+button.btn-chrome-articles:focus-visible,
+button.btn.btn-chrome-articles:focus-visible,
+button.dropdown-toggle.btn-chrome-articles:focus-visible {
+  background-image: url(../articles.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: transparent !important;
+}
+
+/* --- Bouton Menu --- */
 .btn-chrome-menu {
   display: inline-block;
-  background-image: url("../menu.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-image: url(../menu.png) !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
   background-color: transparent !important;
   border: none;
   width: 18rem;
@@ -19,20 +85,11 @@
   transform: translateY(-4px) scale(1.08);
   filter: brightness(1.08);
 }
-/* ============================================
-   3. COMPOSANTS – BOUTONS, CARTES, FORMULAIRES
-   ============================================ */
 
-/* ============================================
-   BOUTONS
-   ============================================ */
-/* ARTICLES */
-.btn-chrome-articles,
-button.btn-chrome-articles,
-button.btn.btn-chrome-articles,
-button.dropdown-toggle.btn-chrome-articles {
+/* --- Bouton Connexion/Inscription --- */
+.btn-chrome-connexion {  
   display: inline-block;
-  background-image: url("/ARTICLES.png");
+  background-image: url(../connexion.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -46,15 +103,37 @@ button.dropdown-toggle.btn-chrome-articles {
   box-shadow: none !important;
   padding: 0 !important;
 }
-.btn-chrome-articles:hover {
+.btn-chrome-connexion:hover {
   transform: translateY(-4px) scale(1.08);
   filter: brightness(1.08);
 }
 
-/* BOUTIQUE */
-.btn-chrome-boutique{  
+/* --- Bouton Contacts --- */
+.btn-chrome-contactes {  
   display: inline-block;
-  background-image: url("/BOUTIQUE.png");
+  background-image: url(../contacts.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-contactes:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+
+/* --- Bouton Boutique --- */
+.btn-chrome-boutique {
+  display: inline-block;
+  background-image: url(../boutique.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -73,10 +152,10 @@ button.dropdown-toggle.btn-chrome-articles {
   filter: brightness(1.08);
 }
 
-/* DECONNEXION */
-.btn-chrome-deconnexion {  
+/* --- Bouton Déconnexion --- */
+.btn-chrome-deconnexion {
   display: inline-block;
-  background-image: url(../DECONNEXION.png);
+  background-image: url(../deconnexion.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -90,6 +169,177 @@ button.dropdown-toggle.btn-chrome-articles {
   box-shadow: none !important;
   padding: 0 !important;
 }
+.btn-chrome-deconnexion:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+
+/* ===================== 2. BOUTONS UTILITAIRES ===================== */
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.82),
+    0 12px 20px rgba(0, 0, 0, 0.18);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.12),
+    0 7px 14px rgba(0, 0, 0, 0.16);
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.75),
+    0 10px 18px rgba(0, 0, 0, 0.16), 0 0 0 3px rgba(249, 146, 133, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Variantes de boutons */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn-bd-primary {
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+  color: white;
+  border: 2px solid var(--color-primary);
+}
+
+.btn-bd-primary:hover:not(:disabled) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-secondary {
+  background: #f7e3bc;
+  color: #6a3200;
+  border-color: rgba(107, 53, 0, 0.32);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e9c897;
+}
+
+.btn-success {
+  background: var(--color-success);
+  color: white;
+  border-color: var(--color-success);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #218838;
+  border-color: #218838;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+.btn-warning {
+  background: var(--color-warning);
+  color: #333;
+  border-color: var(--color-warning);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: #e0a800;
+  border-color: #e0a800;
+}
+
+.btn-info {
+  background: var(--color-info);
+  color: white;
+  border-color: var(--color-info);
+}
+
+.btn-info:hover:not(:disabled) {
+  background: #138496;
+  border-color: #138496;
+}
+
+.btn-outline-secondary {
+  background: white;
+  color: #6a3200;
+  border: 1.8px solid rgba(107, 53, 0, 0.32);
+  box-shadow: none;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+  background: #f7e3bc;
+  border-color: #7a3e00;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  min-width: auto;
+}
+
+.btn-lg {
+  padding: 0.75rem 2rem;
+  font-size: 1.125rem;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* ===================== 3. CARTES ===================== */
+
+/* ============================================
+   3. COMPOSANTS – BOUTONS, CARTES, FORMULAIRES
+   ============================================ */
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+/* ARTICLES */
+.btn-chrome-articles,
+ .btn-chrome-articles,
+ button.btn-chrome-articles,
+ button.btn.btn-chrome-articles,
+ button.dropdown-toggle.btn-chrome-articles {
+   display: inline-block;
+   background-image: url(../articles.png) !important;
+   background-size: cover !important;
+   background-repeat: no-repeat !important;
+   background-position: center !important;
+   background-color: transparent !important;
+   border: none;
+   width: 18rem;
+   height: 3.2rem;
+   cursor: pointer;
+   overflow: hidden;
+   text-indent: -9999px;
+   box-shadow: none !important;
+   padding: 0 !important;
+ }
 .btn-chrome-deconnexion:hover {
   transform: translateY(-4px) scale(1.08);
   filter: brightness(1.08);
@@ -136,7 +386,70 @@ button.dropdown-toggle.btn-chrome-articles {
   transform: translateY(-4px) scale(1.08);
   filter: brightness(1.08);
 }
-/* S'INSCRIRE */
+/* MENU */
+.btn-chrome-menu {
+  display: inline-block;
+  background-image: url(../menu.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-menu:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+/* BOUTIQUE */
+.btn-chrome-boutique {
+  display: inline-block;
+  background-image: url(../boutique.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-boutique:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+/* DECONNEXION */
+.btn-chrome-deconnexion {
+  display: inline-block;
+  background-image: url(../deconnexion.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none;
+  width: 18rem;
+  height: 3.2rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: -9999px;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.btn-chrome-deconnexion:hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: brightness(1.08);
+}
+
 
 
 

@@ -1,4 +1,4 @@
-.carousel-image-wrapper::after {
+.main-carousel-image-wrapper::after {
   content: '';
   position: absolute;
   top: 0;
@@ -10,7 +10,7 @@
   z-index: 2;
   box-shadow:
     0 0 0 5px rgba(255,245,220,0.9) inset,
-    0 0 0 10px rgba(255,255,255,0.55) inset;
+    0 0 0 0px rgba(255,245,220,0.9) inset;
 }
 /* ============================================
    6. CAROUSEL – CARROUSEL MIXTE
@@ -78,7 +78,7 @@
    IMAGES CARROUSEL
    ============================================ */
 
-.carousel-image-wrapper {
+.main-carousel-image-wrapper {
   position: absolute;
   top: 0;
   right: 0;
@@ -88,7 +88,7 @@
   border-radius: 0 42px 42px 0;
 }
 
-.carousel-image-wrapper img {
+.main-carousel-image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -102,12 +102,12 @@
    TEXTE CARROUSEL
    ============================================ */
 
-.carousel-article-card {
+.main-carousel-article-card {
   min-height: 280px;
   position: relative;
 }
 
-.carousel-text {
+.main-carousel-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -122,19 +122,19 @@
   padding: 2.5rem 2rem 2.5rem 2.5rem;
 }
 
-.carousel-text h1 {
+.main-carousel-text h1 {
   margin: 0;
   font-size: 1.75rem;
   line-height: 1.2;
 }
 
-.carousel-text p {
+.main-carousel-text p {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
-.carousel-text a {
+.main-carousel-text a {
   font-weight: 700;
   text-decoration: none;
 }
@@ -148,12 +148,12 @@
     padding: 0;
   }
 
-  .carousel-article-card {
+  .main-carousel-article-card {
     min-height: 200px;
   }
 
  
-  .carousel-image-wrapper {
+  .main-carousel-image-wrapper {
     position: absolute;
     top: 0;
     right: 0;
@@ -164,22 +164,22 @@
     border-radius: 0 42px 42px 0;
   }
 
-  .carousel-image-wrapper img {
+  .main-carousel-image-wrapper img {
     border-radius: 0 42px 42px 0 !important;
     object-fit: cover;
   }
 
-  .carousel-text {
+  .main-carousel-text {
     gap: 0.75rem;
     padding-right: calc(50% + 16px);
     
   }
 
-  .carousel-text h1 {
+  .main-carousel-text h1 {
     font-size: 1.4rem;
   }
 
-  .carousel-text p {
+  .main-carousel-text p {
     font-size: 0.85rem;
   }
 }
@@ -187,11 +187,12 @@
 @media (max-width: 576px) {
   #mixedCarousel {
     padding: 1rem;
+    border-radius: 48px 48px 48px 48px;
   }
 
   .carousel-article-card {
     min-height: 150px;
-    flex-direction: column-reverse;
+    
   }
 
   .carousel-image-wrapper {

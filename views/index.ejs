@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
   <%- include('partials/head') %>
@@ -36,7 +35,7 @@
       <div class="carousel-wrapper">
         <%- include('partials/carousel', { carouselItems }) %>
       </div>
-      <div><button class="heart-button"></button></div>
+      
       <!-- Cartes Recent Posts et Archives -->
       <div class="sections-wrapper">
         <div class="home-content-grid">
@@ -45,15 +44,15 @@
               <% (topLikedSections || []).forEach((s, idx) => { const isReverse = idx % 2 === 1; %>
                 <div class="home-featured-card card-bordered smeg-frame">
                   <div class="home-featured-layout">
-                    <div class="carousel-text">
-                      <h1 class="carousel-title"><%= s.titre %></h1>
-                      <p class="carousel-excerpt"><%= s.extrait %>...</p>
-                      <p class="carousel-author">Par <%= s.auteur %> • <%= s.categorie %></p>
-                      <p class="carousel-link">
+                    <div class="article-card-text">
+                      <h1 class="article-card-title"><%= s.titre %></h1>
+                      <p class="article-card-excerpt"><%= s.extrait %>...</p>
+                      <p class="article-card-author">Par <%= s.auteur %> • <%= s.categorie %></p>
+                      <p class="article-card-link">
                         <a href="/article/<%= s.id %>">Lire plus...</a>
                       </p>
                     </div>
-                    <div class="carousel-image-wrapper">
+                    <div class="article-card-image-wrapper">
                       <% if (s.image) { %>
                         <img src="<%= s.image %>" alt="<%= s.titre %>" class="card-bordered" />
                       <% } else { %>

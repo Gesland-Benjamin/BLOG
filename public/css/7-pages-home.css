@@ -34,37 +34,6 @@
 .home-featured-link {
   margin: 0;
 }
-.home-featured-layout > .carousel-image-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 50%;
-  overflow: hidden;
-  border-radius: 0 42px 42px 0;
-}
-.home-featured-layout > .carousel-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0 42px 42px 0 !important;
-}
-.home-featured-layout > .carousel-image-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border-radius: 0 42px 42px 0;
-  pointer-events: none;
-  z-index: 2;
-  /* Bordure beige fine et régulière */
-  box-shadow:
-    0 0 0 6px #fff8e6 inset;
-}
-
 
 /* ============================================
    7. PAGE ACCUEIL (INDEX)
@@ -73,7 +42,7 @@
 .home-content-grid {
   display: grid;
   grid-template-columns: 1fr 350px;
-  gap: 1,5rem;
+  gap: 1, 5rem;
   width: 100%;
   padding: 30px 30px 0 30px;
 }
@@ -99,12 +68,12 @@
 
 .home-featured-card {
   position: relative;
-  height: 300px;
+  height: 100%;
 }
 
 .home-featured-layout {
   position: relative;
-  min-height: 300px;
+  min-height: 100%;
 }
 
 .home-featured-text {
@@ -136,14 +105,44 @@
   margin: 0;
 }
 
-.home-featured-layout > .carousel-image-wrapper {
-  position: absolute;
+.article-card-image-wrapper {
+  position: relative;
   top: 0;
   right: 0;
   bottom: 0;
   width: 50%;
-  overflow: hidden;
+
+  border-radius: 0 42px 42px 42px;
+  background: transparent;
+
+  box-shadow:
+    0 0 0 5px rgba(255,245,220,0.9) inset,
+    0 0 0 10px rgba(255,255,255,0.55) inset;
+}
+
+.article-card-image-wrapper::after {
+   content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   border-radius: 0 42px 42px 0;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow:
+    0 0 0 5px rgba(255,245,220,0.9) inset,
+    0 0 0 0px rgba(255,245,220,0.9) inset;
+}
+
+
+.article-card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0 42px 42px 0px !important;
+  box-shadow: none !important;
 }
 
 /* ============================================
@@ -156,21 +155,16 @@
   gap: 1.5rem;
 }
 
-
-
 .left-sections > .card-bordered:hover {
   transform: translateY(-6px);
   filter: brightness(1.03);
-  border: 2.5px solid #9a4f18;
-  box-shadow:
-    0 28px 52px rgba(0, 0, 0, 0.28),
+
+  box-shadow: 0 28px 52px rgba(0, 0, 0, 0.28),
     inset 0 0 0 5px rgba(255, 248, 230, 0.9),
     inset 0 -7px 12px rgba(0, 0, 0, 0.12),
     inset 0 9px 16px rgba(255, 255, 255, 0.6),
     inset 0 0 0 8px rgba(154, 79, 24, 0.22);
 }
-
-
 
 .left-sections > .card-bordered h2 {
   font-size: 1.75rem;
@@ -182,21 +176,6 @@
   line-height: 1.6;
   margin-bottom: 1rem;
 }
-
-.left-sections > .card-bordered a {
-  font-weight: 700;
-  color: #9a4f18 !important;
-  text-decoration: none;
-}
-
-.left-sections > .card-bordered a:hover {
-  color: #7a3e00 !important;
-  text-decoration: underline;
-}
-
-
-
-
 
 /* ============================================
    SIDEBAR DROITE
@@ -308,24 +287,21 @@
    ============================================ */
 
 .card-smeg {
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  padding: 2rem 1.5rem;
-  margin-bottom: 2rem;
-  transition: box-shadow 0.2s;
-}
-
-.card-smeg:hover {
-  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-}
-
-.card-smeg-header {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1.25rem;
-  color: #9a4f18;
-  letter-spacing: 0.5px;
+  border-radius: 42px;
+  border: 2px solid #7a3e00;
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+  overflow: hidden;
 }
 
 .card-smeg .list-group,
@@ -370,8 +346,7 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: radial-gradient(ellipse at center, #fff6df 0%, #f8ddb0 45%, #ebc58c 75%, #d4a468 100%);
-  border-radius: 14px;
+
   padding: 0.75rem 1rem;
   margin-bottom: 0.5rem;
 }
@@ -386,7 +361,7 @@
   object-fit: cover;
   border-radius: 10px;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 .card-smeg .list-group-item .article-info {
@@ -492,15 +467,68 @@
   /* Vedette mobile: image passe en bloc séparé (géré par .carousel-image-wrapper mobile) */
   .home-featured-layout {
     min-height: initial;
-  }
-  .home-featured-text {
-    padding: 1rem;
-    padding-right: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
   }
 }
 
+/* ============================================
+   TEXTE DES CARDS ARTICLES (comportement carrousel)
+   ============================================ */
+.article-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: space-between;
+  gap: 1rem;
+  width: 50%;
+  padding: 1.25rem 1rem 1.25rem 1.25rem;
+}
 
-.heart-button{
+.article-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #7a3e00;
+}
+
+.article-card-author {
+  font-size: 0.95rem;
+  color: #b88a4a;
+  margin-bottom: 0.25rem;
+}
+
+.article-card-link {
+  margin-top: 0.5rem;
+  font-weight: 700;
+  color: #9a4f18;
+  text-decoration: none;
+}
+
+.article-card-link:hover {
+  color: #7a3e00;
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .article-card-text {
+    gap: 0.5rem;
+    padding: 1rem 0.75rem 1rem 0.75rem;
+  }
+  .article-card-title {
+    font-size: 1rem;
+  }
+  .article-card-excerpt {
+    font-size: 0.85rem;
+  }
+  .article-card-author {
+    font-size: 0.8rem;
+  }
+}
+
+.heart-button {
   background-image: url(../Boutton_coeur-Photoroom.png);
   height: 50px;
   width: 50px;
@@ -512,5 +540,5 @@
 
 .heart-button:hover {
   transform: translateY(-4px) scale(1.08);
-  transition: all 0.25s cubic-bezier(.4,2,.3,1);
+  transition: all 0.25s cubic-bezier(0.4, 2, 0.3, 1);
 }
