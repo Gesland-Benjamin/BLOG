@@ -322,39 +322,34 @@
   line-height: 1.5;
 }
 
+
 /* ============================================
-   RESPONSIVE AUTHENTIFICATION
+   SECTION RESPONSIVE – MOBILE & TABLETTE
    ============================================ */
 
 @media (max-width: 768px) {
   .auth-wrapper {
     padding: var(--spacing-md);
   }
-
   .auth-container {
     max-width: 100%;
   }
-
   .auth-form-card {
     padding: 2rem;
     border-radius: 12px;
   }
-
   .auth-form-card h1,
   .auth-form-card h2 {
     font-size: 1.5rem;
   }
-
   .auth-form-group input {
     padding: 0.75rem 0.9rem;
     font-size: 0.9rem;
   }
-
   .auth-submit-btn {
     padding: 0.85rem 1.25rem;
     font-size: 0.95rem;
   }
-
   .auth-remember-forgot {
     flex-direction: column;
     align-items: flex-start;
@@ -366,65 +361,52 @@
   .auth-wrapper {
     padding: var(--spacing-sm);
   }
-
   .auth-form-card {
     padding: 1.5rem;
     border-radius: 12px;
   }
-
   .auth-form-card h1,
   .auth-form-card h2 {
     font-size: 1.3rem;
   }
-
   .auth-form-group {
     margin-bottom: 1.25rem;
   }
-
   .auth-form-group label {
     font-size: 0.85rem;
     margin-bottom: 0.4rem;
   }
-
   .auth-form-group input {
     padding: 0.7rem 0.85rem;
     font-size: 0.85rem;
   }
-
   .auth-submit-btn {
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
   }
-
   .auth-divider {
     gap: 0.75rem;
     font-size: 0.8rem;
   }
-
   .auth-social-btn {
     padding: 0.75rem 0.9rem;
     font-size: 0.85rem;
   }
-
   .auth-footer {
     font-size: 0.85rem;
   }
-
   .auth-alert {
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
   }
-
   .password-reset-number {
     width: 36px;
     height: 36px;
     font-size: 1rem;
   }
-
   .password-reset-content h4 {
     font-size: 0.95rem;
   }
-
   .password-reset-content p {
     font-size: 0.8rem;
   }

@@ -75,18 +75,20 @@
                     <% if (recentPosts && recentPosts.length) { %>
                       <% recentPosts.forEach((p, idx) => { %>
                         <li class="list-group-item">
-                          <a href="/article/<%= p.id %>" style="display:flex;align-items:center;gap:1rem;">
-                            <% if (p.image) { %>
-                              <img src="<%= p.image %>" alt="<%= p.titre %>">
-                            <% } else { %>
-                              <svg aria-hidden="true" width="56" height="56" style="border-radius:10px;background:#e9ecef;display:block;" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100%" height="100%" fill="#e9ecef"></rect>
-                                <text x="50%" y="50%" fill="#adb5bd" dy=".3em" font-size="12" text-anchor="middle">Article</text>
-                              </svg>
-                            <% } %>
-                            <div class="article-info">
-                              <span class="article-title"><%= p.titre %></span>
-                              <span class="article-meta">Par <%= p.auteur %></span>
+                          <a href="/article/<%= p.id %>" class="sidebar-article-link">
+                            <div class="sidebar-article-img-wrapper">
+                              <% if (p.image) { %>
+                                <img src="<%= p.image %>" alt="<%= p.titre %>">
+                              <% } else { %>
+                                <svg aria-hidden="true" width="56" height="56" class="sidebar-article-img-placeholder" xmlns="http://www.w3.org/2000/svg">
+                                  <rect width="100%" height="100%" fill="#e9ecef"></rect>
+                                  <text x="50%" y="50%" fill="#adb5bd" dy=".3em" font-size="12" text-anchor="middle">Article</text>
+                                </svg>
+                              <% } %>
+                            </div>
+                            <div class="sidebar-article-info">
+                              <span class="sidebar-article-title"><%= p.titre %></span>
+                              <span class="sidebar-article-meta">Par <%= p.auteur %></span>
                             </div>
                           </a>
                         </li>

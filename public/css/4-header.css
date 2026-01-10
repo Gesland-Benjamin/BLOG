@@ -1,10 +1,59 @@
+/* Stack des boutons à droite du header (connexion, contacts) */
+.right-buttons-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: center;
+}
+}
+/* Bouton engrenage stylé */
+/* Bouton engrenage stylé : background toujours transparent, même actif/show */
+.stylish-gear-btn,
+.stylish-gear-btn:focus,
+.stylish-gear-btn:active,
+.stylish-gear-btn.show,
+.stylish-gear-btn:focus-visible,
+.stylish-gear-btn[aria-expanded="true"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+/* Masquer la flèche du dropdown Bootstrap sur le bouton engrenage */
+.stylish-gear-btn.dropdown-toggle::after {
+  display: none !important;
+}
+}
+.stylish-gear-btn:hover {
+  box-shadow: 0 8px 24px rgba(154,79,24,0.22);
+  transform: scale(1.08) rotate(-10deg);
+}
+.stylish-gear-icon svg {
+  display: block;
+}
+/* Logo image centrale */
+.logo-img {
+  height: 250px;
+  width: auto;
+  position: relative;
+  z-index: 2;
+  display: block;
+  margin: 0 auto;
+}
 /* Boutons icônes mobiles : image prend toute la place du bouton */
 .mobile-icon-btn {
   padding: 0 !important;
   background: none !important;
   border: none !important;
   height: 48px;
-  max-width: max-content                                                                               ;
+  max-width: max-content;
   width: 100%;
   display: flex;
   align-items: center;
@@ -34,7 +83,6 @@ header-wrapper {
   margin: auto;
   display: flex;
   justify-content: center;
-
 }
 
 /* ----- HEADER GLOBAL ----- */
@@ -44,8 +92,8 @@ header {
   justify-content: center;
   padding: 1.25rem 0 2rem;
   background: transparent;
-  
-  margin: 0 auto;
+
+  margin: 2rem auto;
 }
 
 header::before {
@@ -72,15 +120,11 @@ header::before {
   /* Bordure principale (comme les cards) */
   border: 2px solid #7a3e00;
   /* Relief + double liseré */
-  box-shadow:
-    /* Ombre portée externe douce */ 0 18px 36px
-      rgba(0, 0, 0, 0.18),
-    /* Liseré clair intérieur */ inset 0 0 0 5px rgba(255, 245, 220, 0.9),
-    /* Creux bas (volume) */ inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-    /* Highlight haut (plastique laqué) */ inset 0 8px 14px
-      rgba(255, 255, 255, 0.55),
-    /* Deuxième trait brun intérieur (signature cards) */ inset 0 0 0 10px
-      rgba(122, 62, 0, 0.22);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
 
   z-index: 0;
 }
@@ -112,8 +156,8 @@ header {
   justify-content: center;
   padding: 1.25rem 0 2rem;
   background: transparent;
-  max-width: 1320px;
-  margin: 0 auto;
+  max-width: 1120px;
+  margin: 1rem auto;
 }
 
 header::before {
@@ -162,6 +206,7 @@ header::before {
   display: flex;
   gap: 0.65rem;
   z-index: 3;
+  
 }
 
 .header-social-top .social-icon {
@@ -169,6 +214,9 @@ header::before {
   height: 48px;
   font-size: 2.1rem;
   background: transparent;
+  box-shadow: none;
+  border: none;
+  
 }
 
 /* ----- LAYOUT ----- */
@@ -228,7 +276,6 @@ header::before {
   flex-direction: column;
   gap: 0.65rem;
   align-items: center;
-  
 }
 
 .header-right-actions {
@@ -236,7 +283,6 @@ header::before {
 
   align-items: center;
   justify-content: center;
-  
 }
 
 .gear-dropdown {
@@ -343,17 +389,15 @@ header::before {
   pointer-events: none;
 }
 
-/* Texte logo */
-.blog-header-logo .logo-text {
+
+/* Logo image centrale */
+.logo-img {
+  height: 350px;
+  width: auto;
   position: relative;
-  z-index: 1;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 800;
-  font-size: 1.9rem;
-  letter-spacing: 0.28rem;
-  text-transform: uppercase;
-  color: var(--text-dark);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 2px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+  display: block;
+  margin: 0 auto;
 }
 
 /* ----- BOUTONS PILULE ----- */
@@ -395,23 +439,20 @@ header .btn:active,
   border: none;
   cursor: pointer;
   opacity: 0.75;
-  transition: all 0.1s ease;
- 
+  
+  transform: rotate(180deg);
 }
 .img-gear {
- 
   display: block;
   pointer-events: none;
   transition: transform 0.3s ease;
   border-radius: 50%;
-    width: 200px;
+  width: 200px;
   height: 200px;
 }
 .btn-gear:hover .img-gear {
   transform: rotate(360deg);
 }
-
-
 
 /* ----- BARRE DE RECHERCHE CENTRÉE ----- */
 .search-form-center {
@@ -445,7 +486,6 @@ header .btn:active,
 
 .search-form-center input::placeholder {
   color: rgba(255, 255, 255, 0.92);
-  
 }
 
 .btn-search-center {
@@ -481,14 +521,13 @@ header .btn:active,
   display: block !important;
 }
 
-
 .dropdown-item {
   border-radius: 14px;
   color: #6a3200;
-  padding: 0.65rem 1.2rem;
+  padding: 0.35rem 1.1rem;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.7rem;
 }
 
 .dropdown-item:hover {
@@ -500,7 +539,6 @@ header .btn:active,
 .mobile-duo-actions {
   display: none; /* visible uniquement en mobile via media query */
   width: 100%;
- 
 }
 .mobile-duo-actions .dropdown {
   flex: 1;
@@ -525,7 +563,6 @@ header .btn:active,
   z-index: 9999;
 }
 
-
 /* Rangée logo + réseaux en mobile : masquée par défaut (desktop) */
 .mobile-logo-row {
   display: none;
@@ -547,33 +584,30 @@ header .btn:active,
     0 8px 14px rgba(0, 0, 0, 0.12);
 }
 
-/* ----- RESPONSIVE TABLETTE (<= 1024px) ----- */
+/* ============================================
+   SECTION RESPONSIVE – MOBILE & TABLETTE
+   ============================================ */
+
+/* Tablette (<= 1024px) */
 @media (max-width: 1024px) {
   header {
     padding: 1.1rem 0 2rem;
   }
-
   header::before {
     height: 205px;
     width: 150%;
     top: 0.65rem;
   }
-
-  /* Layout: uniquement le centre (logo + recherche) */
   .header-content {
     grid-template-columns: 1fr;
     row-gap: 0.8rem;
     padding: 0.85rem 1rem 1.2rem;
   }
-
-  /* Masquer les éléments latéraux et sociaux */
   .header-left,
   .header-right,
   .header-social-top {
     display: none !important;
   }
-
-  /* Centrer logo et recherche */
   .header-center {
     display: flex;
     justify-content: center;
@@ -582,8 +616,6 @@ header .btn:active,
     align-items: center;
     gap: 0.65rem;
   }
-
-  /* Logo tablette (légèrement plus grand que mobile) */
   .blog-header-logo {
     width: 280px;
     height: 105px;
@@ -592,93 +624,79 @@ header .btn:active,
     font-size: 1.55rem;
     letter-spacing: 0.2rem;
   }
-
-  /* Recherche pleine largeur sous le logo */
   .search-form-center {
     max-width: 100%;
     width: 100%;
     padding: 0.75rem 1.25rem;
   }
-
-  /* Afficher la rangée logo + réseaux; cacher le logo desktop */
   .mobile-logo-row {
     display: flex;
   }
   .logo-desktop {
     display: none;
   }
-
-  /* Afficher le duo d’actions en mobile/tablette */
   .mobile-duo-actions {
     display: flex;
   }
 }
 
-/* ----- RESPONSIVE MOBILE (<= 576px) ----- */
+/* Mobile (<= 576px) */
 @media (max-width: 576px) {
-    /* Header plus compact et input recherche en bas */
-    .header-search-and-actions {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.3rem;
-      margin-top: 0.2rem;
-    }
-    .header-search-bottom {
-      width: 100%;
-      max-width: 90vw;
-      margin: 0 auto 0.2rem auto;
-      padding: 0.4rem 0.5rem;
-      border-radius: 999px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    }
-    .header-actions-bottom {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      gap: 0.4rem;
-      justify-content: center;
-    }
-    .header-actions-bottom .dropdown {
-      flex: 1 1 0;
-      min-width: 0;
-    }
-    .header-actions-bottom .mobile-icon-btn {
-      width: 100%;
-      height: 38px;
-      min-width: 38px;
-      max-width: 100%;
-      border-radius: 999px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    }
+  .header-search-and-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+  }
+  .header-search-bottom {
+    width: 100%;
+    max-width: 90vw;
+    margin: 0 auto 0.2rem auto;
+    padding: 0.4rem 0.5rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  }
+  .header-actions-bottom {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    justify-content: center;
+  }
+  .header-actions-bottom .dropdown {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .header-actions-bottom .mobile-icon-btn {
+    width: 100%;
+    height: 38px;
+    min-width: 38px;
+    max-width: 100%;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  }
   header {
     padding: 1rem 0 2rem;
     max-width: 540px;
     margin: 0 auto;
   }
-
   header::before {
     height: 200px;
     width: 90%;
     top: 0.6rem;
   }
-
-  /* Layout: uniquement le centre (logo + recherche) */
   .header-content {
     grid-template-columns: 1fr;
     row-gap: 0.75rem;
     padding: 0.8rem 0.9rem 1.1rem;
   }
-
-  /* Masquer les éléments latéraux et sociaux */
   .header-left,
   .header-right,
   .header-social-top {
     display: none !important;
   }
-
-  /* Centrer logo et recherche */
   .header-center {
     display: flex;
     justify-content: center;
@@ -687,8 +705,6 @@ header .btn:active,
     align-items: center;
     gap: 0.6rem;
   }
-
-  /* Logo plus compact */
   .blog-header-logo {
     width: 260px;
     height: 100px;
@@ -697,20 +713,14 @@ header .btn:active,
     font-size: 1.45rem;
     letter-spacing: 0.18rem;
   }
-
-  /* Recherche pleine largeur sous le logo */
   .search-form-center {
     max-width: 50%;
     width: 50%;
     padding: 0.7rem 1.2rem;
   }
-
-  /* Afficher le duo d’actions en mobile */
   .mobile-duo-actions {
     display: flex;
   }
-
-  /* Afficher la rangée logo + réseaux; cacher le logo desktop */
   .mobile-logo-row {
     display: flex;
   }

@@ -23,6 +23,51 @@
       >
         <i class="bi bi-instagram"></i>
       </a>
+      <% if (typeof user !== 'undefined' && user && user.role === "admin") { %>
+        <div class="dropdown gear-dropdown">
+          <button
+            class="btn-gear dropdown-toggle stylish-gear-btn"
+            type="button"
+            id="adminMenuDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="Dashboard Admin"
+          >
+            <span class="stylish-gear-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="url(#gearGradient)" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <defs>
+                  <linearGradient id="gearGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#f29a4a"/>
+                    <stop offset="100%" stop-color="#764ba2"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+              </svg>
+            </span>
+          </button>
+          <ul
+            class="dropdown-menu"
+            aria-labelledby="adminMenuDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/articles/new"><i class="bi bi-plus-circle header-icon-spacer"></i>Ajouter un article</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/categories"><i class="bi bi-tags-fill header-icon-spacer"></i>Gérer les catégories</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/medias"><i class="bi bi-images header-icon-spacer"></i>Gérer les médias</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/admin/newsletter"><i class="bi bi-envelope-check header-icon-spacer"></i>Newsletter</a>
+            </li>
+          </ul>
+        </div>
+      <% } %>
     </div>
     
     <div class="<%= useContainer ? 'header-container' : '' %>">
@@ -69,7 +114,7 @@
       <div class="header-center">
         <div class="header-center-content">
           <a class="blog-header-logo logo-desktop" href="/" aria-label="Accueil">
-            <span class="logo-text">MI AMOR</span>
+            <img src="/logo 3.png" alt="Logo" class="logo-img" />
           </a>
           <!-- Version mobile : logo centré avec réseaux à gauche/droite -->
           <div class="mobile-logo-row">
@@ -208,66 +253,19 @@
 
       <!-- Droite: Connexion/Renseignements -->
       <div class="header-right">
-        <% if (typeof user !== 'undefined' && user && user.role === "admin") { %>
-        <div class="dropdown gear-dropdown">
-          <button
-            class="btn-gear dropdown-toggle"
-            type="button"
-            id="adminMenuDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            aria-label="Dashboard Admin"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
-            </svg>
-          </button>
-          <ul
-            class="dropdown-menu"
-            aria-labelledby="adminMenuDropdown"
-          >
-            <li>
-              <a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard</a>
-            </li>
-
-            <li>
-              <a class="dropdown-item" href="/admin/articles/new"
-                ><i class="bi bi-plus-circle header-icon-spacer"></i>Ajouter un article</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/categories"
-                ><i class="bi bi-tags-fill header-icon-spacer"></i>Gérer les catégories</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/commentaires"
-                ><i class="bi bi-chat-dots-fill header-icon-spacer"></i>Modérer les commentaires</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/newsletter"><i class="bi bi-envelope-paper-heart-fill header-icon-spacer"></i>Newsletter</a>
-            </li>
-          </ul>
-        </div>
-        <% } %>
-        
-        <div class="header-right-actions">
-          <div class="header-right-buttons">
-            <% if (typeof user !== 'undefined' && user) { %>
-              <a class="btn-chrome-deconnexion" href="/auth/logout">
-                <span class="visually-hidden">Déconnexion</span>
-              </a>
-            <% } else { %>
-              <a class="btn-chrome-connexion" href="/auth"
-                >se connecter/s'inscrire</a
-              >
-            <% } %>
-            <a class="btn-chrome-contactes" href="/renseignements"
-              >Renseignements</a
-            >
-          </div>
+        <div class="right-buttons-stack">
+          <% if (typeof user !== 'undefined' && user) { %>
+            <a class="btn-chrome-deconnexion" href="/auth/logout">
+              <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
+            </a>
+          <% } else { %>
+            <a class="btn-chrome-connexion" href="/auth">
+              <i class="bi bi-person-circle header-icon-spacer"></i>Connexion / Inscription
+            </a>
+          <% } %>
+          <a class="btn-chrome-contactes" href="/renseignements">
+            <i class="bi bi-info-circle-fill header-icon-spacer"></i>Contacts
+          </a>
         </div>
       </div>
     </div>

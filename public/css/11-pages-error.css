@@ -301,57 +301,48 @@
   text-decoration: underline;
 }
 
+
 /* ============================================
-   RESPONSIVE ERREUR
+   SECTION RESPONSIVE – MOBILE & TABLETTE
    ============================================ */
 
 @media (max-width: 768px) {
   .error-wrapper {
     padding: var(--spacing-md);
   }
-
   .error-content {
     padding: 2rem 1.5rem;
     border-radius: 12px;
   }
-
   .error-code {
     font-size: 4rem;
   }
-
   .error-title {
     font-size: 1.5rem;
   }
-
   .error-description {
     font-size: 0.95rem;
   }
-
   .error-illustration {
     width: 150px;
     height: 150px;
     font-size: 4rem;
     margin-bottom: 1.5rem;
   }
-
   .error-actions {
     gap: 0.75rem;
   }
-
   .error-btn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
   }
-
   .error-details {
     margin-top: 1.5rem;
     padding: 1.25rem;
   }
-
   .error-details h4 {
     font-size: 0.95rem;
   }
-
   .error-details li {
     font-size: 0.85rem;
     padding: 0.4rem 0;
@@ -362,88 +353,70 @@
   .error-wrapper {
     padding: var(--spacing-sm);
   }
-
   .error-content {
     padding: 1.5rem 1rem;
     border-radius: 12px;
   }
-
   .error-code {
     font-size: 3rem;
   }
-
   .error-title {
     font-size: 1.25rem;
   }
-
   .error-description {
     font-size: 0.9rem;
   }
-
   .error-icon {
     font-size: 3rem;
     margin-bottom: 0.75rem;
   }
-
   .error-illustration {
     width: 120px;
     height: 120px;
     font-size: 3rem;
     margin-bottom: 1rem;
   }
-
   .error-actions {
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .error-btn {
     padding: 0.7rem 1.25rem;
     font-size: 0.85rem;
     width: 100%;
     justify-content: center;
   }
-
   .error-details {
     margin-top: 1rem;
     padding: 1rem;
   }
-
   .error-details h4 {
     font-size: 0.9rem;
   }
-
   .error-details li {
     font-size: 0.8rem;
     padding: 0.3rem 0;
   }
-
   .error-support-form {
     padding: 1rem;
   }
-
   .error-support-form h4 {
     font-size: 0.95rem;
   }
-
   .error-support-form-group {
     margin-bottom: 0.75rem;
   }
-
   .error-support-form-group label {
     font-size: 0.8rem;
   }
-
   .error-support-form-group input,
   .error-support-form-group textarea {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
   }
-
   .error-support-form-group textarea {
     min-height: 70px;
   }
-
   .error-support-form-submit {
     padding: 0.65rem;
     font-size: 0.85rem;

@@ -187,25 +187,23 @@ footer::before {
   color: rgba(74,38,0,0.7);
 }
 
-/* ======================
-   RESPONSIVE
-====================== */
+
+/* ============================================
+   SECTION RESPONSIVE – MOBILE & TABLETTE
+   ============================================ */
 
 @media (max-width: 768px) {
   footer {
     padding-top: 3rem;
   }
-
   .footer-newsletter {
     margin: 0 auto 2rem;
     text-align: center;
   }
-
   .newsletter-form {
     flex-direction: column;
     justify-content: center;
   }
-
   .newsletter-input,
   .newsletter-btn {
     width: 100%;

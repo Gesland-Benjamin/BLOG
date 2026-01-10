@@ -1,3 +1,43 @@
+/* Curseur pointer sur tous les éléments interactifs au hover */
+a:hover,
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.btn:hover,
+.btn-smeg:hover,
+.article-card-btn:hover,
+.comment-actions > *:hover,
+.search-submit:hover {
+  cursor: pointer !important;
+}
+/* --- Bouton universel stylisé SMEG --- */
+.btn-smeg {
+  display: inline-block;
+  padding: 0.7em 2.2em;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #f29a4a 0%, #764ba2 100%);
+  border: none;
+  border-radius: 2em;
+  box-shadow: 0 4px 16px rgba(154,79,24,0.12);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  outline: none;
+}
+.btn-smeg:hover, .btn-smeg:focus {
+  background: linear-gradient(135deg, #764ba2 0%, #f29a4a 100%);
+  box-shadow: 0 8px 24px rgba(154,79,24,0.22);
+  transform: scale(1.06) translateY(-2px);
+  color: #fff;
+}
+.btn-smeg:active {
+  background: linear-gradient(135deg, #f29a4a 0%, #764ba2 100%);
+  box-shadow: 0 2px 8px rgba(154,79,24,0.10);
+  color: #fff;
+}
 /*
 ============================================================
   3-COMPONENTS.CSS — COMPOSANTS, BOUTONS, CARTES, FORMULAIRES
