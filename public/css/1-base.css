@@ -218,7 +218,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(249, 146, 133, 0.1);
+  box-shadow: none;
 }
 
 textarea {

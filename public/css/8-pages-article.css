@@ -1,4 +1,27 @@
 /* ============================================
+   SEARCH HEADER FLEX (titre + formulaire côte à côte)
+   ============================================ */
+
+
+
+.search-header-flex .search-form-card {
+  margin: 0;
+  max-width: 540px;
+   margin: 1.5rem 1.5rem 1.5rem 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+}
+@media (max-width: 900px) {
+  .search-header-flex {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  
+  .search-header-flex .search-form-card {
+    max-width: 100%;
+  }
+}
+/* ============================================
   SECTION RESPONSIVE – MOBILE & TABLETTE
   ============================================ */
 /* ============================================
@@ -16,11 +39,22 @@
   margin: 0 auto;
 }
 
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
 /* ============================================
    DÉTAIL ARTICLE (2 COLONNES - IMAGE DROITE)
    ============================================ */
 
 .article-detail-card {
+  margin: 3rem auto 0 auto;
+  
   position: relative;
   min-height: 400px;
   border-radius: 42px;
@@ -30,8 +64,8 @@
     ellipse at center,
     #fff4e4 0%,
     #f9ddb5 42%,
-    #efc48d 72%,
-    #e19a4f 100%
+    #efc48d 100%
+    
   );
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.22),
@@ -63,8 +97,8 @@
 .article-detail-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  
+  
   display: block;
   border-radius: 0 42px 42px 0 !important;
 }
@@ -284,11 +318,11 @@
    ============================================ */
 
 .comments-section {
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin:3rem auto 0 auto;
+  padding: 2rem;
   border-top: 2px solid #e9ecef;
   position: relative;
-  min-height: 400px;
+  width: 550px;
   border-radius: 42px;
   border: 2.5px solid #9a4f18;
   overflow: hidden;
@@ -296,8 +330,8 @@
     ellipse at center,
     #fff4e4 0%,
     #f9ddb5 42%,
-    #efc48d 72%,
-    #e19a4f 100%
+    #efc48d 100%
+    
   );
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.22),
@@ -307,8 +341,8 @@
     inset 0 0 0 8px rgba(154, 79, 24, 0.22);
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  flex-direction: column;
+  
 }
 
 .comments-title {
@@ -759,7 +793,7 @@
     border-radius: 12px;
   }
   .article-image {
-    border-radius: 8px;
+    
     max-height: 110px;
   }
   .article-content {
@@ -775,8 +809,14 @@
   max-width: 600px;
   margin: 1.5rem auto 1.2rem auto;
   padding: 1.1rem 1.4rem 1.1rem 1.4rem;
-  border-radius: 28px;
-  background: radial-gradient(circle at 60% 40%, #f7e7d7 60%, #e0bfae 100%);
+  border-radius: 999px;
+    background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
   box-shadow: 0 4px 24px 0 rgba(80, 60, 40, 0.10), 0 1.5px 0 #fff inset;
   display: flex;
   flex-direction: column;
@@ -787,7 +827,7 @@
 .comment-card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  
   gap: 1.2rem;
   margin-bottom: 0.2rem;
 }
@@ -826,7 +866,7 @@
   padding-left: 1.5rem;
   border-left: 2px solid #f7c992;
 }
-}
+
 .comment-card-header {
   display: flex;
   align-items: center;
@@ -897,7 +937,7 @@
    FORMULAIRE DE RECHERCHE ARTICLE (SMEG PRO)
    ============================================ */
 .search-form-card {
-  max-width: 540px;
+  width: auto;
   margin: 2.5rem auto 2.2rem auto;
   border-radius: 42px;
   background: radial-gradient(circle at 60% 40%, #fff4e4 60%, #f9ddb5 100%);
@@ -907,6 +947,29 @@
   flex-direction: column;
   align-items: stretch;
   gap: 1.5rem;
+}
+
+.search-form-group button,
+.search-form-submit-wrapper button,
+.search-form button[type="submit"] {
+  background: linear-gradient(90deg, #f9ddb5 0%, #e19a4f 100%);
+  color: #6b3500;
+  border: none;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.7em 2.1em;
+  box-shadow: 0 2px 8px rgba(225,154,79,0.10);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 100%;
+}
+.search-form-group button:hover,
+.search-form-submit-wrapper button:hover,
+.search-form button[type="submit"]:hover {
+  background: linear-gradient(90deg, #e19a4f 0%, #f9ddb5 100%);
+  color: #fff;
 }
 
 .search-form {

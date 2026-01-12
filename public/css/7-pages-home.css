@@ -1,3 +1,5 @@
+/* Import de la police Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 /* ----------- SIDEBAR : Derniers articles ----------- */
 .sidebar-article-link {
   display: flex;
@@ -462,6 +464,11 @@
    SECTION RESPONSIVE – MOBILE & TABLETTE
    ============================================ */
 
+
+/* ============================================
+   SECTION RESPONSIVE – TABLETTE (≤ 992px)
+   ============================================ */
+
 @media (max-width: 992px) {
   .home-content-grid {
     grid-template-columns: 1fr;
@@ -502,6 +509,10 @@
   }
 }
 
+/* ============================================
+   SECTION RESPONSIVE – MOBILE (≤ 576px)
+   ============================================ */
+
 @media (max-width: 576px) {
   .sections-wrapper {
     max-width: 100%;
@@ -527,12 +538,10 @@
     align-items: stretch;
     position: relative;
   }
-}
-
-@media (max-width: 576px) {
   .article-card-text {
     gap: 0.5rem;
     padding: 1rem 0.75rem 1rem 0.75rem;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
   }
   .article-card-title {
     font-size: 1rem;
@@ -584,21 +593,9 @@
   
 }
 
-@media (max-width: 576px) {
-  .article-card-text {
-    gap: 0.5rem;
-    padding: 1rem 0.75rem 1rem 0.75rem;
-  }
-  .article-card-title {
-    font-size: 1rem;
-  }
-  .article-card-excerpt {
-    font-size: 0.85rem;
-  }
-  .article-card-author {
-    font-size: 0.8rem;
-  }
-}
+/* ============================================
+   BOUTON COEUR
+   ============================================ */
 
 .heart-button {
   background-image: url(../Boutton_coeur-Photoroom.png);

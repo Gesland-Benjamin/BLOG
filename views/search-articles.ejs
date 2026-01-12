@@ -4,9 +4,9 @@
   <body>
     <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
     <main class="content-wrapper">
-      <div class="content-container">
-        <h1 class="page-title">Recherche d'articles</h1>
 
+      <div class="search-header-flex">
+        
         <div class="search-form-card">
           <form method="GET" action="/search" class="search-form">
             <div class="search-form-grid">
@@ -23,12 +23,13 @@
                   <% }) %>
                 </select>
               </div>
-              <div class="search-form-submit-wrapper">
-                <button type="submit" class="search-submit">Rechercher</button>
+              <div class="search-form-group" style="display:flex;align-items:end;">
+                <button type="submit" class="btn-general" style="width:100%;margin-top:1.7rem;">Rechercher</button>
               </div>
             </div>
           </form>
         </div>
+      </div>
 
         <% if (filters.q || filters.categorie || filters.auteur) { %>
           <p class="search-results-count">
@@ -55,7 +56,7 @@
                     <% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %>
                   </div>
                   <div class="article-card-actions">
-                    <a href="/article/<%= article.id %>" class="article-card-btn">Lire l'article</a>
+                    <a href="/article/<%= article.id %>" class="btn-general">Lire l'article</a>
                   </div>
                 </div>
               </article>

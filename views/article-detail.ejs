@@ -72,8 +72,8 @@
             </div>
 
             <div class="article-detail-links">
-              <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="article-link-btn secondary">Retour à la catégorie</a>
-              <a href="/article" class="article-link-btn primary">Tous les articles</a>
+              <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="btn-general">Retour à la catégorie</a>
+              <a href="/article" class="btn-general">Tous les articles</a>
             </div>
           </div>
         </article>
@@ -187,7 +187,7 @@
                             id="contenu" name="contenu" rows="4" required><%= formData.contenu || '' %></textarea>
                   <small class="form-text text-muted">Min 10 caractères</small>
                 </div>
-                <button type="submit" class="btn btn-bd-primary">Publier mon commentaire</button>
+                <button type="submit" class="btn-general">Publier mon commentaire</button>
                 <p class="text-muted small mt-2 mb-0">Les commentaires sont modérés avant publication.</p>
               </form>
             </div>

@@ -5,44 +5,35 @@
     <%- include('partials/header', { withContainer: true }) %>
     <main class="admin-wrapper">
       <div class="admin-container">
-        <div class="admin-header">
-          <h1>Dashboard Admin</h1>
-          <div class="admin-header-actions">
-            <a href="/admin/articles/new" class="admin-btn primary">Nouvel article</a>
-            <a href="/" class="admin-btn secondary">Voir le site</a>
-          </div>
-        </div>
+        
 
-        <!-- Statistiques -->
-        <div class="admin-stats-grid">
-          <div class="admin-stat-card primary">
+
+        <!-- 4 petites cards compteur en haut du dashboard -->
+        <div class="admin-stats-row" style="display:flex;gap:1.2rem;justify-content:center;margin-bottom:2.5rem;">
+          <div class="admin-stat-card mini primary">
             <div class="admin-stat-value"><%= stats.totalArticles %></div>
-            <div class="admin-stat-label">Articles publiés</div>
-            <a href="/article" class="stretched-link"></a>
+            <div class="admin-stat-label">Articles</div>
           </div>
-          <div class="admin-stat-card warning">
+          <div class="admin-stat-card mini warning">
             <div class="admin-stat-value"><%= stats.commentairesPending %></div>
             <div class="admin-stat-label">Commentaires en attente</div>
-            <a href="/admin/commentaires" class="stretched-link"></a>
           </div>
-          <div class="admin-stat-card info">
+          <div class="admin-stat-card mini info">
             <div class="admin-stat-value"><%= stats.totalCommentaires %></div>
-            <div class="admin-stat-label">Commentaires total</div>
-            <a href="/admin/commentaires" class="stretched-link"></a>
+            <div class="admin-stat-label">Commentaires</div>
           </div>
-          <div class="admin-stat-card success">
+          <div class="admin-stat-card mini success">
             <div class="admin-stat-value"><%= stats.totalAbonnes %></div>
-            <div class="admin-stat-label">Abonnés newsletter</div>
-            <a href="/admin/newsletter" class="stretched-link"></a>
+            <div class="admin-stat-label">Abonnés</div>
           </div>
         </div>
 
-        <!-- Accès rapide -->
-        <div class="admin-content-grid">
-          <div class="admin-panel">
+        <!-- Organisation des panels en grille -->
+        <div class="admin-panels-grid" style="display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;">
+          <div class="admin-panel" style="min-width:420px;max-width:700px;">
             <div class="admin-panel-header">
               <h5>Articles récents</h5>
-              <a href="/admin/articles/new" class="admin-btn-sm primary">Créer</a>
+              <a href="/admin/articles/new" class="btn-general">Créer</a>
             </div>
             <div class="admin-list">
               <% if (recentArticles.length === 0) { %>
@@ -54,21 +45,22 @@
                       <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
                       <div class="admin-list-meta">
                         <%= new Date(a.date_publication).toLocaleDateString() %> — <%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %>
+                        <div class="admin-list-actions" style="margin-top:0.7rem;">
+                          <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
+                        </div>
                       </div>
-                    </div>
-                    <div class="admin-list-actions" style="margin-top:0.7rem;">
-                      <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
                     </div>
                   </div>
                 <% }) %>
               <% } %>
             </div>
+            <%- include('partials/pagination', { pagination: recentArticlesPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
 
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Commentaires en attente</h5>
-              <a href="/admin/commentaires" class="admin-btn-sm warning">Voir tout</a>
+              <a href="/admin/commentaires" class="btn-general">Voir tout</a>
             </div>
             <div class="admin-list">
               <% if (pendingComments.length === 0) { %>
@@ -101,11 +93,9 @@
                 <% }) %>
               <% } %>
             </div>
+            <%- include('partials/pagination', { pagination: pendingCommentsPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
-        </div>
 
-        <!-- Tableaux supplémentaires -->
-        <div class="admin-content-grid">
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Articles les plus aimés</h5>
@@ -124,12 +114,13 @@
                 <% }) %>
               <% } %>
             </div>
+            <%- include('partials/pagination', { pagination: topArticlesPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
 
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Derniers abonnés newsletter</h5>
-              <a href="/admin/newsletter" class="admin-btn-sm success">Gérer</a>
+              <a href="/admin/newsletter" class="btn-general">Gérer</a>
             </div>
             <div class="admin-list">
               <% if (recentSubscribers.length === 0) { %>
@@ -145,6 +136,7 @@
                 <% }) %>
               <% } %>
             </div>
+            <%- include('partials/pagination', { pagination: recentSubscribersPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
         </div>
 

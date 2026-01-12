@@ -7,14 +7,25 @@ export const listSubscribers = async (req, res) => {
   try {
     const pageSize = 20;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
+    const search = req.query.search ? req.query.search.trim() : '';
+
+    // Filtrage dynamique
+    const where = {};
+    if (search) {
+      where[Symbol.for('or')] = [
+        { email: { [Symbol.for('like')]: `%${search}%` } },
+        { date_inscription: { [Symbol.for('like')]: `%${search}%` } }
+      ];
+    }
 
     const { count, rows } = await NewsletterSubscriber.findAndCountAll({
+      where,
       include: [{ model: User, as: 'user', attributes: ['nom_prenom'] }],
       order: [['date_inscription', 'DESC']],
       limit,
       offset
     });
-    
+
     const stats = {
       total: count,
       confirmed: rows.filter(s => s.confirmed).length,
@@ -23,14 +34,15 @@ export const listSubscribers = async (req, res) => {
 
     const baseUrl = '/admin/newsletter';
     const paginationData = createPaginationData(count, page, pageSize, baseUrl);
-    
+
     res.render("admin-newsletter", {
       title: "Gestion de la newsletter",
       subscribers: rows,
       stats,
       pagination: paginationData,
       baseUrl,
-      user: req.user
+      user: req.user,
+      search
     });
   } catch (error) {
     console.error('Erreur liste abonnés:', error);

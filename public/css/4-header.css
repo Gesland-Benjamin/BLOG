@@ -5,7 +5,7 @@
   gap: 0.65rem;
   align-items: center;
 }
-}
+
 /* Bouton engrenage stylé */
 /* Bouton engrenage stylé : background toujours transparent, même actif/show */
 .stylish-gear-btn,
@@ -30,7 +30,7 @@
 .stylish-gear-btn.dropdown-toggle::after {
   display: none !important;
 }
-}
+
 .stylish-gear-btn:hover {
   box-shadow: 0 8px 24px rgba(154,79,24,0.22);
   transform: scale(1.08) rotate(-10deg);
@@ -313,8 +313,7 @@ header::before {
 
 .social-icon:hover {
   transform: translateY(-1px);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.72),
-    0 12px 20px rgba(0, 0, 0, 0.16);
+  
 }
 
 .social-icon-fb {
