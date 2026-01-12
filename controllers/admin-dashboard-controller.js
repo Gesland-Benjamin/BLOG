@@ -4,6 +4,12 @@ import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import User from "../models/User.model.js";
 
 export const getDashboard = async (req, res) => {
+      // Utilisateurs
+      const totalUsers = await User.count();
+      const users = await User.findAll({
+        attributes: ['id', 'nom_prenom', 'email', 'role'],
+        order: [['id', 'DESC']]
+      });
   try {
     // Statistiques générales
     const totalArticles = await Article.count();
@@ -12,13 +18,16 @@ export const getDashboard = async (req, res) => {
     const totalAbonnes = await NewsletterSubscriber.count();
     
 
-    // Pagination params
+    // Pagination et recherche
     const page = parseInt(req.query.page) || 1;
     const pageSize = 5;
+    const search = req.query.search ? req.query.search.trim() : '';
 
-    // Articles récents
-    const recentArticlesCount = await Article.count();
+    // Filtrage des articles récents
+    const where = search ? { titre: { [Article.sequelize.Op.iLike]: `%${search}%` } } : {};
+    const recentArticlesCount = await Article.count({ where });
     const recentArticles = await Article.findAll({
+      where,
       attributes: ['id', 'titre', 'date_publication', 'auteur_id', 'likes'],
       include: [
         { model: User, as: "auteur", attributes: ['nom_prenom'] }
@@ -125,7 +134,8 @@ export const getDashboard = async (req, res) => {
         totalArticles,
         totalCommentaires,
         commentairesPending,
-        totalAbonnes
+        totalAbonnes,
+        totalUsers
       },
       recentArticles,
       recentArticlesPagination,
@@ -134,7 +144,9 @@ export const getDashboard = async (req, res) => {
       recentSubscribers,
       recentSubscribersPagination,
       topArticles,
-      topArticlesPagination
+      topArticlesPagination,
+      users,
+      search
     });
   } catch (error) {
     console.error("Erreur getDashboard:", error);

@@ -1,3 +1,7 @@
+import adminUserRoutes from "./routes/admin-user-router.js";
+// ...après toutes les autres routes...
+// À placer APRÈS la déclaration de app et après les autres app.use
+// app.use("/admin/users", adminUserRoutes); (sera replacé plus bas)
 import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';

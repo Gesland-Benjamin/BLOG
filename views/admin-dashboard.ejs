@@ -10,6 +10,10 @@
 
         <!-- 4 petites cards compteur en haut du dashboard -->
         <div class="admin-stats-row" style="display:flex;gap:1.2rem;justify-content:center;margin-bottom:2.5rem;">
+                    <div class="admin-stat-card mini info">
+                      <div class="admin-stat-value"><%= stats.totalUsers %></div>
+                      <div class="admin-stat-label">Utilisateurs</div>
+                    </div>
           <div class="admin-stat-card mini primary">
             <div class="admin-stat-value"><%= stats.totalArticles %></div>
             <div class="admin-stat-label">Articles</div>
@@ -30,16 +34,45 @@
 
         <!-- Organisation des panels en grille -->
         <div class="admin-panels-grid" style="display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;">
+                    <div class="admin-panel" style="min-width:420px;max-width:700px;">
+                      <div class="admin-panel-header">
+                        <h5>Utilisateurs du site</h5>
+                      </div>
+                      <div class="admin-list">
+                        <% if (users.length === 0) { %>
+                          <div class="admin-list-empty">Aucun utilisateur</div>
+                        <% } else { %>
+                          <% users.forEach(u => { %>
+                            <div class="admin-list-item" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+                              <div class="admin-list-content">
+                                <strong><%= u.nom_prenom %></strong>
+                                <div class="admin-list-meta">Inscrit le <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-' %></div>
+                              </div>
+                              <form method="POST" action="/admin/users/delete/<%= u.id %>" style="margin:0;">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
+                              </form>
+                            </div>
+                          <% }) %>
+                        <% } %>
+                      </div>
+                    </div>
           <div class="admin-panel" style="min-width:420px;max-width:700px;">
             <div class="admin-panel-header">
               <h5>Articles récents</h5>
-              <a href="/admin/articles/new" class="btn-general">Créer</a>
+              <div style="display:flex;gap:0.5rem;align-items:center;flex:1;justify-content:flex-end">
+                <a href="/admin/articles/new" class="btn-general">Créer</a>
+                <form method="GET" action="/admin/dashboard" style="display:flex;gap:0.5rem;align-items:center;margin:0;">
+                  <input type="text" name="search" placeholder="Rechercher un article..." value="<%= typeof search !== 'undefined' ? search : '' %>" class="admin-input" style="max-width:220px;">
+                  <button type="submit" class="admin-btn-sm">Rechercher</button>
+                </form>
+              </div>
             </div>
             <div class="admin-list">
               <% if (recentArticles.length === 0) { %>
                 <div class="admin-list-empty">Aucun article</div>
               <% } else { %>
-                <% recentArticles.forEach(a => { %>
+                <% recentArticles.slice(0, 3).forEach(a => { %>
                   <div class="admin-list-item">
                     <div class="admin-list-content">
                       <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
@@ -54,7 +87,6 @@
                 <% }) %>
               <% } %>
             </div>
-            <%- include('partials/pagination', { pagination: recentArticlesPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
 
           <div class="admin-panel">

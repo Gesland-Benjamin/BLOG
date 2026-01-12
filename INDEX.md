@@ -3,26 +3,12 @@
 ## 🎯 Démarrage rapide
 
 **Nouveau sur le projet ?** Commencez par :
-1. [`GETTING-STARTED.md`](./GETTING-STARTED.md) - Guide de démarrage en 5 minutes
-2. [`CSS-QUICK-REFERENCE.md`](./CSS-QUICK-REFERENCE.md) - Référence rapide des classes
+1. [`public/css/README.md`](./public/css/README.md) - Documentation CSS et structure du projet
+2. Vérifiez la configuration dans `config/` et les modèles dans `models/`
 
 ## 📖 Documentation complète
 
-### 1. **GETTING-STARTED.md** ⭐ À lire EN PREMIER
-   - Comment démarrer l'application
-   - Vérification que tout fonctionne
-   - Exemples de code complets
-   - Q&A et troubleshooting
-   - **Pour**: Débuter rapidement
-
-### 2. **CSS-QUICK-REFERENCE.md** 🎨
-   - Cheat sheet des classes CSS
-   - Variables disponibles
-   - Exemples d'utilisation
-   - Snippets prêts à copier-coller
-   - **Pour**: Trouver une classe rapidement
-
-### 3. **public/css/README.md** 📘
+### 1. **public/css/README.md** 📘
    - Documentation complète des fichiers CSS
    - Explication du système de variables
    - Système de grille détaillé
@@ -30,13 +16,19 @@
    - Responsive design guide
    - **Pour**: Comprendre la structure en profondeur
 
-### 4. **MIGRATION-BOOTSTRAP-CSS.md** 🔄
-   - Guide détaillé de migration
-   - Checklist complète
-   - Classes à vérifier dans les EJS
-   - Fichiers à contrôler
-   - Conseils pour la migration
-   - **Pour**: Effectuer la migration complète
+### 2. **config/** et **models/**
+   - Configuration serveur et base de données
+   - Modèles principaux (Article, User, etc.)
+   - **Pour**: Développement backend
+
+### 3. **controllers/** et **routes/**
+   - Logique métier et API
+   - Routage Express
+   - **Pour**: Développement des fonctionnalités
+
+### 4. **docs/**
+   - Guides techniques et documentation de production
+   - **Pour**: Déploiement et maintenance
 
 ### 5. **CSS-MIGRATION-SUMMARY.md** 📊
    - Résumé du projet

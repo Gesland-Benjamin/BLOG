@@ -66,6 +66,18 @@ Autres fichiers (chargés selon la page)
 --spacing-2xl: 3rem
 --spacing-3xl: 4rem
 ```
+| **1-base.css** | Reset CSS et base universelle |
+| **2-layout.css** | Structure générale du layout |
+| **3-components.css** | Composants réutilisables (boutons, cartes, alertes, etc.) |
+| **4-header.css** | En-tête et navigation principales |
+| **5-footer.css** | Pied de page |
+| **6-carousel.css** | Carrousel et sliders |
+| **7-pages-home.css** | Page d'accueil |
+| **8-pages-article.css** | Pages d'article et détail |
+| **9-pages-admin.css** | Pages administrateur |
+| **10-pages-auth.css** | Pages d'authentification |
+| **11-pages-error.css** | Pages d'erreur (404, etc.) |
+| **12-pages-other.css** | Autres pages spécifiques |
 
 ### Typographie
 
@@ -90,6 +102,24 @@ Grille 12 colonnes responsive avec 3 breakpoints :
 
 <!-- Tablette (768px+) -->
 <div class="row">
+### Structure générale
+
+```
+1-base.css (reset et base)
+2-layout.css (layout général)
+3-components.css (composants)
+4-header.css (header)
+5-footer.css (footer)
+6-carousel.css (carrousel)
+7-pages-home.css (home)
+8-pages-article.css (article)
+9-pages-admin.css (admin)
+10-pages-auth.css (auth)
+11-pages-error.css (erreur)
+12-pages-other.css (autres)
+```
+
+Chaque fichier est chargé selon la page ou le composant utilisé.
   <div class="col-md-6">Moitié</div>
   <div class="col-md-6">Moitié</div>
 </div>

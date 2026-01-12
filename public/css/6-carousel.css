@@ -107,6 +107,10 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
 /* ============================================
    TEXTE CARROUSEL
    ============================================ */
+   .main-carousel-link{
+    text-decoration: none !important;
+    color: black!important;
+   }
 
 .main-carousel-article-card {
   min-height: 280px;
