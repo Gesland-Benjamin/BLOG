@@ -1,3 +1,72 @@
+/* ===================== ARCHIVE ARTICLE CARDS ===================== */
+.archive-articles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.archive-article-card {
+  background: #fffdf6;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+.archive-article-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+}
+.archive-article-layout {
+  display: flex;
+  gap: 1.5rem;
+}
+.archive-article-image img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.archive-article-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.archive-article-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.archive-article-meta {
+  font-size: 0.95rem;
+  color: #a67c52;
+  margin-bottom: 0.5rem;
+}
+.archive-article-excerpt {
+  font-size: 1rem;
+  color: #4d3a1a;
+  margin-bottom: 0.7rem;
+}
+.archive-article-btn {
+  align-self: flex-start;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  background: #f7e2ba;
+  color: #6b3500;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: background 0.2s;
+}
+.archive-article-btn:hover {
+  background: #ffe6c1;
+}
+.archive-article-content.full-width {
+  margin-left: 0;
+}
 /* Curseur pointer sur tous les éléments interactifs au hover */
 a:hover,
 button:hover,
@@ -57,24 +126,41 @@ input[type="submit"]:hover,
 /* ===================== 1. BOUTONS PRINCIPAUX ===================== */
 
 /* --- Bouton Articles --- */
+/* --- Boutons Articles & Menu (parité parfaite) --- */
 .btn-chrome-articles,
 button.btn-chrome-articles,
 button.btn.btn-chrome-articles,
-button.dropdown-toggle.btn-chrome-articles {
+button.dropdown-toggle.btn-chrome-articles,
+.btn-chrome-menu,
+button.btn-chrome-menu,
+button.btn.btn-chrome-menu,
+button.dropdown-toggle.btn-chrome-menu {
   display: inline-block;
-  background-image: url(../articles.png) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
   background-color: transparent !important;
   border: none;
-  width: 18rem;
+  width: 17rem;
   height: 3.2rem;
   cursor: pointer;
   overflow: hidden;
   text-indent: -9999px;
   box-shadow: none !important;
   padding: 0 !important;
+}
+
+.btn-chrome-articles,
+button.btn-chrome-articles,
+button.btn.btn-chrome-articles,
+button.dropdown-toggle.btn-chrome-articles {
+  background-image: url(../articles.png) !important;
+}
+.btn-chrome-menu,
+button.btn-chrome-menu,
+button.btn.btn-chrome-menu,
+button.dropdown-toggle.btn-chrome-menu {
+  background-image: url(../menu.png) !important;
 }
 
 /* États spéciaux pour bouton Articles (menu ouvert, focus, etc.) */
@@ -111,22 +197,8 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 }
 
 /* --- Bouton Menu --- */
-.btn-chrome-menu {
-  display: inline-block;
-  background-image: url(../menu.png) !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-color: transparent !important;
-  border: none;
-  width: 18rem;
-  height: 3.2rem;
-  cursor: pointer;
-  overflow: hidden;
-  text-indent: -9999px;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
+/* Les hover sont aussi identiques */
+.btn-chrome-articles:hover,
 .btn-chrome-menu:hover {
   transform: translateY(-4px) scale(1.08);
   filter: brightness(1.08);

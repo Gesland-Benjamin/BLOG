@@ -14,7 +14,7 @@
                 title="<%= article.titre %>"
                 loading="lazy"
                 srcset="<%= article.image %> 600w, <%= article.image.replace('_md', '_lg') %> 1200w"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
+               
               >
             </div>
           <% } %>
@@ -27,6 +27,7 @@
             </div>
 
             <% if (article.video) { %>
+              <div style="margin-top: 1.2rem;"></div>
               <div class="article-detail-video">
                 <div class="video-container">
                   <% if (article.videoType === 'youtube') { %>
@@ -57,7 +58,7 @@
               </div>
             <% } %>
 
-            <div class="article-detail-actions">
+            <div class="article-detail-actions" style="padding-bottom: 15px;">
               <button
                 id="like-btn"
                 class="heart-button <%= article.liked ? 'liked' : '' %>"
@@ -69,6 +70,12 @@
               <span id="like-count" class="article-like-count">
                 <%= article.likes %> j'aime<%= article.likes > 1 ? 's' : '' %>
               </span>
+              <% if (user && user.role === 'admin') { %>
+                <form method="POST" action="/admin/articles/<%= article.id %>?_method=DELETE" style="display:inline-block;margin-left:1rem;">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet article ?')">Supprimer</button>
+                </form>
+              <% } %>
             </div>
 
             <div class="article-detail-links">

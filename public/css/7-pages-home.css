@@ -85,6 +85,9 @@
   gap: 1rem;
   z-index: 10;
   width: 50%;
+  max-width: 540px;
+  word-break: break-word;
+  white-space: normal;
   position: absolute;
   left: 0;
   top: 0;
@@ -152,12 +155,31 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start;
   gap: 2rem;
-  padding: 2rem 2rem;
-  /* Laisser la place à l'image à droite (même logique que carrousel) */
-  padding-right: calc(50% + 16px);
-  position: relative;
   z-index: 10;
+  width: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 2.5rem 2rem 2.5rem 2.5rem;
+  padding-right: calc(50% + 16px);
+}
+
+/* Version tablette/mobile : texte carrousel bien organisé */
+.home-featured-text-tablet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  z-index: 10;
+  width: 100%;
+  position: static;
+  padding: 1.5rem 1.2rem 1.5rem 1.2rem;
+  background: none;
+  box-shadow: none;
 }
 
 .home-featured-title {
@@ -460,99 +482,9 @@
   color: #b88a4a;
 }
 
-/* ============================================
-   SECTION RESPONSIVE – MOBILE & TABLETTE
-   ============================================ */
 
 
-/* ============================================
-   SECTION RESPONSIVE – TABLETTE (≤ 992px)
-   ============================================ */
 
-@media (max-width: 992px) {
-  .home-content-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .home-main-content {
-    grid-column: 1;
-    order: 1;
-  }
-  .home-sidebar {
-    grid-column: 1;
-    order: 2;
-  }
-  .left-sections {
-    order: 1;
-  }
-  .card-smeg-stack {
-    order: 2;
-    gap: 2rem;
-  }
-  .left-sections > .card-bordered {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-  .left-sections > .card-bordered > div:last-child {
-    max-height: 200px;
-    border-radius: 0 0 42px 42px;
-  }
-  .left-sections > .card-bordered > div:last-child img {
-    border-radius: 0 0 42px 42px !important;
-  }
-  .home-featured-layout {
-    min-height: 220px;
-  }
-  .home-featured-text {
-    padding: 1.25rem 1.25rem;
-    padding-right: calc(50% + 12px);
-  }
-}
-
-/* ============================================
-   SECTION RESPONSIVE – MOBILE (≤ 576px)
-   ============================================ */
-
-@media (max-width: 576px) {
-  .sections-wrapper {
-    max-width: 100%;
-  }
-  .home-content-grid {
-    gap: 1.5rem;
-  }
-  .left-sections > .card-bordered {
-    min-height: 150px;
-  }
-  .left-sections > .card-bordered h2 {
-    font-size: 1.3rem;
-  }
-  .left-sections > .card-bordered p {
-    font-size: 0.9rem;
-  }
-  .card-smeg-stack {
-    gap: 1.5rem;
-  }
-  .home-featured-layout {
-    min-height: initial;
-    flex-direction: column;
-    align-items: stretch;
-    position: relative;
-  }
-  .article-card-text {
-    gap: 0.5rem;
-    padding: 1rem 0.75rem 1rem 0.75rem;
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
-  }
-  .article-card-title {
-    font-size: 1rem;
-  }
-  .article-card-excerpt {
-    font-size: 0.85rem;
-  }
-  .article-card-author {
-    font-size: 0.8rem;
-  }
-}
 
 /* ============================================
    TEXTE DES CARDS ARTICLES (comportement carrousel)
@@ -568,7 +500,7 @@
 }
 
 .article-card-title {
-  margin: 0;
+  
   font-size: 1.2rem;
   line-height: 1.2;
   font-weight: 700;
@@ -610,4 +542,384 @@
 .heart-button:hover {
   transform: translateY(-4px) scale(1.08);
   transition: all 0.25s cubic-bezier(0.4, 2, 0.3, 1);
+}
+/* ============================================
+   SECTION RESPONSIVE – MOBILE (≤ 576px)
+   ============================================ */
+
+@media (max-width: 576px) {
+  html, body {
+    width: 100vw;
+    overflow-x: hidden;
+  }
+  .sections-wrapper {
+    max-width: 100vw;
+    padding: 1rem 1rem 1rem 1rem;
+    box-sizing: border-box;
+  }
+  .home-content-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    padding: 0;
+  }
+  .home-main-content,
+  .home-sidebar {
+    max-width: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .home-wrapper {
+    max-width: 100vw;
+    padding: 1rem 0 2rem 0;
+  }
+  .left-sections {
+    gap: 1rem;
+  }
+  .left-sections > .card-bordered {
+    min-height: 100px;
+    padding: 1rem 0.75rem;
+    border-radius: 18px;
+  }
+  .left-sections > .card-bordered h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .left-sections > .card-bordered p {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  .card-smeg-stack {
+    gap: 1rem;
+  }
+  .card-smeg {
+    padding: 1rem;
+    border-radius: 18px;
+  }
+  .card-smeg .list-group-item,
+  .card-smeg ol li {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.95rem;
+  }
+  .card-smeg .list-group-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+  }
+  .home-featured-layout {
+    min-height: initial;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    gap: 0.5rem;
+  }
+  .home-featured-text {
+    width: 100%;
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+    position: static;
+  }
+  .home-featured-title {
+    font-size: 1.2rem;
+  }
+  .home-featured-excerpt {
+    font-size: 0.95rem;
+  }
+  .article-card-image-wrapper {
+    width: 100%;
+    min-height: 160px;
+    border-radius: 18px;
+    box-shadow: none;
+  }
+  .article-card-image-wrapper img {
+    border-radius: 18px !important;
+  }
+  .article-card-text {
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    width: 100%;
+  }
+  .article-card-title {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  .article-card-excerpt {
+    font-size: 0.82rem;
+  }
+  .article-card-author {
+    font-size: 0.78rem;
+  }
+  .heart-button {
+    width: 38px;
+    height: 38px;
+    background-size: contain;
+  }
+}
+/* ============================================
+   SECTION RESPONSIVE – TABLETTE (≤ 992px)
+   ============================================ */
+
+@media (max-width: 992px) {
+        /* Texte du carrousel (carousel.ejs) en tablette/mobile */
+        .main-carousel-text {
+          max-width: 50%;
+          margin: 15px;
+            
+          font-family: 'Poppins', Arial, Helvetica, sans-serif;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          gap: 1.2rem;
+          padding: 1.5rem 1.2rem 1.5rem 1.2rem;
+          background: none;
+          box-shadow: none;
+          border-radius: 18px;
+          width: 100%;
+          color: #4a2600;
+        }
+        .main-carousel-title {
+          font-size: 1.45rem;
+          font-weight: 700;
+          margin-bottom: 0.7rem;
+          color: #7a3e00;
+          letter-spacing: 0.02em;
+          text-align: left;
+        }
+        .main-carousel-excerpt {
+          font-size: 1.05rem;
+          line-height: 1.5;
+          margin-bottom: 0.5rem;
+          color: #4a2600;
+          text-align: left;
+        }
+        .main-carousel-author {
+          font-size: 0.98rem;
+          color: #b88a4a;
+          margin-bottom: 0.4rem;
+          text-align: left;
+        }
+        .main-carousel-link {
+          font-size: 0.98rem;
+          color: #9a4f18;
+          font-weight: 600;
+          text-align: left;
+        }
+        .main-carousel-text {
+          font-family: 'Poppins', Arial, Helvetica, sans-serif;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1.1rem 0.7rem 1.1rem 0.7rem;
+          background: none;
+          box-shadow: none;
+          border-radius: 14px;
+          width: 100%;
+          color: #4a2600;
+        }
+        .main-carousel-title {
+          font-size: 1.18rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+          color: #7a3e00;
+          letter-spacing: 0.01em;
+          text-align: left;
+        }
+        .main-carousel-excerpt {
+          font-size: 0.98rem;
+          line-height: 1.45;
+          margin-bottom: 0.4rem;
+          color: #4a2600;
+          text-align: left;
+        }
+        .main-carousel-author {
+          font-size: 0.92rem;
+          color: #b88a4a;
+          margin-bottom: 0.3rem;
+          text-align: left;
+        }
+        .main-carousel-link {
+          font-size: 0.92rem;
+          color: #9a4f18;
+          font-weight: 600;
+          text-align: left;
+        }
+      /* Texte et titre du carrousel en tablette */
+      .home-featured-text-tablet {
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        color: #4a2600;
+        background: none;
+        box-shadow: none;
+        padding: 1.5rem 1.2rem 1.5rem 1.2rem;
+        border-radius: 18px;
+      }
+      .home-featured-text-tablet .home-featured-title {
+        font-size: 1.45rem;
+        font-weight: 700;
+        margin-bottom: 0.7rem;
+        color: #7a3e00;
+        letter-spacing: 0.02em;
+        text-align: left;
+      }
+      .home-featured-text-tablet p {
+        font-size: 1.05rem;
+        line-height: 1.5;
+        margin-bottom: 0.5rem;
+        color: #4a2600;
+        text-align: left;
+      }
+      /* Texte et titre des cards articles en tablette */
+      .article-card-text {
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        background: none;
+        box-shadow: none;
+        padding: 1.2rem 1rem 1.2rem 1rem;
+        border-radius: 14px;
+      }
+      .article-card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #7a3e00;
+        letter-spacing: 0.01em;
+        text-align: left;
+      }
+      .article-card-text p {
+        font-size: 0.98rem;
+        line-height: 1.5;
+        margin-bottom: 0.4rem;
+        color: #4a2600;
+        text-align: left;
+      }
+      /* Texte et titre du carrousel en mobile */
+      .home-featured-text-tablet {
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        color: #4a2600;
+        background: none;
+        box-shadow: none;
+        padding: 1.1rem 0.7rem 1.1rem 0.7rem;
+        border-radius: 14px;
+      }
+      .home-featured-text-tablet .home-featured-title {
+        font-size: 1.18rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #7a3e00;
+        letter-spacing: 0.01em;
+        text-align: left;
+      }
+      .home-featured-text-tablet p {
+        font-size: 0.98rem;
+        line-height: 1.45;
+        margin-bottom: 0.4rem;
+        color: #4a2600;
+        text-align: left;
+      }
+      /* Texte et titre des cards articles en mobile */
+      .article-card-text {
+        font-family: 'Poppins', Arial, Helvetica, sans-serif;
+        background: none;
+        box-shadow: none;
+        padding: 0.9rem 0.5rem 0.9rem 0.5rem;
+        border-radius: 10px;
+      }
+      .article-card-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+        color: #7a3e00;
+        letter-spacing: 0.01em;
+        text-align: left;
+      }
+      .article-card-text p {
+        font-size: 0.92rem;
+        line-height: 1.45;
+        margin-bottom: 0.3rem;
+        color: #4a2600;
+        text-align: left;
+      }
+    /* Afficher uniquement les deux premières cards .card-smeg côte à côte dans la sidebar */
+    .card-smeg-stack {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 540px;
+      margin: auto;
+      
+      
+    }
+    .card-smeg-stack > .card-smeg {
+      width: 270px;
+      min-width: 0;
+      flex: none;
+    }
+    /* Si plus de deux cards, les suivantes repassent en colonne */
+    .card-smeg-stack > .card-smeg:nth-child(n+3) {
+      flex-basis: 100%;
+      width: 100%;
+      margin-top: 1.5rem;
+      display: block;
+    }
+  .home-content-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .home-main-content {
+    grid-column: 1;
+    order: 1;
+  }
+  .home-sidebar {
+    grid-column: 1;
+    order: 2;
+  }
+  .left-sections {
+    order: 1;
+  }
+  .card-smeg-stack {
+    order: 2;
+    gap: 2rem;
+  }
+  .left-sections > .card-bordered {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .left-sections > .card-bordered > div:last-child {
+    max-height: 200px;
+    border-radius: 0 0 42px 42px;
+  }
+  .left-sections > .card-bordered > div:last-child img {
+    border-radius: 0 0 42px 42px !important;
+  }
+  .home-featured-layout {
+    min-height: 220px;
+  }
+  /* Utilise la classe responsive pour le texte du carrousel */
+  .home-featured-text {
+    display: none;
+  }
+  .home-featured-text-tablet {
+    display: flex;
+  }
+    /* Pour mobile, même logique que tablette */
+    .home-featured-text {
+      display: none;
+    }
+    .home-featured-text-tablet {
+      display: flex;
+    }
+  .article-card-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: space-between;
+    gap: 2rem;
+    width: 50%;
+    padding: 1.25rem 1rem 1.25rem 1.25rem;
+  }
 }

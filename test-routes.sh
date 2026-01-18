@@ -1,3 +1,4 @@
+# Move to .trash/
 #!/bin/bash
 
 echo "=== Test des routes publiques ==="

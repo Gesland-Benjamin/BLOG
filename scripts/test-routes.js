@@ -1,3 +1,4 @@
+// This script has been moved to .trash/scripts/
 import fetch from 'node-fetch';
 
 const BASE_URL = 'http://localhost:3000';

@@ -1,9 +1,26 @@
-/* Grille pour les cards de commentaires admin */
+/* Nettoyage des doublons et correction de la grille */
+
 .admin-comments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   margin-top: 2.5rem;
+}
+
+
+.admin-comments-grid > .admin-comment-card {
+  box-sizing: border-box;
+  margin-bottom: 0;
+  float: none;
+  min-width: 0;
+  /* Forcer le grid sur tous les enfants */
+  display: initial !important;
+  grid-column: auto !important;
+}
+@media (max-width: 900px) {
+  .admin-comments-grid {
+    grid-template-columns: 1fr;
+  }
 }
 /* ============================================
    9. PAGES ADMINISTRATION
@@ -113,14 +130,19 @@
   box-shadow: 0 4px 16px rgba(225,154,79,0.18);
 }
 
+/* Correction pour garantir l'alignement en grille 2 colonnes */
+/* Styles visuels uniquement, pas de width/margin ici pour ne pas casser le grid */
 .admin-commentaires .admin-comment-card {
   border-radius: 42px;
   background: radial-gradient(ellipse at center, #fff4e4 0%, #f9ddb5 42%, #efc48d 72%, #e19a4f 100%);
   box-shadow: 0 12px 32px rgba(0,0,0,0.13), inset 0 0 0 6px rgba(255,248,230,0.7);
   border: 2.5px solid #9a4f18;
   padding: 1.5rem 2rem;
-  margin-bottom: 2rem;
 }
+}
+
+/* S'assurer qu'aucun width: 100% ne casse la grille */
+
 
 .admin-commentaires .admin-comment-header {
   display: flex;

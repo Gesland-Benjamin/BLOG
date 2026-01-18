@@ -226,7 +226,7 @@ export const deleteArticle = async (req, res) => {
 
     console.log('Article supprimé id=', articleId);
 
-    res.status(200).json({ message: 'Article supprimé avec succès' });
+    return res.redirect('/');
   } catch (error) {
     console.error('Erreur deleteArticle:', error);
     res.status(500).json({ error: 'Erreur lors de la suppression de l\'article' });

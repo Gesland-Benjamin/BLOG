@@ -4,10 +4,11 @@
   <body>
     <%- include('partials/header', { withContainer: true }) %>
     <main class="admin-wrapper admin-commentaires">
+     
       <div class="admin-container">
         <div class="admin-header">
           <h1>Modération des commentaires</h1>
-          <a href="/article" class="admin-btn secondary">Voir les articles</a>
+          <a href="/article" class="btn-general">Voir les articles</a>
         </div>
 
         <% if (comments.length === 0) { %>
@@ -16,7 +17,7 @@
 
         <div class="admin-comments-grid">
         <% comments.forEach(c => { %>
-          <div class="admin-comment-card">
+        <div class="admin-comment-card">
             <div class="admin-comment-header">
               <div class="admin-comment-author-section">
                 <h6>
@@ -58,9 +59,7 @@
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="admin-btn-sm danger" type="submit">🚫 Spam</button>
               </form>
-              <button class="admin-btn-sm primary" type="button" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">
-                💬 Répondre
-              </button>
+              
               <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="admin-btn-sm danger" type="submit" onclick="return confirm('Supprimer ce commentaire ?');">🗑️ Supprimer</button>
@@ -76,8 +75,8 @@
                   <textarea id="contenu-<%= c.id %>" name="contenu" rows="3" required placeholder="Écrivez votre réponse..."></textarea>
                 </div>
                 <div class="admin-form-actions">
-                  <button type="submit" class="admin-btn-sm primary">Envoyer la réponse</button>
-                  <button type="button" class="admin-btn-sm secondary" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">Annuler</button>
+                  <button type="submit" class="btn-general">Envoyer la réponse</button>
+                  <button type="button" class="btn-general" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">Annuler</button>
                 </div>
               </form>
             </div>
@@ -139,8 +138,7 @@
               </div>
             <% } %>
           </div>
-        </div>
-      <% }) %>
+        <% }) %>
         </div>
 
       <%- include('partials/pagination', { pagination, baseUrl }) %>
