@@ -59,14 +59,14 @@
                     </div>
           <div class="admin-panel" style="min-width:420px;max-width:700px;">
             <div class="admin-panel-header">
-              <h5>Articles récents</h5>
-              <div style="display:flex;gap:0.5rem;align-items:center;flex:1;justify-content:flex-end">
-                <a href="/admin/articles/new" class="btn-general">Créer</a>
-                <form method="GET" action="/admin/dashboard" style="display:flex;gap:0.5rem;align-items:center;margin:0;">
-                  <input type="text" name="search" placeholder="Rechercher un article..." value="<%= typeof search !== 'undefined' ? search : '' %>" class="admin-input" style="max-width:220px;">
-                  <button type="submit" class="admin-btn-sm">Rechercher</button>
-                </form>
+              <div class="admin-panel-header-row">
+                <h5>Articles récents</h5>
+                <a href="/admin/articles/new" class="btn-general admin-create-btn">Créer</a>
               </div>
+              <form method="GET" action="/admin/dashboard">
+                <input type="text" name="search" placeholder="Rechercher un article..." value="<%= typeof search !== 'undefined' ? search : '' %>" class="admin-input" style="max-width:220px;">
+                <button type="submit" class="btn-general">Rechercher</button>
+              </form>
             </div>
             <div class="admin-list">
               <% if (recentArticles.length === 0) { %>

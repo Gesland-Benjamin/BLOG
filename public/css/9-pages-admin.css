@@ -1,3 +1,25 @@
+/* Pour placer le bouton Créer à droite du h2 sur tablette */
+.admin-panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+@media (max-width: 992px) and (min-width: 600px) {
+  .admin-panel-header-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-panel-header-row h5 {
+    margin-bottom: 0;
+  }
+  .admin-create-btn {
+    margin-left: auto;
+  }
+}
 /* Nettoyage des doublons et correction de la grille */
 
 .admin-comments-grid {
@@ -139,7 +161,7 @@
   border: 2.5px solid #9a4f18;
   padding: 1.5rem 2rem;
 }
-}
+
 
 /* S'assurer qu'aucun width: 100% ne casse la grille */
 
@@ -893,7 +915,7 @@
 @media (max-width: 1200px) {
   .admin-container {
     gap: 1.5rem;
-    padding: 1.5rem;
+    
   }
   .admin-content {
     padding: 1.5rem;
@@ -906,6 +928,10 @@
 @media (max-width: 992px) {
   .admin-container {
     grid-template-columns: 1fr;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
   .admin-sidebar {
     position: static;
