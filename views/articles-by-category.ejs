@@ -10,38 +10,42 @@
         <% if (!articles || articles.length === 0) { %>
           <p class="no-articles-message">Aucun article trouvé<%= search ? ' pour cette recherche' : ' pour cette catégorie' %>.</p>
         <% } else { %>
-          <div class="article-grid">
+          <div class="archive-articles">
             <% articles.forEach(function(article) { %>
               <% if (article.titre && article.titre.trim() !== '' && article.contenu && article.contenu.trim() !== '') { %>
-                <article class="article-card">
-                  <% if (article.video) { %>
-                    <div class="article-card-video" style="width:100%;margin-bottom:1rem;">
-                      <video controls style="width:100%;border-radius:24px;max-height:340px;background:#000;">
-                        <source src="<%= article.video %>" type="video/mp4">
-                        Votre navigateur ne supporte pas la lecture vidéo.
-                      </video>
-                    </div>
-                  <% } else if (article.image) { %>
-                    <div class="article-card-image">
-                      <img 
-                        src="<%= article.image %>" 
-                        alt="<%= article.image_alt || article.titre %>"
-                        title="<%= article.titre %>"
-                        loading="lazy"
-                        srcset="<%= article.image %> 300w, <%= article.image.replace('_sm', '_md') %> 600w"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      >
-                    </div>
-                  <% } %>
-                  <div class="article-card-content">
-                    <h5 class="article-card-title"><%= article.titre %></h5>
-                    <p class="article-card-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
-                    <div class="article-card-meta">Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %></div>
-                    <div class="article-card-actions">
-                      <a href="/article/<%= article.id %>" class="btn-general">Lire l'article</a>
+                <article class="archive-article-card">
+                  <div class="archive-article-layout">
+                    <% if (article.image) { %>
+                      <div class="archive-article-image">
+                        <img 
+                          src="<%= article.image %>" 
+                          alt="<%= article.image_alt || article.titre %>"
+                        />
+                      </div>
+                    <% } %>
+                    <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
+                      <h2 class="archive-article-title">
+                        <a href="/article/<%= article.id %>">
+                          <%= article.titre %>
+                        </a>
+                      </h2>
+                      <p class="archive-article-meta">
+                        <strong><%= article.categorie || 'Non catégorisé' %></strong> | 
+                        <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        }) %>
+                      </p>
+                      <p class="archive-article-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
+                      <a href="/article/<%= article.id %>" class="archive-article-btn">
+                        Lire la suite →
+                      </a>
                       <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
-                        <a href="/admin/articles/<%= article.id %>/edit" class="btn-general">Modifier</a>
-                        <button class="admin-btn danger" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
+                        <div class="archive-article-admin-actions">
+                          <a href="/admin/articles/<%= article.id %>/edit" class="btn-general">Modifier</a>
+                          <button class="admin-btn danger" onclick="deleteArticle(<%= article.id %>)">Supprimer</button>
+                        </div>
                       <% } %>
                     </div>
                   </div>

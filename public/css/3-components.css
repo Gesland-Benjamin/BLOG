@@ -1,3 +1,18 @@
+.admin-container-narrow{
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+
+
+/* Espacement entre les boutons admin dans les cards catégorie */
+.archive-article-admin-actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
 /* ===================== ARCHIVE ARTICLE CARDS ===================== */
 .archive-articles {
   display: grid;
@@ -777,6 +792,21 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 .card-bordered:hover {
   transform: translateY(-6px);
   filter: brightness(1.03);
+}
+.card-bordered::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 0 42px 42px 0;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow:
+    0 0 0 5px rgba(255,245,220,0.9) inset,
+    0 0 0 0px rgba(255,245,220,0.9) inset;
+  
 }
 
 .card-smeg {

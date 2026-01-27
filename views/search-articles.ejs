@@ -40,23 +40,25 @@
         <% if (articles.length === 0) { %>
           <div class="search-no-results">Aucun article trouvé. Essayez de modifier vos critères de recherche.</div>
         <% } else { %>
-          <div class="article-grid">
+          <div class="archive-articles">
             <% articles.forEach(article => { %>
-              <article class="article-card">
-                <% if (article.image) { %>
-                  <div class="article-card-image">
-                    <img src="<%= article.image %>" alt="<%= article.titre %>">
-                  </div>
-                <% } %>
-                <div class="article-card-content">
-                  <h5 class="article-card-title"><%= article.titre %></h5>
-                  <p class="article-card-excerpt"><%= (article.contenu || '').substring(0, 120) %>...</p>
-                  <div class="article-card-meta">
-                    Par <%= article.auteur %> — <%= new Date(article.date_publication).toLocaleDateString() %>
-                    <% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %>
-                  </div>
-                  <div class="article-card-actions">
-                    <a href="/article/<%= article.id %>" class="btn-general">Lire l'article</a>
+              <article class="archive-article-card">
+                <div class="archive-article-layout">
+                  <% if (article.image) { %>
+                    <div class="archive-article-image">
+                      <img src="<%= article.image %>" alt="<%= article.titre %>">
+                    </div>
+                  <% } %>
+                  <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
+                    <h2 class="archive-article-title">
+                      <a href="/article/<%= article.id %>"><%= article.titre %></a>
+                    </h2>
+                    <p class="archive-article-meta">
+                      <% if (article.categorie) { %><strong><%= article.categorie %></strong> | <% } %>
+                      <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                    </p>
+                    <p class="archive-article-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
+                    <a href="/article/<%= article.id %>" class="archive-article-btn">Lire la suite →</a>
                   </div>
                 </div>
               </article>

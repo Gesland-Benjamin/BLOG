@@ -6,7 +6,7 @@
     <main class="auth-wrapper">
       <div class="auth-container">
         <div class="newsletter-form-card">
-          <h2 class="newsletter-form-title">📧 Newsletter Mi Amor</h2>
+          <h2 class="newsletter-form-title">📧 Newsletter Emi'Pulse</h2>
           
           <% if (typeof message !== 'undefined' && message) { %>
             <div class="auth-alert info" role="alert">
@@ -26,7 +26,7 @@
             </div>
           <% } %>
           
-          <p class="newsletter-message">Recevez nos meilleurs articles sur la beauté, la nutrition et le développement personnel directement dans votre boîte mail.</p>
+          <p class="newsletter-message">Recevez nos meilleurs articles sur toutes nos thématiques directement dans votre boîte mail.</p>
           
           <form method="POST" action="/newsletter/subscribe" class="newsletter-form">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">

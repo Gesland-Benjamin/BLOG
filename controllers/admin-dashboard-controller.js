@@ -4,12 +4,31 @@ import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import User from "../models/User.model.js";
 
 export const getDashboard = async (req, res) => {
-      // Utilisateurs
+      // Utilisateurs avec pagination
+      const userPage = parseInt(req.query.userPage) || 1;
+      const userPageSize = 8;
       const totalUsers = await User.count();
       const users = await User.findAll({
         attributes: ['id', 'nom_prenom', 'email', 'role'],
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        offset: (userPage - 1) * userPageSize,
+        limit: userPageSize
       });
+      const usersPagination = {
+        total: Math.ceil(totalUsers / userPageSize),
+        total_items: totalUsers,
+        pages: Array.from({length: Math.ceil(totalUsers / userPageSize)}, (_, i) => ({
+          number: i + 1,
+          url: `/admin/dashboard?userPage=${i + 1}`,
+          isActive: userPage === i + 1
+        })),
+        has_previous: userPage > 1,
+        has_next: userPage < Math.ceil(totalUsers / userPageSize),
+        previous_url: userPage > 1 ? `/admin/dashboard?userPage=${userPage - 1}` : null,
+        next_url: userPage < Math.ceil(totalUsers / userPageSize) ? `/admin/dashboard?userPage=${userPage + 1}` : null,
+        start_item: (userPage - 1) * userPageSize + 1,
+        end_item: Math.min(userPage * userPageSize, totalUsers)
+      };
   try {
     // Statistiques générales
     const totalArticles = await Article.count();
@@ -146,6 +165,7 @@ export const getDashboard = async (req, res) => {
       topArticles,
       topArticlesPagination,
       users,
+      usersPagination,
       search
     });
   } catch (error) {

@@ -5,59 +5,64 @@
     <%- include('partials/header', { withContainer: true }) %>
     <main class="admin-wrapper">
       <div class="admin-container-narrow">
-        <h1>
-          <% if (category) { %>
-            Éditer la catégorie
-          <% } else { %>
-            Ajouter une catégorie
-          <% } %>
-        </h1>
-
-        <% if (error) { %>
-          <div class="admin-alert error" role="alert">
-            <%= error %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        <% } %>
-
-        <% if (errors && errors.length > 0) { %>
-          <div class="admin-alert error" role="alert">
-            <ul>
-              <% errors.forEach(err => { %>
-                <li><%= err %></li>
-              <% }) %>
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        <% } %>
-
-        <form method="POST" action="<%= category ? '/admin/categories/' + category.id + '?_method=PUT' : '/admin/categories' %>" class="admin-form">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <div class="admin-form-group">
-            <label for="nom">Nom de la catégorie</label>
-            <input
-              type="text"
-              class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('nom'))) ? 'invalid' : '' %>"
-              id="nom"
-              name="nom"
-              value="<%= category ? category.nom : (formData.nom || '') %>"
-              required
-              placeholder="Ex: Beauté, Nutrition, Développement personnel"
-            />
-            <small class="admin-form-hint">Min 3 caractères</small>
-          </div>
-
-          <div class="admin-form-actions">
-            <button type="submit" class="admin-btn primary">
+        <div class="admin-panel" >
+          <div class="admin-panel-header">
+            <h1 style="margin-bottom:0">
               <% if (category) { %>
-                Mettre à jour
+                Éditer la catégorie
               <% } else { %>
-                Créer
+                Ajouter une catégorie
               <% } %>
-            </button>
-            <a href="/admin/categories" class="admin-btn secondary">Annuler</a>
+            </h1>
           </div>
-        </form>
+          <div class="admin-panel-body">
+            <% if (error) { %>
+              <div class="admin-alert error" role="alert">
+                <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+
+            <% if (errors && errors.length > 0) { %>
+              <div class="admin-alert error" role="alert">
+                <ul>
+                  <% errors.forEach(err => { %>
+                    <li><%= err %></li>
+                  <% }) %>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+
+            <form method="POST" action="<%= category ? '/admin/categories/' + category.id + '?_method=PUT' : '/admin/categories' %>" class="admin-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <div class="admin-form-group">
+                <label for="nom">Nom de la catégorie</label>
+                <input
+                  type="text"
+                  class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('nom'))) ? 'invalid' : '' %>"
+                  id="nom"
+                  name="nom"
+                  value="<%= category ? category.nom : (formData.nom || '') %>"
+                  required
+                  placeholder="Ex: Beauté, Nutrition, Développement personnel"
+                />
+                <small class="admin-form-hint">Min 3 caractères</small>
+              </div>
+
+              <div class="admin-form-actions">
+                <button type="submit" class="admin-btn primary">
+                  <% if (category) { %>
+                    Mettre à jour
+                  <% } else { %>
+                    Créer
+                  <% } %>
+                </button>
+                <a href="/admin/categories" class="admin-btn secondary">Annuler</a>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </main>
     <%- include('partials/footer') %>

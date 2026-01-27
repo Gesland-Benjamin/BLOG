@@ -38,27 +38,26 @@
         <% } else if (typeof articlesParCategorie !== 'undefined' && Array.isArray(articlesParCategorie) && articlesParCategorie.length > 0) { %>
           <!-- Affichage de la liste des articles par catégorie -->
           <h1 class="page-title">Derniers articles par catégorie</h1>
-          <div class="article-grid">
+          <div class="archive-articles">
             <% articlesParCategorie.forEach(function(item) { %>
-              <article class="article-card">
-                <% if (item.image) { %>
-                  <div class="article-card-image">
-                    <img 
-                      src="<%= item.image %>" 
-                      alt="<%= item.image_alt || item.titre %>"
-                      loading="lazy"
-                    >
+              <article class="archive-article-card">
+                <div class="archive-article-layout">
+                  <% if (item.image) { %>
+                    <div class="archive-article-image">
+                      <img src="<%= item.image %>" alt="<%= item.image_alt || item.titre %>" loading="lazy">
+                    </div>
+                  <% } %>
+                  <div class="archive-article-content <%= item.image ? '' : 'full-width' %>">
+                    <h2 class="archive-article-title">
+                      <a href="/article/<%= item.id %>"><%= item.titre %></a>
+                    </h2>
+                    <p class="archive-article-meta">
+                      <% if (item.categorie) { %><strong><%= item.categorie %></strong> | <% } %>
+                      <%= new Date(item.date_publication).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                    </p>
+                    <p class="archive-article-excerpt"><%= (item.contenu || '').substring(0, 200) %>...</p>
+                    <a href="/article/<%= item.id %>" class="archive-article-btn">Lire la suite →</a>
                   </div>
-                <% } %>
-                <div class="article-card-content">
-                  <h3 class="article-card-category"><%= item.categorie %></h3>
-                  <h5 class="article-card-title"><%= item.titre %></h5>
-                  <p class="article-card-excerpt"><%= item.contenu.substring(0, 120) %>...</p>
-                  <div class="article-card-meta">
-                    Par <%= item.auteur %>,
-                    le <%= item.date_publication.toLocaleDateString() %>
-                  </div>
-                  <a href="/article/<%= item.id %>" class="btn-smeg primary">Lire l'article</a>
                 </div>
               </article>
             <% }) %>

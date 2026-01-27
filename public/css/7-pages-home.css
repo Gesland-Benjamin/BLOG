@@ -1,5 +1,193 @@
-/* Import de la police Poppins */
+
+/* ============================================
+   CSS PAGE D'ACCUEIL (HOME)
+   Nettoyé et réorganisé - classes utilisées uniquement
+============================================ */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* ----------- WRAPPER & GRILLE ----------- */
+.home-wrapper {
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+.home-content-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 270px;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 30px 30px 0 30px;
+}
+.home-main-content {
+  grid-column: 1;
+  max-width: 99%;
+}
+.home-sidebar {
+  grid-column: 2;
+  max-width: 270px;
+}
+
+/* ----------- SECTIONS GAUCHE (ARTICLES) ----------- */
+.left-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+/* ----------- CARDS SMEG (SIDEBAR) ----------- */
+.card-smeg-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.card-smeg {
+  border-radius: 42px;
+  border: 2px solid #7a3e00;
+  background: radial-gradient(
+    ellipse at center,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
+    inset 0 8px 14px rgba(255, 255, 255, 0.55),
+    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+  overflow: hidden;
+  padding: 25px;
+}
+.card-smeg .list-group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-smeg .list-group-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border: none;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: transparent;
+  border-top: 1px solid #e9ecef;
+}
+.card-smeg .list-group-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.card-smeg .list-group-item:last-child {
+  margin-bottom: 0;
+}
+.card-smeg .list-group-item img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+.card-smeg .list-group-item .article-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.card-smeg .list-group-item .article-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7a3e00;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-smeg .list-group-item .article-meta {
+  font-size: 0.85rem;
+  color: #b88a4a;
+}
+
+/* ----------- ARTICLE CARDS (TEXTE + IMAGE) ----------- */
+
+.home-featured-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  
+  height: 300px;
+}
+
+.home-featured-card {
+  height: 300px;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+.article-card-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 50%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 2.5rem 2rem 2.5rem 2.5rem;
+}
+.article-card-title {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: black;
+}
+.article-card-author {
+  font-size: 0.95rem;
+  color: black;
+  margin-bottom: 0.25rem;
+}
+.article-card-link {
+  margin-top: 0.5rem;
+  font-weight: 700;
+  color: #9a4f18;
+  text-decoration: none;
+}
+.article-card-link:hover {
+  color: #7a3e00;
+}
+.article-card-image-wrapper {
+  position: relative;
+  width: 50%;
+  border-radius: 0 18px 18px 0;
+  background: transparent;
+  box-shadow:
+    0 0 0 5px rgba(255,245,220,0.9) inset,
+    0 0 0 10px rgba(255,255,255,0.55) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.article-card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0 18px 18px 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+.article-card-image-wrapper img:hover {
+  /* Aucun effet visuel sur hover */
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
 /* ----------- SIDEBAR : Derniers articles ----------- */
 .sidebar-article-link {
   display: flex;
@@ -44,9 +232,13 @@
   font-weight: 600;
   color: #7a3e00;
   margin-bottom: 0.15rem;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
+  max-width: 140px;
 }
 .sidebar-article-meta {
   font-size: 0.85rem;
@@ -54,509 +246,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-/* ============================================
-   SOMMAIRE DU FICHIER CSS (pages-home.css)
-   ============================================
-   1. Harmonisation carrousel/articles
-   2. Grille et wrapper de la page d'accueil
-   3. Bloc vedette (home featured)
-   4. Sections gauche (articles)
-   5. Sidebar droite
-   6. Cards derniers articles & archives
-   7. Responsive accueil
-   8. Bouton coeur
-   (Chaque section est repérée par un commentaire ============)
-*/
-
-/* Harmonisation avec le carrousel : texte à gauche, image à droite */
-.home-featured-layout {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  min-height: 280px;
-  position: relative;
-}
-.home-featured-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 1rem;
-  z-index: 10;
-  width: 50%;
-  max-width: 540px;
-  word-break: break-word;
-  white-space: normal;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  padding: 2.5rem 2rem 2.5rem 2.5rem;
-}
-.home-featured-title {
-  margin: 0;
-  font-size: 1.75rem;
-  line-height: 1.2;
-}
-.home-featured-excerpt {
-   margin: 0;
-  font-size: 1.75rem;
-  line-height: 1.2;
-}
-.home-featured-meta,
-.home-featured-link {
-  margin: 0;
+  max-width: 100%;
 }
 
-/* ============================================
-   7. PAGE ACCUEIL (INDEX)
-   ============================================ */
-
-.home-content-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 270px;
-  gap: 1, 5rem;
-  width: 100%;
-  padding: 30px 30px 0 30px;
-}
-
-.home-main-content {
-  grid-column: 1;
-  max-width: 99%;
-}
-
-.home-sidebar {
-  grid-column: 2;
-  max-width: 270px;
-}
-
-.home-wrapper {
-  max-width: 95%;
-  margin: 0 auto;
-  padding: 2rem 0 4rem;
-}
-
-/* ============================================
-   BLOC VEDETTE (HOME FEATURED)
-   ============================================ */
-
-.home-featured-card {
-  position: relative;
-  height: 80%;
-}
-
-.home-featured-layout {
-  position: relative;
-  min-height: 100%;
-}
-
-.home-featured-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 2rem;
-  z-index: 10;
-  width: 50%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  padding: 2.5rem 2rem 2.5rem 2.5rem;
-  padding-right: calc(50% + 16px);
-}
-
-/* Version tablette/mobile : texte carrousel bien organisé */
-.home-featured-text-tablet {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 2rem;
-  z-index: 10;
-  width: 100%;
-  position: static;
-  padding: 1.5rem 1.2rem 1.5rem 1.2rem;
-  background: none;
-  box-shadow: none;
-}
-
-.home-featured-title {
-  margin: 0 0 0.75rem 0;
-  font-size: 1.75rem;
-  line-height: 1.2;
-}
-
-.home-featured-excerpt {
-  margin: 0 0 0.75rem 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.home-featured-meta,
-.home-featured-link {
-  margin: 0;
-}
-
-.article-card-image-wrapper {
-  position: relative;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 50%;
-
-  border-radius: 0 42px 42px 42px;
-  background: transparent;
-
-  box-shadow:
-    0 0 0 5px rgba(255,245,220,0.9) inset,
-    0 0 0 10px rgba(255,255,255,0.55) inset;
-}
-
-.article-card-image-wrapper::after {
-   content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border-radius: 0 42px 42px 0;
-  pointer-events: none;
-  z-index: 2;
-  box-shadow:
-    0 0 0 5px rgba(255,245,220,0.9) inset,
-    0 0 0 0px rgba(255,245,220,0.9) inset;
-}
-
-
-.article-card-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0 42px 42px 0px !important;
-  box-shadow: none !important;
-}
-
-/* ============================================
-   SECTIONS GAUCHE
-   ============================================ */
-
-.left-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.left-sections > .card-bordered:hover {
-  
-  filter: brightness(1.03);
-
-  box-shadow: 0 28px 52px rgba(0, 0, 0, 0.28),
-    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
-    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
-    inset 0 9px 16px rgba(255, 255, 255, 0.6),
-    inset 0 0 0 8px rgba(154, 79, 24, 0.22);
-}
-
-.left-sections > .card-bordered h2 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
-}
-
-.left-sections > .card-bordered p {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-/* ============================================
-   SIDEBAR DROITE
-   ============================================ */
-
-.card-smeg-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-}
-
-.card-smeg-header {
-  padding: 1.5rem 1.5rem 1rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.card-smeg-body {
-  padding: 1rem 1.2rem;
-}
-
-.card-smeg-body a {
-  transition: color 0.3s ease;
-}
-
-.card-smeg-body a:hover {
-  color: #dc2626;
-}
-
-.card-smeg a {
-  color: #9a4f18 !important;
-  text-decoration: none;
-}
-
-.card-smeg a:hover {
-  color: #7a3e00 !important;
-  text-decoration: underline;
-}
-
-/* Articles récents */
-.card-smeg .list-group {
-  gap: 0;
-}
-
-.card-smeg .list-group-item {
-  border: none;
-  padding: 0;
-  background: transparent;
-  border-top: 1px solid #e9ecef;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
-
-.card-smeg .list-group-item:first-child {
-  border-top: none;
-  padding-top: 0;
-}
-
-.card-smeg .list-group-item a {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.card-smeg .list-group-item h6 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-text-dark);
-}
-
-.card-smeg .list-group-item small {
-  color: var(--color-text-mid);
-}
-
-/* Archives */
-.card-smeg ol {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.card-smeg ol li {
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.card-smeg ol li:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.card-smeg ol li a {
-  color: #9a4f18 !important;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.card-smeg ol li a:hover {
-  color: #7a3e00 !important;
-  text-decoration: underline;
-}
-
-/* ============================================
-   CARDS DERNIERS ARTICLES & ARCHIVES
-   ============================================ */
-
-.card-smeg {
-  border-radius: 42px;
-  border: 2px solid #7a3e00;
-  background: radial-gradient(
-    ellipse at center,
-    #fff6df 0%,
-    #f8ddb0 45%,
-    #ebc58c 75%,
-    #d4a468 100%
-  );
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18),
-    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-    inset 0 8px 14px rgba(255, 255, 255, 0.55),
-    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
-  overflow: hidden;
-  padding: 25px;
-}
-
-.card-smeg .list-group,
-.card-smeg ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.card-smeg .list-group-item,
-.card-smeg ol li {
-  padding:  0;
-  
-  font-size: 1rem;
-  color: #7a3e00;
-  transition: background 0.15s;
-}
-
-.card-smeg .list-group-item:last-child,
-.card-smeg ol li:last-child {
-  border-bottom: none;
-}
-
-.card-smeg .list-group-item a,
-.card-smeg ol li a {
-  color: #9a4f18;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.card-smeg .list-group-item a:hover,
-.card-smeg ol li a:hover {
-  color: #7a3e00;
-  text-decoration: underline;
-}
-
-/* ============================================
-   DERNIERS ARTICLES : IMAGE À GAUCHE, TEXTE À DROITE
-   ============================================ */
-.card-smeg .list-group-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.card-smeg .list-group-item:last-child {
-  margin-bottom: 0;
-}
-
-.card-smeg .list-group-item img {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 10px;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-}
-
-.card-smeg .list-group-item .article-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
-
-.card-smeg .list-group-item .article-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #7a3e00;
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.card-smeg .list-group-item .article-meta {
-  font-size: 0.85rem;
-  color: #b88a4a;
-}
-
-
-
-
-
-/* ============================================
-   TEXTE DES CARDS ARTICLES (comportement carrousel)
-   ============================================ */
-.article-card-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: space-between;
-  gap: 2rem;
-  width: 50%;
-  padding: 1.25rem 1rem 1.25rem 1.25rem;
-}
-
-.article-card-title {
-  
-  font-size: 1.2rem;
-  line-height: 1.2;
-  font-weight: 700;
-  color: black;
-}
-
-.article-card-author {
-  font-size: 0.95rem;
-  color: black;
-  margin-bottom: 0.25rem;
-}
-
-.article-card-link {
-  margin-top: 0.5rem;
-  font-weight: 700;
-  color: #9a4f18;
-  text-decoration: none;
-}
-
-.article-card-link:hover {
-  color: #7a3e00;
-  
-}
-
-/* ============================================
-   BOUTON COEUR
-   ============================================ */
-
-.heart-button {
-  background-image: url(../Boutton_coeur-Photoroom.png);
-  height: 50px;
-  width: 50px;
-  background-size: cover;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.heart-button:hover {
-  transform: translateY(-4px) scale(1.08);
-  transition: all 0.25s cubic-bezier(0.4, 2, 0.3, 1);
-}
-/* ============================================
-   SECTION RESPONSIVE – MOBILE (≤ 576px)
-   ============================================ */
-
+/* ----------- RESPONSIVE ----------- */
 @media (max-width: 576px) {
-  html, body {
-    width: 100vw;
-    overflow-x: hidden;
-  }
-  .sections-wrapper {
-    max-width: 100vw;
-    padding: 1rem 1rem 1rem 1rem;
-    box-sizing: border-box;
-  }
   .home-content-grid {
     display: flex;
     flex-direction: column;
@@ -578,30 +272,9 @@
   .left-sections {
     gap: 1rem;
   }
-  .left-sections > .card-bordered {
-    min-height: 100px;
-    padding: 1rem 0.75rem;
-    border-radius: 18px;
-  }
-  .left-sections > .card-bordered h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-  .left-sections > .card-bordered p {
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
-  }
-  .card-smeg-stack {
-    gap: 1rem;
-  }
   .card-smeg {
     padding: 1rem;
     border-radius: 18px;
-  }
-  .card-smeg .list-group-item,
-  .card-smeg ol li {
-    padding: 0.5rem 0.5rem;
-    font-size: 0.95rem;
   }
   .card-smeg .list-group-item img {
     width: 40px;
@@ -609,317 +282,29 @@
     border-radius: 8px;
   }
   .home-featured-layout {
-    min-height: initial;
-    flex-direction: column;
-    align-items: stretch;
-    position: relative;
-    gap: 0.5rem;
-  }
-  .home-featured-text {
-    width: 100%;
-    padding: 1rem 0.75rem;
-    gap: 1rem;
-    position: static;
-  }
-  .home-featured-title {
-    font-size: 1.2rem;
-  }
-  .home-featured-excerpt {
-    font-size: 0.95rem;
-  }
-  .article-card-image-wrapper {
-    width: 100%;
+    flex-direction: row !important;
     min-height: 160px;
-    border-radius: 18px;
-    box-shadow: none;
-  }
-  .article-card-image-wrapper img {
-    border-radius: 18px !important;
+    gap: 0.5rem;
   }
   .article-card-text {
     gap: 0.5rem;
     padding: 0.75rem 0.5rem;
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
-    width: 100%;
+    width: 50%;
   }
   .article-card-title {
     font-size: 1rem;
     line-height: 1.2;
   }
-  .article-card-excerpt {
-    font-size: 0.82rem;
-  }
   .article-card-author {
     font-size: 0.78rem;
   }
-  .heart-button {
-    width: 38px;
-    height: 38px;
-    background-size: contain;
-  }
-}
-/* ============================================
-   SECTION RESPONSIVE – TABLETTE (≤ 992px)
-   ============================================ */
-
-@media (max-width: 992px) {
-        /* Texte du carrousel (carousel.ejs) en tablette/mobile */
-        .main-carousel-text {
-          max-width: 50%;
-          margin: 15px;
-            
-          font-family: 'Poppins', Arial, Helvetica, sans-serif;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
-          gap: 1.2rem;
-          padding: 1.5rem 1.2rem 1.5rem 1.2rem;
-          background: none;
-          box-shadow: none;
-          border-radius: 18px;
-          width: 100%;
-          color: #4a2600;
-        }
-        .main-carousel-title {
-          font-size: 1.45rem;
-          font-weight: 700;
-          margin-bottom: 0.7rem;
-          color: #7a3e00;
-          letter-spacing: 0.02em;
-          text-align: left;
-        }
-        .main-carousel-excerpt {
-          font-size: 1.05rem;
-          line-height: 1.5;
-          margin-bottom: 0.5rem;
-          color: #4a2600;
-          text-align: left;
-        }
-        .main-carousel-author {
-          font-size: 0.98rem;
-          color: #b88a4a;
-          margin-bottom: 0.4rem;
-          text-align: left;
-        }
-        .main-carousel-link {
-          font-size: 0.98rem;
-          color: #9a4f18;
-          font-weight: 600;
-          text-align: left;
-        }
-        .main-carousel-text {
-          font-family: 'Poppins', Arial, Helvetica, sans-serif;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
-          gap: 1rem;
-          padding: 1.1rem 0.7rem 1.1rem 0.7rem;
-          background: none;
-          box-shadow: none;
-          border-radius: 14px;
-          width: 100%;
-          color: #4a2600;
-        }
-        .main-carousel-title {
-          font-size: 1.18rem;
-          font-weight: 700;
-          margin-bottom: 0.5rem;
-          color: #7a3e00;
-          letter-spacing: 0.01em;
-          text-align: left;
-        }
-        .main-carousel-excerpt {
-          font-size: 0.98rem;
-          line-height: 1.45;
-          margin-bottom: 0.4rem;
-          color: #4a2600;
-          text-align: left;
-        }
-        .main-carousel-author {
-          font-size: 0.92rem;
-          color: #b88a4a;
-          margin-bottom: 0.3rem;
-          text-align: left;
-        }
-        .main-carousel-link {
-          font-size: 0.92rem;
-          color: #9a4f18;
-          font-weight: 600;
-          text-align: left;
-        }
-      /* Texte et titre du carrousel en tablette */
-      .home-featured-text-tablet {
-        font-family: 'Poppins', Arial, Helvetica, sans-serif;
-        color: #4a2600;
-        background: none;
-        box-shadow: none;
-        padding: 1.5rem 1.2rem 1.5rem 1.2rem;
-        border-radius: 18px;
-      }
-      .home-featured-text-tablet .home-featured-title {
-        font-size: 1.45rem;
-        font-weight: 700;
-        margin-bottom: 0.7rem;
-        color: #7a3e00;
-        letter-spacing: 0.02em;
-        text-align: left;
-      }
-      .home-featured-text-tablet p {
-        font-size: 1.05rem;
-        line-height: 1.5;
-        margin-bottom: 0.5rem;
-        color: #4a2600;
-        text-align: left;
-      }
-      /* Texte et titre des cards articles en tablette */
-      .article-card-text {
-        font-family: 'Poppins', Arial, Helvetica, sans-serif;
-        background: none;
-        box-shadow: none;
-        padding: 1.2rem 1rem 1.2rem 1rem;
-        border-radius: 14px;
-      }
-      .article-card-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: #7a3e00;
-        letter-spacing: 0.01em;
-        text-align: left;
-      }
-      .article-card-text p {
-        font-size: 0.98rem;
-        line-height: 1.5;
-        margin-bottom: 0.4rem;
-        color: #4a2600;
-        text-align: left;
-      }
-      /* Texte et titre du carrousel en mobile */
-      .home-featured-text-tablet {
-        font-family: 'Poppins', Arial, Helvetica, sans-serif;
-        color: #4a2600;
-        background: none;
-        box-shadow: none;
-        padding: 1.1rem 0.7rem 1.1rem 0.7rem;
-        border-radius: 14px;
-      }
-      .home-featured-text-tablet .home-featured-title {
-        font-size: 1.18rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        color: #7a3e00;
-        letter-spacing: 0.01em;
-        text-align: left;
-      }
-      .home-featured-text-tablet p {
-        font-size: 0.98rem;
-        line-height: 1.45;
-        margin-bottom: 0.4rem;
-        color: #4a2600;
-        text-align: left;
-      }
-      /* Texte et titre des cards articles en mobile */
-      .article-card-text {
-        font-family: 'Poppins', Arial, Helvetica, sans-serif;
-        background: none;
-        box-shadow: none;
-        padding: 0.9rem 0.5rem 0.9rem 0.5rem;
-        border-radius: 10px;
-      }
-      .article-card-title {
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 0.35rem;
-        color: #7a3e00;
-        letter-spacing: 0.01em;
-        text-align: left;
-      }
-      .article-card-text p {
-        font-size: 0.92rem;
-        line-height: 1.45;
-        margin-bottom: 0.3rem;
-        color: #4a2600;
-        text-align: left;
-      }
-    /* Afficher uniquement les deux premières cards .card-smeg côte à côte dans la sidebar */
-    .card-smeg-stack {
-      display: flex;
-      flex-direction: row;
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 540px;
-      margin: auto;
-      
-      
-    }
-    .card-smeg-stack > .card-smeg {
-      width: 270px;
-      min-width: 0;
-      flex: none;
-    }
-    /* Si plus de deux cards, les suivantes repassent en colonne */
-    .card-smeg-stack > .card-smeg:nth-child(n+3) {
-      flex-basis: 100%;
-      width: 100%;
-      margin-top: 1.5rem;
-      display: block;
-    }
-  .home-content-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .home-main-content {
-    grid-column: 1;
-    order: 1;
-  }
-  .home-sidebar {
-    grid-column: 1;
-    order: 2;
-  }
-  .left-sections {
-    order: 1;
-  }
-  .card-smeg-stack {
-    order: 2;
-    gap: 2rem;
-  }
-  .left-sections > .card-bordered {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-  .left-sections > .card-bordered > div:last-child {
-    max-height: 200px;
-    border-radius: 0 0 42px 42px;
-  }
-  .left-sections > .card-bordered > div:last-child img {
-    border-radius: 0 0 42px 42px !important;
-  }
-  .home-featured-layout {
-    min-height: 220px;
-  }
-  /* Utilise la classe responsive pour le texte du carrousel */
-  .home-featured-text {
-    display: none;
-  }
-  .home-featured-text-tablet {
-    display: flex;
-  }
-    /* Pour mobile, même logique que tablette */
-    .home-featured-text {
-      display: none;
-    }
-    .home-featured-text-tablet {
-      display: flex;
-    }
-  .article-card-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: space-between;
-    gap: 2rem;
+  .article-card-image-wrapper {
     width: 50%;
-    padding: 1.25rem 1rem 1.25rem 1.25rem;
+    min-height: 160px;
+    border-radius: 18px;
+    box-shadow: none;
+  }
+  .article-card-image-wrapper img {
+     border-radius: 0 18px 18px 0 !important;
   }
 }

@@ -20,8 +20,8 @@
           <% } %>
           <div class="article-detail-content">
             <p class="article-detail-date"><%= new Date(article.date_publication).toLocaleDateString() %></p>
-            <h1 class="article-detail-title"><%= article.titre %></h1>
-            <p class="article-detail-meta">Par <%= article.auteur %><% if (article.categorie) { %> — <%= article.categorie %><% } %></p>
+            <h1 class="article-detail-title" style="text-align: left;"><%= article.titre %></h1>
+            <p class="article-detail-meta">Par <strong><%= article.auteur %></strong><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
             <div class="article-detail-body">
               <%= article.contenu %>
             </div>
@@ -64,8 +64,12 @@
                 class="heart-button <%= article.liked ? 'liked' : '' %>"
                 data-article-id="<%= article.id %>"
                 <%= article.liked ? 'disabled' : '' %>
+                style="background: none; border: none; padding: 0; display: flex; align-items: center; justify-content: center;"
               >
-                <%= article.liked ? "Merci" : "J'aime" %>
+                <img src="/Boutton_coeur-Photoroom.png" alt="J'aime" style="width: 46px; height: 46px; object-fit: contain; margin-right: 0.5rem;" />
+                <span style="font-size: 1.1rem; font-weight: 600; color: #9a4f18;">
+                  <%= article.liked ? "Merci" : "J'aime" %>
+                </span>
               </button>
               <span id="like-count" class="article-like-count">
                 <%= article.likes %> j'aime<%= article.likes > 1 ? 's' : '' %>
@@ -165,7 +169,16 @@
               <%- include('partials/pagination', { pagination: commentsPagination, baseUrl: commentsBaseUrl }) %>
 
               <% if (typeof commentSubmitted !== 'undefined' && commentSubmitted) { %>
-                <div class="alert alert-success">Merci ! Votre commentaire est en attente de validation.</div>
+                <div id="comment-success-alert" class="alert alert-success">Merci ! Votre commentaire est en attente de validation.</div>
+                <script>
+                  setTimeout(function() {
+                    var alert = document.getElementById('comment-success-alert');
+                    if(alert) alert.style.display = 'none';
+                  }, 3000);
+                  if(window.history.replaceState) {
+                    window.history.replaceState(null, null, window.location.pathname + window.location.search);
+                  }
+                </script>
               <% } %>
 
               <% if (errors && errors.length > 0) { %>
@@ -242,6 +255,20 @@
             alert("Impossible d'enregistrer votre j'aime pour le moment. Merci de réessayer.");
           }
         });
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var commentsList = document.querySelector('.comments-list');
+        if (commentsList && commentsList.children.length > 2) {
+          commentsList.style.maxHeight = '220px';
+          commentsList.style.overflowY = 'auto';
+          commentsList.style.paddingRight = '8px';
+        } else if (commentsList) {
+          commentsList.style.maxHeight = '';
+          commentsList.style.overflowY = '';
+          commentsList.style.paddingRight = '';
+        }
       });
     </script>
   </body>

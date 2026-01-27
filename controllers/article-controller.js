@@ -289,8 +289,12 @@ export const getArticlesByCategorieName = async (req, res) => {
       id: a.id,
       titre: a.titre,
       contenu: a.contenu,
+      extrait: a.contenu ? a.contenu.substring(0, 200) : '',
       auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu",
-      date_publication: a.date_publication
+      date_publication: a.date_publication,
+      image: a.image,
+      image_alt: a.image_alt || a.titre,
+      categorie: a.categorie ? a.categorie.nom : null
     }));
 
     const baseUrl = `/article/categorie/${encodeURIComponent(categorieTrouvee.nom)}`;

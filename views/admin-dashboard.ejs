@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
   <%- include('partials/head') %>
@@ -9,7 +10,7 @@
 
 
         <!-- 4 petites cards compteur en haut du dashboard -->
-        <div class="admin-stats-row" style="display:flex;gap:1.2rem;justify-content:center;margin-bottom:2.5rem;">
+        <div class="admin-stats-row">
                     <div class="admin-stat-card mini info">
                       <div class="admin-stat-value"><%= stats.totalUsers %></div>
                       <div class="admin-stat-label">Utilisateurs</div>
@@ -30,34 +31,41 @@
             <div class="admin-stat-value"><%= stats.totalAbonnes %></div>
             <div class="admin-stat-label">Abonnés</div>
           </div>
+          <div class="admin-stat-card mini success">
+            <div class="admin-stat-value"><%= stats.totalUsers %></div>
+            <div class="admin-stat-label">Utilisateurs</div>
+          </div>
         </div>
 
         <!-- Organisation des panels en grille -->
-        <div class="admin-panels-grid" style="display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;">
-                    <div class="admin-panel" style="min-width:420px;max-width:700px;">
-                      <div class="admin-panel-header">
-                        <h5>Utilisateurs du site</h5>
-                      </div>
-                      <div class="admin-list">
-                        <% if (users.length === 0) { %>
-                          <div class="admin-list-empty">Aucun utilisateur</div>
-                        <% } else { %>
-                          <% users.forEach(u => { %>
-                            <div class="admin-list-item" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-                              <div class="admin-list-content">
-                                <strong><%= u.nom_prenom %></strong>
-                                <div class="admin-list-meta">Inscrit le <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-' %></div>
-                              </div>
-                              <form method="POST" action="/admin/users/delete/<%= u.id %>" style="margin:0;">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
-                              </form>
-                            </div>
-                          <% }) %>
-                        <% } %>
+        <div class="admin-panels-grid">
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Liste des utilisateurs</h5>
+            </div>
+            <div class="admin-list">
+              <% if (users.length === 0) { %>
+                <div class="admin-list-empty">Aucun utilisateur</div>
+              <% } else { %>
+                <% users.forEach(u => { %>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <strong><%= u.nom_prenom %></strong>
+                      <div class="admin-list-meta">
+                        <%= u.email %> — <span class="admin-badge <%= u.role === 'admin' ? 'primary' : 'info' %>"><%= u.role %></span>
                       </div>
                     </div>
-          <div class="admin-panel" style="min-width:420px;max-width:700px;">
+                    <form method="POST" action="/admin/users/delete/<%= u.id %>" style="margin:0;">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
+                    </form>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+            <%- include('partials/pagination', { pagination: usersPagination, baseUrl: '/admin/dashboard', pageParam: 'userPage' }) %>
+          </div>
+          <div class="admin-panel">
             <div class="admin-panel-header">
               <div class="admin-panel-header-row">
                 <h5>Articles récents</h5>
@@ -164,12 +172,41 @@
                       <strong><%= s.email %></strong>
                     </div>
                     <div class="admin-list-date"><%= new Date(s.date_inscription).toLocaleDateString() %></div>
+                    <form method="POST" action="/admin/newsletter/<%= s.id %>?_method=DELETE" style="margin:0;display:inline-block;">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet abonné ?')">Supprimer</button>
+                    </form>
                   </div>
                 <% }) %>
               <% } %>
             </div>
             <%- include('partials/pagination', { pagination: recentSubscribersPagination, baseUrl: '/admin/dashboard' }) %>
           </div>
+        <!-- Début de la card Toutes les catégories placée dans la grille -->
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <h5>Toutes les catégories</h5>
+              <a href="/admin/categories/new" class="btn-general">Ajouter</a>
+            </div>
+            <div class="admin-list">
+              <% if (categories && categories.length === 0) { %>
+                <div class="admin-list-empty">Aucune catégorie</div>
+              <% } else { %>
+                <% categories.forEach(cat => { %>
+                  <div class="admin-list-item">
+                    <div class="admin-list-content">
+                      <strong><%= cat.nom %></strong>
+                      <div class="admin-list-meta">
+                        <span class="admin-badge secondary"><%= cat.articleCount %></span> articles
+                      </div>
+                    </div>
+                    <a href="/admin/categories/<%= cat.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+          </div>
+        <!-- Fin de la card Toutes les catégories -->
         </div>
 
       </div>

@@ -581,12 +581,31 @@
    DASHBOARD
    ============================================ */
 
+
+
+  .admin-panels-grid {
+     display:grid;
+     grid-template-columns:1.5fr 1.5fr;
+     gap:1rem;
+     margin: 2rem;
+  } 
+  .admin-panel{
+    width: 100%;
+    box-sizing: border-box;
+  }
+
  .dashboard-stats,
  .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
+}
+.admin-stats-row {
+ display:flex;
+ gap:1.2rem;
+ justify-content:center;
+ margin-bottom:2.5rem;
 }
 
 .stat-card,
@@ -1397,4 +1416,13 @@ select {
     border-radius: 7px;
     padding: 0.3rem 0.3rem;
   }
+}
+
+/* Scroll sur la liste des réponses dans la modération admin dès 2 réponses */
+.admin-comment-card .mt-3.pt-3.border-top {
+  max-height: 120px;
+  overflow-y: auto;
+}
+.admin-comment-card .mt-3.pt-3.border-top > *:nth-child(n+3) {
+  display: block;
 }

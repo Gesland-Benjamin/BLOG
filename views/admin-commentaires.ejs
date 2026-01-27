@@ -6,10 +6,20 @@
     <main class="admin-wrapper admin-commentaires">
      
       <div class="admin-container">
-        <div class="admin-header">
-          <h1>Modération des commentaires</h1>
-          <a href="/article" class="btn-general">Voir les articles</a>
-        </div>
+
+          <div class="admin-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+              <h1 style="margin-bottom: 0;">Modération des commentaires</h1>
+              <form method="GET" action="/admin/commentaires" class="admin-search-form" style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="text" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Rechercher par nom ou prénom..." class="admin-input" style="min-width: 220px;" />
+                <button type="submit" class="btn-general">Rechercher</button>
+                <% if (typeof search !== 'undefined' && search) { %>
+                  <a href="/admin/commentaires" class="btn-general secondary" style="margin-left: 0.5rem;">Réinitialiser</a>
+                <% } %>
+              </form>
+            </div>
+            <a href="/article" class="btn-general">Voir les articles</a>
+          </div>
 
         <% if (comments.length === 0) { %>
           <div class="admin-alert info">Aucun commentaire</div>

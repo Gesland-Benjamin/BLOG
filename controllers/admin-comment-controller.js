@@ -7,12 +7,31 @@ export const listCommentsAdmin = async (req, res) => {
   try {
     const pageSize = 10;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
+    const search = req.query.search ? req.query.search.trim() : '';
+
+    // Construction du filtre
+    let where = { parent_id: null };
+    let userWhere = undefined;
+    if (search) {
+      // On filtre soit sur le nom du commentaire, soit sur le nom_prenom de l'utilisateur
+      // Sequelize Op
+      const { Op } = await import('sequelize');
+      where = {
+        ...where,
+        [Op.or]: [
+          { nom: { [Op.iLike]: `%${search}%` } },
+        ]
+      };
+      userWhere = {
+        nom_prenom: { [Op.iLike]: `%${search}%` }
+      };
+    }
 
     const { count, rows } = await Commentaire.findAndCountAll({
-      where: { parent_id: null }, // Seulement les commentaires parents
+      where,
       include: [
         { model: Article, as: "article" },
-        { model: User, as: "user" },
+        { model: User, as: "user", where: userWhere, required: false },
         { 
           model: Commentaire, 
           as: "replies",
@@ -25,13 +44,18 @@ export const listCommentsAdmin = async (req, res) => {
       offset
     });
 
-    const baseUrl = '/admin/commentaires';
+    // Pour garder le paramètre search dans la pagination
+    let baseUrl = '/admin/commentaires';
+    if (search) {
+      baseUrl += `?search=${encodeURIComponent(search)}`;
+    }
     const paginationData = createPaginationData(count, page, pageSize, baseUrl);
 
     res.render("admin-commentaires", { 
       comments: rows,
       pagination: paginationData,
-      baseUrl
+      baseUrl,
+      search
     });
   } catch (error) {
     console.error("Erreur listCommentsAdmin:", error);
