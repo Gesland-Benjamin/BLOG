@@ -110,7 +110,8 @@
       <!-- Centre: Logo + Barre de recherche -->
       <div class="header-center">
         <div class="header-center-content">
-          <a class="blog-header-logo logo-desktop" href="/" aria-label="Accueil">
+          <!-- Logo central desktop uniquement -->
+          <a class="blog-header-logo logo-desktop-only" href="/" aria-label="Accueil">
             <img src="/logo 3.png" alt="Logo" class="logo-img" />
           </a>
           <!-- Version mobile : logo centré avec réseaux à gauche/droite -->
@@ -124,7 +125,9 @@
             >
               <i class="bi bi-facebook"></i>
             </a>
-            <!-- Logo dashboard mobile supprimé -->
+            <a class="blog-header-logo logo-mobile-only" href="/" aria-label="Accueil">
+              <img src="/logo 3.png" alt="Logo" class="logo-img" />
+            </a>
             <a
               class="social-icon social-icon-ig"
               href="https://www.instagram.com/emi_delbe/"
@@ -134,10 +137,29 @@
             >
               <i class="bi bi-instagram"></i>
             </a>
+            <a href="/search" class="mobile-search-icon-btn" aria-label="Recherche article">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+                style="vertical-align: middle;"
+              >
+                <title>Recherche</title>
+                <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                <path d="M21 21l-5.2-5.2"></path>
+              </svg>
+            </a>
           </div>
           <% if (showNavbar) { %>
           <div class="header-search-and-actions">
-            <form method="GET" action="/search" class="search-form-center header-search-bottom">
+            <!-- Desktop/tablette : barre de recherche classique -->
+            <form method="GET" action="/search" class="search-form-center header-search-bottom header-search-desktop-only">
               <input
                 type="search"
                 name="q"
@@ -166,78 +188,81 @@
                 </svg>
               </button>
             </form>
-            <div class="mobile-duo-actions header-actions-bottom">
-              <!-- Dropdown Articles (catégories) -->
-              <div class="dropdown">
-                <button
-                  class="btn dropdown-toggle btn-chrome-articles"
-                  type="button"
-                  id="navbarArticleDropdownMobileBar"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  aria-label="Articles"
-                >
-                  Articles
-                </button>
-                <ul class="dropdown-menu header-full-width" aria-labelledby="navbarArticleDropdownMobileBar">
-                  <% if (categories && categories.length) { %>
-                    <% categories.forEach(cat => { %>
-                      <li>
-                        <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
-                          <i class="bi bi-tag-fill header-icon-spacer"></i><%= cat.nom %>
-                        </a>
-                      </li>
-                    <% }) %>
+            <!-- Mobile : icône recherche seule -->
+            <div class="header-mobile-search-and-actions">
+              <div class="mobile-duo-actions header-actions-bottom">
+                <!-- Dropdown Articles (catégories) -->
+                <div class="dropdown">
+                  <button
+                    class="btn dropdown-toggle btn-chrome-articles"
+                    type="button"
+                    id="navbarArticleDropdownMobileBar"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    aria-label="Articles"
+                  >
+                    Articles
+                  </button>
+                  <ul class="dropdown-menu header-full-width" aria-labelledby="navbarArticleDropdownMobileBar">
+                    <% if (categories && categories.length) { %>
+                      <% categories.forEach(cat => { %>
+                        <li>
+                          <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
+                            <i class="bi bi-tag-fill header-icon-spacer"></i><%= cat.nom %>
+                          </a>
+                        </li>
+                      <% }) %>
+                    <% } else { %>
+                      <li><span class="dropdown-item header-text-muted"><i class="bi bi-dash-circle header-icon-spacer"></i>Aucune catégorie</span></li>
+                    <% } %>
+                  </ul>
+                </div>
+                <!-- Dropdown Menu (reste des boutons) -->
+                <div class="dropdown">
+                  <button
+                    class="btn dropdown-toggle btn-chrome-menu"
+                    type="button"
+                    id="navbarMoreDropdownMobileBar"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    title="Menu"
+                    aria-label="Menu"
+                  >
+                    Menu
+                  </button>
+                  <ul class="dropdown-menu header-full-width" aria-labelledby="navbarMoreDropdownMobileBar">
+                  <li>
+                    <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
+                      <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
+                    </a>
+                  </li>
+                  <% if (typeof user !== 'undefined' && user) { %>
+                    <li>
+                      <a class="dropdown-item" href="/auth/logout">
+                        <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
+                      </a>
+                    </li>
                   <% } else { %>
-                    <li><span class="dropdown-item header-text-muted"><i class="bi bi-dash-circle header-icon-spacer"></i>Aucune catégorie</span></li>
+                    <li>
+                      <a class="dropdown-item" href="/auth">
+                        <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
+                      </a>
+                    </li>
+                  <% } %>
+                  <li>
+                    <a class="dropdown-item" href="/renseignements">
+                      <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
+                    </a>
+                  </li>
+                  <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                    <li>
+                      <a class="dropdown-item" href="/admin/dashboard">
+                        <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
+                      </a>
+                    </li>
                   <% } %>
                 </ul>
-              </div>
-              <!-- Dropdown Menu (reste des boutons) -->
-              <div class="dropdown">
-                <button
-                  class="btn dropdown-toggle btn-chrome-menu"
-                  type="button"
-                  id="navbarMoreDropdownMobileBar"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  title="Menu"
-                  aria-label="Menu"
-                >
-                  Menu
-                </button>
-                <ul class="dropdown-menu header-full-width" aria-labelledby="navbarMoreDropdownMobileBar">
-                <li>
-                  <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
-                    <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
-                  </a>
-                </li>
-                <% if (typeof user !== 'undefined' && user) { %>
-                  <li>
-                    <a class="dropdown-item" href="/auth/logout">
-                      <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-                    </a>
-                  </li>
-                <% } else { %>
-                  <li>
-                    <a class="dropdown-item" href="/auth">
-                      <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
-                    </a>
-                  </li>
-                <% } %>
-                <li>
-                  <a class="dropdown-item" href="/renseignements">
-                    <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
-                  </a>
-                </li>
-                <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
-                  <li>
-                    <a class="dropdown-item" href="/admin/dashboard">
-                      <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
-                    </a>
-                  </li>
-                <% } %>
-              </ul>
+                </div>
               </div>
             </div>
           </div>

@@ -1,3 +1,125 @@
+@media (max-width: 768px) {
+  .search-form-center.header-search-desktop-only {
+    display: none !important;
+  }
+  .header-mobile-search-and-actions {
+    display: block;
+  }
+}
+@media (min-width: 769px) {
+  .header-mobile-search-and-actions {
+    display: none !important;
+  }
+  .search-form-center.header-search-desktop-only {
+    display: flex;
+  }
+}
+@media (max-width: 768px) {
+  .mobile-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .mobile-logo-row .mobile-search-icon-btn {
+    margin-left: 6px;
+    order: 4;
+    background: #fff;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #764ba2;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: background 0.2s;
+  }
+  .mobile-logo-row .mobile-search-icon-btn:hover {
+    background: #f3f3f3;
+  }
+}
+@media (max-width: 768px) {
+  .header-mobile-search-and-actions .mobile-search-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    margin: 0 auto 6px auto;
+    color: #764ba2;
+    border: none;
+    transition: background 0.2s;
+  }
+  .header-mobile-search-and-actions .mobile-search-icon-btn:hover {
+    background: #f3f3f3;
+  }
+  .header-mobile-search-and-actions .search-form-center {
+    display: none !important;
+  }
+}
+/* Affiche la nouvelle structure mobile et masque l'ancienne en mobile */
+@media (max-width: 768px) {
+  .header-search-and-actions > .header-mobile-search-and-actions {
+    display: block;
+  }
+  .header-search-and-actions > :not(.header-mobile-search-and-actions) {
+    display: none !important;
+  }
+  .header-mobile-search-and-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .header-mobile-search-and-actions .header-search-bottom-mobile {
+    margin-bottom: 6px;
+    margin-top: 0;
+  }
+  .header-mobile-search-and-actions .mobile-duo-actions {
+    margin-top: 0;
+    gap: 6px;
+  }
+  .header-mobile-search-and-actions .dropdown + .dropdown {
+    margin-left: 8px;
+  }
+}
+@media (max-width: 576px) {
+  .mobile-logo-row .blog-header-logo.logo-mobile-only .logo-img {
+    height: 150px !important;
+    width: auto !important;
+    max-width: 98vw !important;
+    display: block !important;
+    margin: 0 auto !important;
+    position: static !important;
+  }
+}
+@media (max-width: 576px) {
+  .mobile-logo-row .blog-header-logo.logo-mobile-only {
+    width: 180px !important;
+    height: 70px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+   
+    
+    
+    
+  }
+  .mobile-logo-row .blog-header-logo.logo-mobile-only .logo-img {
+    height: 80px !important;
+    width: auto !important;
+    max-width: 95vw !important;
+    display: block !important;
+    margin: 0 auto !important;
+    position: static !important;
+  }
+}
 @media (max-width: 1024px) and (min-width: 600px) {
   .mobile-logo-row {
     display: none !important;
@@ -633,7 +755,7 @@ header .btn:active,
   }
   .header-center-content {
     align-items: center;
-    gap: 0.65rem;
+   
   }
   .blog-header-logo {
     width: 280px;
@@ -653,6 +775,7 @@ header .btn:active,
   }
   .mobile-duo-actions {
     display: flex;
+    margin-top: 0 !important;
   }
 }
 
@@ -674,7 +797,7 @@ header .btn:active,
     margin: 0.5rem auto;
     top: 0.55rem;
     width: 100%;
-    height: 185px;
+    height: 145px;
     border-radius: 999px;
     z-index: 1;
     background:
@@ -695,7 +818,7 @@ header .btn:active,
   .header-content {
     grid-template-columns: 1fr;
     row-gap: 0.75rem;
-    padding: 0.8rem 0.9rem 1.1rem;
+    
   }
 
   .header-left,
@@ -706,16 +829,8 @@ header .btn:active,
 
   /* ----- LOGO ----- */
   .blog-header-logo {
-  /* Unifie le style des deux boutons */
-  .btn-chrome-menu {
-    @extend .btn-chrome-articles;
-  }
-     width: 200px;
-     height: 80px;
-  }
-
-  .mobile-logo-row {
-    display: flex;
+    width: 300px;
+    height: 70px;
   }
 
   .logo-desktop {
@@ -724,19 +839,17 @@ header .btn:active,
 
   /* ----- SEARCH ----- */
   .search-form-center {
-    max-width: 80vw !important;
-    width: 70vw !important;
-    padding: 0.7rem 1.2rem;
+    max-width: 50vw !important;
+   
+    
   }
 
   /* ----- SEARCH + ACTIONS STACK ----- */
   .header-search-and-actions {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
     width: 80%;
-    margin-top: 0.2rem;
+   
   }
 
   .header-search-bottom {
@@ -750,7 +863,7 @@ header .btn:active,
   /* ----- ACTION BUTTONS ----- */
   .header-actions-bottom {
     display: flex;
-    gap: 0.4rem;
+    
     width: 100%;
     justify-content: center;
     
