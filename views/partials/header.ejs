@@ -137,24 +137,7 @@
             >
               <i class="bi bi-instagram"></i>
             </a>
-            <a href="/search" class="mobile-search-icon-btn" aria-label="Recherche article">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="28"
-                height="28"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-                style="vertical-align: middle;"
-              >
-                <title>Recherche</title>
-                <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                <path d="M21 21l-5.2-5.2"></path>
-              </svg>
-            </a>
+            
           </div>
           <% if (showNavbar) { %>
           <div class="header-search-and-actions">
@@ -190,7 +173,7 @@
             </form>
             <!-- Mobile : icône recherche seule -->
             <div class="header-mobile-search-and-actions">
-              <div class="mobile-duo-actions header-actions-bottom">
+              <div class="mobile-actions-row header-actions-bottom">
                 <!-- Dropdown Articles (catégories) -->
                 <div class="dropdown">
                   <button
@@ -263,6 +246,25 @@
                   <% } %>
                 </ul>
                 </div>
+                <!-- Bouton recherche -->
+                <a href="/search" class="mobile-search-icon-btn" aria-label="Recherche article">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    viewBox="0 0 24 24"
+                    style="vertical-align: middle;"
+                  >
+                    <title>Recherche</title>
+                    <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                    <path d="M21 21l-5.2-5.2"></path>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>

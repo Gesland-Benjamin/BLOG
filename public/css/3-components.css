@@ -1,3 +1,26 @@
+@media (max-width: 576px) {
+  .archive-articles {
+    max-width: 92vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 600px) {
+  header .logo-mobile-only img.logo-img,
+  .header-center .logo-mobile-only img.logo-img,
+  .mobile-logo-row .logo-mobile-only img.logo-img {
+    height: 120px !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    display: block !important;
+    margin: 0 auto !important;
+    position: static !important;
+    object-fit: contain !important;
+    box-sizing: content-box !important;
+  }
+}
 @media (max-width: 600px) {
   .header-search-bottom-mobile {
     position: absolute;
@@ -89,6 +112,25 @@
     align-items: center;
     gap: 1.2rem;
     margin: 0.3rem 0 0.2rem 0;
+  }
+  /* Harmonisation logos réseaux sociaux mobile = desktop */
+  .mobile-logo-row .social-icon, .header-center .social-icon {
+    width: 38px !important;
+    height: 38px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: transparent;
+   
+    margin: 0 0.18em;
+    font-size: 1.35em;
+    
+    transition: background 0.2s, color 0.2s;
+  }
+  .mobile-logo-row .social-icon:hover, .header-center .social-icon:hover {
+    background: #f3e9ff;
+    color: #333;
   }
   .logo-desktop-only {
     margin: 0 auto !important;
