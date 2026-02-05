@@ -1,7 +1,12 @@
+
 /* ============================================
    1. BASE – VARIABLES, RESET, TYPOGRAPHIE
    ============================================ */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
+*{
+  margin: 0;
+  
+}
 :root {
   /* Couleurs */
   --color-primary: #f99285;
@@ -69,11 +74,7 @@ a, button, input, textarea, select,
   font-family: Plus Jakarta Sans, sans-serif !important;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 
 
@@ -91,7 +92,7 @@ body {
     cover no-repeat fixed;
   min-height: 100vh;
   overflow-x: hidden;
-  cursor: url("/logo10.png"), auto!important;
+  
 }
 
 /* ============================================

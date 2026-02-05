@@ -127,26 +127,5 @@
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-      <!-- Script de test inline pour debug JS -->
-      <script>
-        window.addEventListener('load', function() {
-          console.log('Script inline chargé !');
-          setTimeout(function() {
-            var found = false;
-            document.querySelectorAll('.dropdown-toggle').forEach(function(btn) {
-              found = true;
-              console.log('Bouton dropdown trouvé :', btn.id || btn.className);
-              btn.addEventListener('click', function() {
-                this.style.background = '#ff4444';
-                this.style.color = '#fff';
-                console.log('Événement JS capté sur le bouton :', this.id || this.className);
-              });
-            });
-            if (!found) {
-              console.warn('Aucun bouton .dropdown-toggle trouvé dans le DOM !');
-            }
-          }, 200);
-        });
-      </script>
   </body>
 </html>
