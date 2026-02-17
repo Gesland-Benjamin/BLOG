@@ -192,26 +192,9 @@ footer::before {
    SECTION RESPONSIVE – MOBILE & TABLETTE
    ============================================ */
 
-@media (max-width: 768px) {
-  footer {
-    padding-top: 3rem;
-  }
-  .footer-newsletter {
-    margin: 0 auto 2rem;
-    text-align: center;
-  }
-  .newsletter-form {
-    flex-direction: column;
-    justify-content: center;
-  }
-  .newsletter-input,
-  .newsletter-btn {
-    width: 100%;
-    max-width: 100%;
-  }
-}
 
-@media (max-width: 480px) {
+
+@media (max-width: 576px) {
   .footer-links ul {
     flex-direction: column;
     gap: 1.2rem;

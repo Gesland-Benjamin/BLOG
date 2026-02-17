@@ -1,3 +1,113 @@
+
+@media (max-width: 576px) {
+  .search-form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .search-form-group {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .search-form-group input,
+  .search-form-group select,
+  .search-form-group button {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+  .search-form-card {
+    background: radial-gradient(ellipse at center, #fff4e4 0%, #f9ddb5 42%, #efc48d 100%);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(154,79,24,0.10), 0 1.5px 4px rgba(0,0,0,0.08);
+    padding: 1.1rem 0.7rem 1rem 0.7rem;
+    margin: 0 0 1.2rem 0;
+    border: 2px solid #e19a4f;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .search-form {
+    width: 100%;
+    margin: 0;
+  }
+  .search-form-group label {
+    font-weight: 700;
+    color: #9a4f18;
+    margin-bottom: 0.2rem;
+    font-size: 1rem;
+  }
+  .search-form-group input,
+  .search-form-group select {
+    border-radius: 12px;
+    border: 1.5px solid #e19a4f;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    background: #fff;
+    color: #6b3500;
+    margin-bottom: 0.7rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .search-form-group button {
+    width: 100%;
+    border-radius: 12px;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    background: linear-gradient(90deg, #efc48d 0%, #e19a4f 100%);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 8px rgba(225,154,79,0.10);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .search-form-group button:hover {
+    background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%);
+    box-shadow: 0 4px 16px rgba(225,154,79,0.18);
+  }
+}
+/* ============================================
+   DASHBOARD – VERSION TABLETTE
+   ============================================ */
+   @media (min-width: 576px) and (max-width: 991px) {
+  /* Dashboard tablette : une colonne, cards larges, stats en 2 colonnes */
+  .admin-container {
+    grid-template-columns: 1fr !important;
+    padding: 1.2rem 0.5rem !important;
+    gap: 1.2rem !important;
+    width: 100% !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+  }
+  .admin-stat-card, .admin-panel, .admin-form-card, .admin-table-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 22px !important;
+    padding: 1.2rem 1.1rem !important;
+  }
+  .dashboard-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.2rem !important;
+    width: 100% !important;
+    margin: 0 auto 1.2rem auto !important;
+  }
+  .admin-panel-header {
+    font-size: 1.1rem !important;
+    padding-bottom: 0.3rem !important;
+  }
+  .admin-list-item {
+    border-radius: 10px !important;
+    padding: 0.5rem 0.7rem !important;
+  }
+}
+}
+
+
+
 /* ============================================
    12. AUTRES PAGES
    ============================================ */
@@ -315,12 +425,14 @@ h1 {
    ============================================ */
 
 .contact-layout {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 3rem;
+  display: grid !important;
+  grid-template-columns: 1.2fr 0.8fr !important;
+  gap: 6rem !important;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  align-items: flex-start !important;
+  width: 100%;
 }
 
 .contact-main {
@@ -493,9 +605,9 @@ h1 {
 }
 
 .contact-form-group input,
-.contact-form-group textarea,
-.contact-form-group select {
-  padding: 0.85rem 1rem;
+  .contact-form-group textarea,
+  .contact-form-group select {
+  padding: 0.85rem 1.2rem;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 0.95rem;
@@ -514,6 +626,8 @@ h1 {
 .contact-form-group textarea {
   min-height: 150px;
   resize: vertical;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
 }
 
 .contact-form-submit {
@@ -671,15 +785,7 @@ h1 {
   }
 }
 
-@media (max-width: 768px) {
-  .content-wrapper {
-    padding: 0 1.5rem 0 1.5rem;
-  }
-
-  .content-container {
-    padding: 0 var(--spacing-sm);
-  }
-
+/* Suppression des media queries non 576/768px */
   .search-header {
     padding: 2rem var(--spacing-sm);
     margin-bottom: 2rem;
@@ -720,9 +826,54 @@ h1 {
   .legal-section h3 {
     font-size: 1.1rem;
   }
-}
+
 
 @media (max-width: 576px) {
+  .contact-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+  }
+  .contact-form-card,
+  .contact-aside-card {
+    margin: 1.2rem auto;
+    width: 100%;
+    max-width: 420px;
+  }
+  .contact-form {
+    padding: 1.5rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .contact-form-group,
+  .contact-form-group label,
+  .contact-form-group input,
+  .contact-form-group textarea,
+  .contact-form-group select,
+  .contact-form-submit {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+    
+  }
+  .contact-form-group {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .contact-form-group textarea {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: block;
+    padding-right: 1.2rem;
+  }
+  }
   .content-container {
     padding: 0 var(--spacing-sm);
   }
@@ -819,4 +970,3 @@ h1 {
   .breadcrumb {
     font-size: 0.8rem;
   }
-}

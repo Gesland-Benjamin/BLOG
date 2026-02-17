@@ -1,3 +1,109 @@
+/* Boutons d'action commentaire : 2 lignes, 2 boutons côte à côte */
+.admin-commentaires .admin-comment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.admin-commentaires .admin-comment-actions .admin-action-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.4rem;
+  width: 100%;
+}
+.admin-commentaires .admin-comment-actions .admin-action-row button,
+.admin-commentaires .admin-comment-actions .admin-action-row form {
+  flex: 1 1 0;
+  margin: 0;
+}
+@media (max-width: 576px) {
+  .admin-commentaires .admin-comment-actions .admin-action-row {
+    gap: 0.2rem;
+  }
+}
+@media (max-width: 576px) {
+  .admin-commentaires .admin-reply-form textarea,
+  .admin-commentaires .admin-reply-form input[type="text"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0;
+  }
+}
+@media (max-width: 576px) {
+  .admin-commentaires .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+    padding: 0.7rem 0.7rem;
+    border-radius: 18px;
+  }
+  .admin-commentaires .admin-header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .admin-commentaires .admin-search-form {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .admin-commentaires .admin-search-form input[type="text"] {
+    min-width: 0;
+    width: 100%;
+    font-size: 1rem;
+  }
+  .admin-comments-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .admin-commentaires .admin-comment-card {
+    padding: 0.7rem 0.7rem;
+    border-radius: 12px;
+  }
+  .admin-commentaires .admin-comment-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .admin-commentaires .admin-comment-author-section h6 {
+    font-size: 1rem;
+  }
+  .admin-commentaires .admin-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+  }
+  .admin-commentaires .admin-comment-meta {
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+  }
+  .admin-commentaires .admin-comment-content {
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
+  }
+  .admin-commentaires .admin-comment-actions {
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+  .admin-commentaires .admin-btn-sm {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .admin-commentaires .admin-reply-form textarea {
+    font-size: 1rem;
+    min-width: 0;
+    width: 100%;
+  }
+  .admin-commentaires .admin-form-actions {
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+  .admin-comment-card .mt-3.pt-3.border-top {
+    max-height: 90px;
+  }
+}
 /* Pour placer le bouton Créer à droite du h2 sur tablette */
 .admin-panel-header-row {
   display: flex;
@@ -7,19 +113,8 @@
   gap: 1rem;
 }
 
-@media (max-width: 992px) and (min-width: 600px) {
-  .admin-panel-header-row {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .admin-panel-header-row h5 {
-    margin-bottom: 0;
-  }
-  .admin-create-btn {
-    margin-left: auto;
-  }
-}
+
+
 /* Nettoyage des doublons et correction de la grille */
 
 .admin-comments-grid {
@@ -290,11 +385,23 @@
   }
 }
 @media (max-width: 768px) {
-  .admin-commentaires .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 0.5rem;
+  /* Uniformisation du padding horizontal sur toutes les cards */
+  .admin-stat-card,
+  .stat-card,
+  .admin-panel,
+  .admin-form-card,
+  .admin-table-card {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .admin-stat-card {
+    font-size: 0.95rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
   }
   .admin-commentaires .admin-comment-card {
     border-radius: 12px;
@@ -305,7 +412,7 @@
     padding: 0.5rem 0.8rem;
     font-size: 0.95rem;
   }
-}
+
 @media (max-width: 576px) {
   .admin-commentaires .admin-header {
     flex-direction: column;
@@ -1272,12 +1379,118 @@
   }
 }
 @media (max-width: 576px) {
+  .page-title {
+    font-size: 1.2rem;
+    padding: 0.5em 0.7em;
+    margin: 1.2rem 0 1rem 0;
+  }
   .admin-form-card {
     padding: 0.7rem 0.2rem 0.7rem 0.2rem;
     border-radius: 10px;
   }
   .admin-form-card h2 {
     font-size: 1.1rem;
+  }
+    .admin-wrapper {
+    padding: 1rem 0.5rem;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .admin-container {
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .admin-stats-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .admin-stat-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .admin-stat-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  .admin-stat-label {
+    font-size: 1rem;
+    color: #555;
+  }
+  .admin-panels-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+  }
+  .admin-panel {
+    width: 100%;
+    margin: 0;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.2rem 1rem;
+    background: #fff;
+    max-width: none;
+  }
+  .admin-panel-header h5 {
+    font-size: 1.15rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .admin-list {
+    width: 100%;
+    font-size: 0.95rem;
+    overflow-x: auto;
+    display: block;
+    border-radius: 12px;
+  }
+  .admin-list-item {
+    padding: 0.7rem 0.5rem;
+    text-align: left;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .admin-list-item:last-child {
+    border-bottom: none;
+  }
+  .admin-btn-sm,
+  .admin-panel .btn-general,
+  .admin-panel .admin-create-btn {
+    width: 100%;
+    margin-bottom: 0.7rem;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+  .admin-list-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .admin-badge {
+    font-size: 0.95rem;
+    padding: 0.2em 0.7em;
+    border-radius: 8px;
+    background: #f2f2f2;
+    color: #333;
+    margin-left: 0.5em;
   }
 }
 
@@ -1305,13 +1518,7 @@
   }
 }
 
-@media (max-width: 576px) {
-  .page-title {
-    font-size: 1.2rem;
-    padding: 0.5em 0.7em;
-    margin: 1.2rem 0 1rem 0;
-  }
-}
+
 select {
   appearance: none !important;
   -webkit-appearance: none !important;
@@ -1405,8 +1612,12 @@ select {
   .admin-form-card,
   .admin-table-card {
     border-radius: 10px;
-    padding: 0.7rem 0.2rem;
+    padding: 0.7rem 1rem;
     margin-bottom: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
   .admin-panel-header {
     font-size: 1rem;

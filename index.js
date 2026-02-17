@@ -1,5 +1,6 @@
 import adminUserRoutes from "./routes/admin-user-router.js";
 // ...après toutes les autres routes...
+import categoriesRoutes from "./routes/categories.article.js";
 // À placer APRÈS la déclaration de app et après les autres app.use
 // app.use("/admin/users", adminUserRoutes); (sera replacé plus bas)
 import express from 'express';
@@ -163,6 +164,9 @@ app.use(async (req, res, next) => {
 
 // Middleware pour extraire les erreurs de validation de la session
 app.use(getFlashErrors);
+
+// Route publique pour toutes les catégories
+app.use("/categories", categoriesRoutes);
 
 app.use("/", indexRoutes);
 app.use("/", sitemapRssRoutes);

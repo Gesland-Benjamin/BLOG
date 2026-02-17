@@ -15,8 +15,8 @@
   display: grid;
   grid-template-columns: 1.3fr 270px;
   gap: 1.5rem;
-  width: 100%;
-  padding: 30px 30px 0 30px;
+  width: 98%;
+  padding: 20px 20px 0 20px;
 }
 .home-main-content {
   grid-column: 1;
@@ -391,6 +391,8 @@
     margin-top: 15px;
     margin-left: 40px !important;
     margin-right: 40px !important;
+    padding-right: 30px;
+    /* Le padding à droite permet d'égaliser l'espace avec la gauche pour les cards */
     
   }
   

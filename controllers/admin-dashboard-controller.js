@@ -170,6 +170,9 @@ export const getDashboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Erreur getDashboard:", error);
-    res.status(500).send("Erreur lors du chargement du dashboard");
+    res.status(500).render("500", {
+      error: error.stack || error.message || error,
+      message: "Erreur lors du chargement du dashboard"
+    });
   }
 };

@@ -186,7 +186,10 @@
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Toutes les catégories</h5>
-              <a href="/admin/categories/new" class="btn-general">Ajouter</a>
+              <div style="display: flex; gap: 0.7rem; align-items: center;">
+                <a href="/categories" class="btn-general secondary">Voir toutes</a>
+                <a href="/admin/categories/new" class="btn-general">Ajouter</a>
+              </div>
             </div>
             <div class="admin-list">
               <% if (categories && categories.length === 0) { %>

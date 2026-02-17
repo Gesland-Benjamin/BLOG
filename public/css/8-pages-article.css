@@ -1,3 +1,23 @@
+/* Padding à droite pour le textarea du formulaire commentaire */
+.comments-section textarea {
+  padding-right: 2rem !important;
+  box-sizing: border-box;
+}
+@media (min-width: 576px) and (max-width: 991px) {
+  .comments-section textarea {
+    padding-right: 2rem;
+    box-sizing: border-box;
+  }
+}
+@media (min-width: 992px) {
+  .mobile-duo-actions,
+  .mobile-duo-actions .btn-chrome-articles,
+  .mobile-duo-actions .btn-chrome-menu,
+  .mobile-duo-actions button.btn-chrome-articles,
+  .mobile-duo-actions button.btn-chrome-menu {
+    display: none !important;
+  }
+}
 /* ============================================
    SEARCH HEADER FLEX (titre + formulaire côte à côte)
    ============================================ */
@@ -5,22 +25,12 @@
 .search-header-flex .search-form-card {
   
   
-  width: 100%;
-  gap: 3rem;
+  width: 50%;
+  gap: 2rem;
   display: flex;
   align-items: space-between;
 }
-@media (max-width: 900px) {
-  .search-header-flex {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1.5rem;
-  }
 
-  .search-header-flex .search-form-card {
-    max-width: 100%;
-  }
-}
 /* ============================================
   SECTION RESPONSIVE – MOBILE & TABLETTE
   ============================================ */
@@ -62,7 +72,7 @@
    DÉTAIL ARTICLE (2 COLONNES - IMAGE DROITE)
    ============================================ */
 .article-detail-card {
-  margin: 2.5rem 6rem 3rem 6rem;
+  margin: 2.5rem 4rem 3rem 4rem;
   position: relative;
   min-height: 400px;
   border-radius: 42px;
@@ -243,50 +253,7 @@
   padding: 0;
 }
 
-/* Responsive SMEG pour article-card */
-/* --- Responsive déplacé en fin de fichier --- */
-/* ============================================
-   RESPONSIVE – TABLETTE (≤ 992px)
-   ============================================ */
-@media (max-width: 992px) {
-  .article-card {
-    padding: 1.2rem 0.7rem 1.5rem 0.7rem;
-    border-radius: 22px;
-  }
-  .article-image {
-    border-radius: 18px;
-    max-height: 220px;
-  }
-  .article-content {
-    font-size: 1rem;
-  }
-}
 
-/* ============================================
-   RESPONSIVE – MOBILE (≤ 576px)
-   ============================================ */
-@media (max-width: 576px) {
-  .article-card {
-    padding: 0.7rem 0.1rem 1rem 0.1rem;
-    border-radius: 12px;
-  }
-  .article-image {
-    border-radius: 8px;
-    max-height: 150px;
-  }
-  .article-content {
-    font-size: 0.97rem;
-  }
-  .search-form-card {
-    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
-    border-radius: 10px;
-  }
-  .search-submit {
-    font-size: 0.97rem;
-    padding: 0.5em 0.7em;
-    border-radius: 8px;
-  }
-}
 
 /* ============================================
    CATÉGORIE & TAGS
@@ -556,267 +523,19 @@
   color: #fff;
 }
 
-/* Responsive SMEG pour article-card */
-@media (max-width: 992px) {
-  .article-card {
-    border-radius: 24px;
-  }
-  .article-card-image {
-    height: 180px;
-    border-radius: 24px 24px 0 0;
-  }
-  .article-card-image img {
-    border-radius: 24px 24px 0 0 !important;
-  }
-  .article-card-content {
-    padding: 1.2rem 1.2rem 1rem 1.2rem;
-  }
-  .article-card-btn {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.95rem;
-  }
-}
 
-@media (max-width: 768px) {
-  .article-card {
-    border-radius: 16px;
-  }
-  .article-card-image {
-    height: 140px;
-    border-radius: 16px 16px 0 0;
-  }
-  .article-card-image img {
-    border-radius: 16px 16px 0 0 !important;
-  }
-  .article-card-content {
-    padding: 0.8rem 0.8rem 0.7rem 0.8rem;
-  }
-  .article-card-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-}
 
-@media (max-width: 576px) {
-  .article-card {
-    border-radius: 8px;
-  }
-  .article-card-image {
-    height: 90px;
-    border-radius: 8px 8px 0 0;
-  }
-  .article-card-image img {
-    border-radius: 8px 8px 0 0 !important;
-  }
-  .article-card-content {
-    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  }
-  .article-card-btn {
-    padding: 0.4rem 0.7rem;
-    font-size: 0.85rem;
-  }
-}
+
+
+
 
 /* ============================================
    RESPONSIVE ARTICLES
    ============================================ */
 
-@media (max-width: 992px) {
-  .article-container {
-    max-width: 90%;
-  }
 
-  .article-detail-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
 
-  .article-detail-card {
-    flex-direction: column;
-    min-height: auto;
-  }
 
-  .article-detail-image {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    border-radius: 0 0 42px 42px;
-  }
-
-  .article-detail-image img {
-    border-radius: 0 0 42px 42px !important;
-  }
-
-  .article-detail-content {
-    padding: 1.5rem 1.5rem;
-    padding-right: 1.5rem;
-  }
-
-  .article-title {
-    font-size: 2rem;
-  }
-
-  .articles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .article-container {
-    max-width: 95%;
-  }
-
-  .article-title {
-    font-size: 1.75rem;
-  }
-
-  .article-meta {
-    gap: 1rem;
-    font-size: 0.85rem;
-  }
-
-  .article-body {
-    font-size: 1rem;
-  }
-
-  .articles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .article-card-content {
-    padding: 1rem;
-  }
-
-  .article-card-image {
-    height: 150px;
-  }
-}
-
-@media (max-width: 576px) {
-  .article-container {
-    max-width: 100%;
-    padding: 0 1rem;
-  }
-
-  .article-title {
-    font-size: 1.5rem;
-  }
-
-  .article-meta {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .article-featured-image {
-    border-radius: 8px;
-  }
-
-  .article-body {
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
-  .articles-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .article-card-image {
-    height: 180px;
-  }
-
-  .comment-replies {
-    margin-left: 0;
-  }
-
-  .article-body blockquote {
-    padding-left: 1rem;
-    font-size: 0.95rem;
-  }
-}
-
-/* ============================================
-   SMEG STYLES
-   ============================================ */
-
-.article-card {
-  max-width: 720px;
-  margin: 2.5rem auto;
-  padding: 2.2rem 2.5rem 2.5rem 2.5rem;
-  border-radius: 42px;
-  background: radial-gradient(circle at 60% 40%, #fff4e4 60%, #f9ddb5 100%);
-  box-shadow: 0 8px 32px 0 rgba(80, 60, 40, 0.13), 0 1.5px 0 #fff inset;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-.article-image {
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
-  border-radius: 32px;
-  box-shadow: 0 4px 24px rgba(225, 154, 79, 0.13);
-  margin-bottom: 1.2rem;
-}
-
-.article-meta {
-  color: #b97a2a;
-  font-size: 1.05rem;
-  margin-bottom: 0.7rem;
-  text-align: center;
-}
-
-.article-content {
-  color: #3a2a1a;
-  font-size: 1.18rem;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-.article-content p {
-  margin-bottom: 1.1em;
-}
-
-.article-actions {
-  display: flex;
-  gap: 1.2rem;
-  justify-content: center;
-  margin-top: 1.2rem;
-}
-
-@media (max-width: 992px) {
-  .article-card {
-    padding: 1.2rem 0.7rem 1.5rem 0.7rem;
-    border-radius: 22px;
-  }
-  .article-image {
-    border-radius: 18px;
-    max-height: 180px;
-  }
-  .article-content {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .article-card {
-    padding: 0.7rem 0.1rem 1rem 0.1rem;
-    border-radius: 12px;
-  }
-  .article-image {
-    max-height: 110px;
-  }
-  .article-content {
-    font-size: 0.97rem;
-  }
-}
 
 /* ============================================
    COMMENTAIRE CARD SMEG (pages article)
@@ -922,33 +641,8 @@
   border-left: 2px solid #f7c992;
 }
 
-@media (max-width: 768px) {
-  .comment-card {
-    padding: 0.7rem 0.3rem 0.6rem 0.3rem;
-    border-radius: 14px;
-  }
-  .comment-card .comment-content {
-    font-size: 0.98rem;
-  }
-  .comment-card-header .comment-author {
-    font-size: 1rem;
-  }
-  .comment-card-header .comment-date {
-    font-size: 0.85rem;
-  }
-  .comment-card .comment-replies {
-    padding-left: 0.7rem;
-  }
-}
-@media (max-width: 576px) {
-  .comment-card {
-    padding: 0.5rem 0.1rem 0.5rem 0.1rem;
-    border-radius: 8px;
-  }
-  .comment-card .comment-content {
-    font-size: 0.93rem;
-  }
-}
+
+
 
 /* ============================================
    FORMULAIRE DE RECHERCHE ARTICLE (SMEG PRO)
@@ -1061,33 +755,9 @@
   box-shadow: 0 4px 16px rgba(225, 154, 79, 0.18);
 }
 
-@media (max-width: 992px) {
-  .search-form-card {
-    padding: 1.2rem 0.7rem 1.2rem 0.7rem;
-    border-radius: 22px;
-  }
-  .search-form-grid {
-    grid-template-columns: 1fr;
-    gap: 0.7rem;
-  }
-  .search-submit {
-    font-size: 1rem;
-    padding: 0.6em 1.2em;
-    border-radius: 12px;
-  }
-}
 
-@media (max-width: 576px) {
-  .search-form-card {
-    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
-    border-radius: 10px;
-  }
-  .search-submit {
-    font-size: 0.97rem;
-    padding: 0.5em 0.7em;
-    border-radius: 8px;
-  }
-}
+
+
 
 /* ============================================
    GRILLE D'ARTICLES (2 par ligne sur desktop)
@@ -1099,8 +769,49 @@
   margin-bottom: 2.5rem;
 }
 
-@media (min-width: 992px) {
-  .article-grid {
-    grid-template-columns: 1fr 1fr;
+
+
+
+/* ============================================
+   RESPONSIVE – MOBILE (≤ 576px)
+   ============================================ */
+@media (max-width: 576px) {
+  
+
+  .article-detail-card{
+    min-width: 230px;
+    margin: 0 5px 0 5px; 
+  }
+  .article-detail-links{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  .comments-section {
+    width: 100%;
+    max-width: none;
+    min-width: 230px;
+    margin: 30px 5px 0 5px;
+    box-sizing: border-box;
+    padding: 2rem;
+  }
+  .comments-section input[type="text"],
+  .comments-section input[type="email"],
+  .comments-section textarea {
+    padding-right: 2rem;
+    box-sizing: border-box;
+  }
+  .article-detail-image {
+    
+    min-height: 200px;
+    max-height: 320px;
+  }
+  .article-detail-image img {
+    max-height: 520px;
+    min-height: 200px;
+    object-fit: contain;
+    width: 100%;
   }
 }

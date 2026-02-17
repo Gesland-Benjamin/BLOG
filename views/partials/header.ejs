@@ -1,69 +1,77 @@
 <header-wrapper>
+  <% if (typeof user !== 'undefined' && user && user.role && user.role.toLowerCase() === "admin") { %>
+    <!-- Engrenage admin desktop aligné à droite des réseaux sociaux -->
+  <% } %>
+
+  <!-- Engrenage mobile, SVG identique, en haut à gauche du body, visible uniquement en mobile -->
+  <% if (typeof user !== 'undefined' && user && user.role && user.role.toLowerCase() === "admin") { %>
+    <div class="d-block d-sm-none gear-mobile-fixed">
+      <a href="/admin/dashboard" class="btn-gear stylish-gear-btn" aria-label="Dashboard Admin">
+        <span class="stylish-gear-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="url(#gearGradient)" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <defs>
+              <linearGradient id="gearGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f29a4a"/>
+                <stop offset="100%" stop-color="#764ba2"/>
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+        </span>
+      </a>
+    </div>
+  <% } %>
   <header>
      <% const showNavbar = typeof includeNavbar !== 'undefined' ? includeNavbar : true;
        const useContainer = typeof withContainer !== 'undefined' ? withContainer : true; %>
     
     <!-- Logos sociaux en haut à gauche -->
-    <div class="header-social-top">
-      <a
-        class="social-icon social-icon-fb"
-        href="https://www.facebook.com/emilie.delbe.3?locale=fr_FR"
-        target="_blank"
-        rel="noopener"
-        aria-label="Facebook"
-      >
+    <div class="header-social-top d-none d-sm-flex align-items-center" style="gap: 10px;">
+      <a class="social-icon social-icon-fb" href="https://www.facebook.com/emilie.delbe.3?locale=fr_FR" target="_blank" rel="noopener" aria-label="Facebook">
         <i class="bi bi-facebook"></i>
       </a>
-      <a
-        class="social-icon social-icon-ig"
-        href="https://www.instagram.com/emi_delbe/"
-        target="_blank"
-        rel="noopener"
-        aria-label="Instagram"
-      >
+      <a class="social-icon social-icon-ig" href="https://www.instagram.com/emi_delbe/" target="_blank" rel="noopener" aria-label="Instagram">
         <i class="bi bi-instagram"></i>
       </a>
-      <% if (typeof user !== 'undefined' && user && user.role === "admin") { %>
-        <div class="dropdown gear-dropdown">
-          <button
-            class="btn-gear dropdown-toggle stylish-gear-btn"
-            type="button"
-            id="adminMenuDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            aria-label="Dashboard Admin"
-          >
-            <span class="stylish-gear-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="url(#gearGradient)" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <defs>
-                  <linearGradient id="gearGradient" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#f29a4a"/>
-                    <stop offset="100%" stop-color="#764ba2"/>
-                  </linearGradient>
-                </defs>
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
-              </svg>
-            </span>
-          </button>
-          <ul
-            class="dropdown-menu"
-            aria-labelledby="adminMenuDropdown"
-          >
-            <li>
-              <a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/articles/new"><i class="bi bi-plus-circle header-icon-spacer"></i>Ajouter un article</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/categories"><i class="bi bi-tags-fill header-icon-spacer"></i>Gérer les catégories</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/admin/newsletter"><i class="bi bi-envelope-check header-icon-spacer"></i>Newsletter</a>
-            </li>
-          </ul>
-        </div>
+      <% if (typeof user !== 'undefined' && user && user.role && user.role.toLowerCase() === "admin") { %>
+      <div class="dropdown gear-dropdown">
+        <button
+          class="btn-gear dropdown-toggle stylish-gear-btn"
+          type="button"
+          id="adminMenuDropdownDesktop"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          aria-label="Dashboard Admin"
+        >
+          <span class="stylish-gear-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="url(#gearGradient)" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <defs>
+                <linearGradient id="gearGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#f29a4a"/>
+                  <stop offset="100%" stop-color="#764ba2"/>
+                </linearGradient>
+              </defs>
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.06a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+            </svg>
+          </span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="adminMenuDropdownDesktop">
+          <li>
+            <a class="dropdown-item" href="/admin/dashboard"><i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/admin/articles/new"><i class="bi bi-plus-circle header-icon-spacer"></i>Ajouter un article</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/admin/categories"><i class="bi bi-tags-fill header-icon-spacer"></i>Gérer les catégories</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="/admin/newsletter"><i class="bi bi-envelope-check header-icon-spacer"></i>Newsletter</a>
+          </li>
+        </ul>
+      </div>
       <% } %>
     </div>
     
@@ -126,7 +134,7 @@
               <i class="bi bi-facebook"></i>
             </a>
             <a class="blog-header-logo logo-mobile-only" href="/" aria-label="Accueil">
-              <img src="/logo 3.png" alt="Logo" class="logo-img" />
+              <img src="/Design sans titre.png" alt="Logo" class="logo-img" />
             </a>
             <a
               class="social-icon social-icon-ig"
@@ -154,22 +162,67 @@
                 class="btn-search-center"
                 aria-label="Rechercher"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Search</title>
-                  <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                  <path d="M21 21l-5.2-5.2"></path>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="7" stroke="#764ba2" stroke-width="2"/>
+                  <line x1="16" y1="16" x2="21" y2="21" stroke="#764ba2" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </button>
+            </form>
+            <!-- Boutons Articles et Menu en mobile -->
+            <div class="mobile-duo-actions mobile-only" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+              <div class="dropdown">
+                <button class="btn dropdown-toggle btn-chrome-articles" type="button" id="navbarArticleDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Articles">Articles</button>
+                <ul class="dropdown-menu" aria-labelledby="navbarArticleDropdownMobile">
+                  <% if (categories && categories.length) { %>
+                    <% categories.forEach(cat => { %>
+                      <li>
+                        <a class="dropdown-item" href="/article/categorie/<%= encodeURIComponent(cat.nom) %>">
+                          <i class="bi bi-tag-fill header-icon-spacer"></i><%= cat.nom %>
+                        </a>
+                      </li>
+                    <% }) %>
+                  <% } else { %>
+                    <li><span class="dropdown-item header-text-muted"><i class="bi bi-dash-circle header-icon-spacer"></i>Aucune catégorie</span></li>
+                  <% } %>
+                </ul>
+              </div>
+              <div class="dropdown">
+                <button class="btn dropdown-toggle btn-chrome-menu" type="button" id="navbarMenuDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu">Menu</button>
+                <ul class="dropdown-menu" aria-labelledby="navbarMenuDropdownMobile">
+                  <li>
+                    <a class="dropdown-item" href="https://fr.farmasi.com/emiliedelbe" target="_blank" rel="noopener">
+                      <i class="bi bi-bag-heart-fill header-icon-spacer"></i>Boutique
+                    </a>
+                  </li>
+                  <% if (typeof user !== 'undefined' && user) { %>
+                    <li>
+                      <a class="dropdown-item" href="/auth/logout">
+                        <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
+                      </a>
+                    </li>
+                  <% } else { %>
+                    <li>
+                      <a class="dropdown-item" href="/auth">
+                        <i class="bi bi-person-circle header-icon-spacer"></i>Se connecter / S'inscrire
+                      </a>
+                    </li>
+                  <% } %>
+                  <li>
+                    <a class="dropdown-item" href="/renseignements">
+                      <i class="bi bi-info-circle-fill header-icon-spacer"></i>Renseignements
+                    </a>
+                  </li>
+                  <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+                    <li>
+                      <a class="dropdown-item" href="/admin/dashboard">
+                        <i class="bi bi-speedometer2 header-icon-spacer"></i>Dashboard
+                      </a>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+              <% /* SUPPRESSION DU MENU DEROULANT EN MOBILE POUR L'ENGRENAGE ADMIN */ %>
+            </div>
             </form>
             <!-- Mobile : icône recherche seule -->
             <div class="header-mobile-search-and-actions">
@@ -247,24 +300,6 @@
                 </ul>
                 </div>
                 <!-- Bouton recherche -->
-                <a href="/search" class="mobile-search-icon-btn" aria-label="Recherche article">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="28"
-                    height="28"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2.5"
-                    viewBox="0 0 24 24"
-                    style="vertical-align: middle;"
-                  >
-                    <title>Recherche</title>
-                    <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                    <path d="M21 21l-5.2-5.2"></path>
-                  </svg>
-                </a>
               </div>
             </div>
           </div>

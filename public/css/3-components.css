@@ -9,13 +9,13 @@
   header .logo-mobile-only img.logo-img,
   .header-center .logo-mobile-only img.logo-img,
   .mobile-logo-row .logo-mobile-only img.logo-img {
-    height: 120px !important;
+    height: 140px !important;
     width: auto !important;
     max-width: none !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
+    
     display: block !important;
-    margin: 0 auto !important;
+    margin-top: -35px!important;
+    margin-left:-10px !important;
     position: static !important;
     object-fit: contain !important;
     box-sizing: content-box !important;
@@ -92,6 +92,20 @@
 }
 /* ===================== HEADER MOBILE ===================== */
 @media (max-width: 900px) {
+        .header-social-top .social-icon,
+        .header-social-top .stylish-gear-btn {
+          display: none !important;
+        }
+      /* Correction : forcer le masquage après les autres règles */
+      .header-center .social-icon,
+      .header-center .stylish-gear-btn {
+        display: none !important;
+      }
+    /* Masquer les boutons réseaux sociaux et engrenage du header desktop en tablette */
+    .header-center .social-icon,
+    .header-center .stylish-gear-btn {
+      display: none !important;
+    }
   .header-container, .header-content {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -106,6 +120,7 @@
     flex-direction: column;
     align-items: center;
   }
+  
   .mobile-logo-row {
     display: flex !important;
     justify-content: center;

@@ -7,7 +7,7 @@
      
       <div class="admin-container">
 
-          <div class="admin-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; justify-content: space-between;">
+          <div class="admin-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; justify-content: space-between; padding:1.2rem 1.7rem;">
             <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
               <h1 style="margin-bottom: 0;">Modération des commentaires</h1>
               <form method="GET" action="/admin/commentaires" class="admin-search-form" style="display: flex; gap: 0.5rem; align-items: center;">
@@ -26,8 +26,8 @@
         <% } %>
 
         <div class="admin-comments-grid">
-        <% comments.forEach(c => { %>
-        <div class="admin-comment-card">
+        <% comments.forEach(function(c, idx) { %>
+        <div class="admin-comment-card" style="padding:1.7rem 1.7rem;">
             <div class="admin-comment-header">
               <div class="admin-comment-author-section">
                 <h6>
@@ -57,23 +57,26 @@
 
             <!-- Actions du commentaire -->
             <div class="admin-comment-actions">
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="admin-btn-sm success" type="submit">✓ Approuver</button>
-              </form>
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="admin-btn-sm secondary" type="submit">✗ Rejeter</button>
-              </form>
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/spam">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="admin-btn-sm danger" type="submit">🚫 Spam</button>
-              </form>
-              
-              <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button class="admin-btn-sm danger" type="submit" onclick="return confirm('Supprimer ce commentaire ?');">🗑️ Supprimer</button>
-              </form>
+              <div class="admin-action-row">
+                <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="admin-btn-sm success" type="submit">✓ Approuver</button>
+                </form>
+                <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="admin-btn-sm secondary" type="submit">✗ Rejeter</button>
+                </form>
+              </div>
+              <div class="admin-action-row">
+                <form method="POST" action="/admin/commentaires/<%= c.id %>/spam">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="admin-btn-sm danger" type="submit">🚫 Spam</button>
+                </form>
+                <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="admin-btn-sm danger" type="submit" onclick="return confirm('Supprimer ce commentaire ?');">🗑️ Supprimer</button>
+                </form>
+              </div>
             </div>
 
             <!-- Formulaire de réponse (collapsé) -->
