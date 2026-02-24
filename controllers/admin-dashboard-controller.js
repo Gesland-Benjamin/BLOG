@@ -2,6 +2,7 @@ import Article from "../models/Article.model.js";
 import Commentaire from "../models/Commentaire.model.js";
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import User from "../models/User.model.js";
+import { Op } from 'sequelize';
 
 export const getDashboard = async (req, res) => {
       // Utilisateurs avec pagination
@@ -43,7 +44,7 @@ export const getDashboard = async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : '';
 
     // Filtrage des articles récents
-    const where = search ? { titre: { [Article.sequelize.Op.iLike]: `%${search}%` } } : {};
+    const where = search ? { titre: { [Op.iLike]: `%${search}%` } } : {};
     const recentArticlesCount = await Article.count({ where });
     const recentArticles = await Article.findAll({
       where,

@@ -157,28 +157,27 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
-
     const category = await Categorie.findByPk(id);
 
     if (!category) {
       return res.status(404).render('404');
     }
 
-    // Vérifier que la catégorie n'est pas utilisée
+    // Compter les articles liés
     const articleCount = await Article.count({ where: { categorie_id: id } });
 
+    // Supprimer tous les articles liés
     if (articleCount > 0) {
-      req.session.message = {
-        type: 'error',
-        text: `Impossible de supprimer cette catégorie. Elle est utilisée par ${articleCount} article${articleCount > 1 ? 's' : ''}`
-      };
-      return res.redirect('/admin/categories');
+      await Article.destroy({ where: { categorie_id: id } });
     }
 
     // Supprimer la catégorie
     await category.destroy();
 
-    req.session.message = { type: 'success', text: 'Catégorie supprimée avec succès' };
+    req.session.message = {
+      type: 'success',
+      text: `Catégorie supprimée avec succès. ${articleCount > 0 ? articleCount + ' article(s) liés ont aussi été supprimés.' : ''}`
+    };
     res.redirect('/admin/categories');
   } catch (error) {
     console.error('Erreur lors de la suppression de la catégorie:', error);

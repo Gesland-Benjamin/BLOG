@@ -96,6 +96,9 @@ app.use((req, res, next) => {
     console.log('Override method:', req.method, '=>', upper, 'url:', req.originalUrl);
     req.originalMethod = req.originalMethod || req.method;
     req.method = upper;
+    if (upper === 'DELETE') {
+      console.log('DEBUG DELETE: Suppression catégorie demandée', req.originalUrl);
+    }
   }
   next();
 });

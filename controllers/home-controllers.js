@@ -36,36 +36,31 @@ const getHomePage = async (req,res) => {
             auteur: latestArticle.auteur ? latestArticle.auteur.nom_prenom : "Inconnu"
         } : null;
 
-        // Récupère les 2 derniers articles des catégories Événements et Nouveautés (IDs fixes 18, 19) pour le carrousel
-        const fetchByCatId = async (catId) => {
-            const rows = await Article.findAll({
-                where: { categorie_id: catId },
+        // Récupère les derniers articles de chaque catégorie pour le carrousel
+        const categories = await Categorie.findAll();
+        const carouselArticlesRaw = await Promise.all(categories.map(async (cat) => {
+            const article = await Article.findOne({
+                where: { categorie_id: cat.id },
                 include: [
                     { model: User, as: "auteur" },
                     { model: Categorie, as: "categorie" }
                 ],
                 order: [["date_publication", "DESC"]],
-                limit: 2
             });
-            return rows.map(a => ({
-                id: a.id,
-                titre: a.titre,
-                extrait: (a.contenu || "").substring(0, 160),
-                date_publication: a.date_publication,
-                image: a.image,
-                categorie: a.categorie ? a.categorie.nom : null,
-                auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu"
-            }));
-        };
-
-        // Carrousel mix Événements (18) + Nouveautés (19)
-        const eventsLatest = await fetchByCatId(18);
-        const nouveautesLatest = await fetchByCatId(19);
-        const mixedCarouselItems = [...eventsLatest, ...nouveautesLatest]
-            .sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
+            if (!article) return null;
+            return {
+                id: article.id,
+                titre: article.titre,
+                extrait: (article.contenu || "").substring(0, 160),
+                date_publication: article.date_publication,
+                image: article.image,
+                categorie: article.categorie ? article.categorie.nom : cat.nom,
+                auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu"
+            };
+        }));
+        const carouselItems = carouselArticlesRaw.filter(Boolean).sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
 
         // Sections dynamiques à gauche: top liké par catégorie
-        const categories = await Categorie.findAll();
         const topLikedSectionsRaw = await Promise.all(categories.map(async (c) => {
             const a = await Article.findOne({
                 where: { categorie_id: c.id },
@@ -95,7 +90,7 @@ const getHomePage = async (req,res) => {
             user: req.user,
             recentPosts,
             featuredArticle,
-            carouselItems: mixedCarouselItems,
+            carouselItems,
             article: undefined,
             topLikedSections
         });
