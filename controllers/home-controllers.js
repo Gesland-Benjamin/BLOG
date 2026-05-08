@@ -1,246 +1,180 @@
-import Article from "../models/Article.model.js";
-import User from "../models/User.model.js";
-import Categorie from "../models/Categorie.model.js";
 import { Op } from "sequelize";
+import { Article, User, Categorie } from "../models/index.js";
 
-const getHomePage = async (req,res) => {
-    try {
-        const recentArticles = await Article.findAll({
-            include: [
-                { model: User, as: "auteur" },
-                { model: Categorie, as: "categorie" }
-            ],
-            order: [["date_publication", "DESC"]],
-            limit: 3
-        });
-
-        const recentPosts = recentArticles.map(a => ({
-            id: a.id,
-            titre: a.titre,
-            extrait: (a.contenu || "").substring(0, 120),
-            date_publication: a.date_publication,
-            image: a.image,
-            categorie: a.categorie ? a.categorie.nom : null,
-            auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu"
-        }));
-
-        // Récupère le dernier article pour la section hero
-        const latestArticle = recentArticles.length > 0 ? recentArticles[0] : null;
-        const featuredArticle = latestArticle ? {
-            id: latestArticle.id,
-            titre: latestArticle.titre,
-            extrait: (latestArticle.contenu || "").substring(0, 200),
-            date_publication: latestArticle.date_publication,
-            image: latestArticle.image,
-            categorie: latestArticle.categorie ? latestArticle.categorie.nom : null,
-            auteur: latestArticle.auteur ? latestArticle.auteur.nom_prenom : "Inconnu"
-        } : null;
-
-        // Récupère les derniers articles de chaque catégorie pour le carrousel
-        const categories = await Categorie.findAll();
-        const carouselArticlesRaw = await Promise.all(categories.map(async (cat) => {
-            const article = await Article.findOne({
-                where: { categorie_id: cat.id },
-                include: [
-                    { model: User, as: "auteur" },
-                    { model: Categorie, as: "categorie" }
-                ],
-                order: [["date_publication", "DESC"]],
-            });
-            if (!article) return null;
-            return {
-                id: article.id,
-                titre: article.titre,
-                extrait: (article.contenu || "").substring(0, 160),
-                date_publication: article.date_publication,
-                image: article.image,
-                categorie: article.categorie ? article.categorie.nom : cat.nom,
-                auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu"
-            };
-        }));
-        const carouselItems = carouselArticlesRaw.filter(Boolean).sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
-
-        // Sections dynamiques à gauche: top liké par catégorie
-        const topLikedSectionsRaw = await Promise.all(categories.map(async (c) => {
-            const a = await Article.findOne({
-                where: { categorie_id: c.id },
-                include: [
-                    { model: User, as: "auteur" },
-                    { model: Categorie, as: "categorie" }
-                ],
-                order: [["likes", "DESC"], ["date_publication", "DESC"]]
-            });
-            if (!a) return null;
-            return {
-                id: a.id,
-                titre: a.titre,
-                extrait: (a.contenu || "").substring(0, 160),
-                date_publication: a.date_publication,
-                image: a.image,
-                categorie: a.categorie ? a.categorie.nom : c.nom,
-                auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu",
-                likes: a.likes
-            };
-        }));
-        const topLikedSections = topLikedSectionsRaw.filter(Boolean);
-
-        res.render("index", {
-            title: "Accueil",
-            message:"Bienvenue sur le site de Mi Amor",
-            user: req.user,
-            recentPosts,
-            featuredArticle,
-            carouselItems,
-            article: undefined,
-            topLikedSections
-        });
-    } catch (error) {
-        console.error("Erreur getHomePage:", error);
-        res.render("index", {
-            title: "Accueil",
-            message:"Bienvenue sur le site de Mi Amor",
-            user: req.user,
-            recentPosts: [],
-            featuredArticle: null,
-            carouselItems: [],
-            article: undefined,
-            topLikedSections: []
-        });
-    }
-};
-
-const renderRenseignementsPage = (req, res, options = {}) => {
-    res.render("renseignements", {
-        title: "Demande de renseignements",
-        pageDescription: "Contactez Mi Amor pour toute demande de renseignements, de devis ou de collaboration.",
-        user: req.user,
-        article: undefined,
-        errors: [],
-        formData: { nom: "", email: "", telephone: "", sujet: "", message: "" },
-        message: res.locals.message,
-        ...options
+// =========================
+// HOME
+// =========================
+export const getHomePage = async (req, res) => {
+  try {
+    const recentArticles = await Article.findAll({
+      include: [
+        { model: User, as: "author", attributes: ["id", "name"] },
+        { model: Categorie, as: "categorie", attributes: ["id", "name"] }
+      ],
+      order: [["created_at", "DESC"]],
+      limit: 3
     });
-};
 
-const getRenseignementsPage = (req, res) => {
-    renderRenseignementsPage(req, res);
-};
+    const recentPosts = recentArticles.map((a) => ({
+      id: a.id,
+      titre: a.title,
+      extrait: (a.content || "").substring(0, 120),
+      date: a.created_at,
+      image: a.image,
+      categorie: a.categorie?.name || null,
+      auteur: a.author?.name || "Inconnu"
+    }));
 
-const postRenseignements = (req, res) => {
-    const {
-        nom = "",
-        email = "",
-        telephone = "",
-        sujet = "",
-        message: contenuMessage = ""
-    } = req.body || {};
+    const latest = recentArticles[0] || null;
 
-    const formData = {
-        nom: String(nom).trim(),
-        email: String(email).trim(),
-        telephone: String(telephone).trim(),
-        sujet: String(sujet).trim(),
-        message: String(contenuMessage).trim(),
-    };
-
-    const errors = [];
-
-    if (!formData.nom) {
-        errors.push("Le nom est obligatoire.");
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
-        errors.push("Une adresse email valide est requise.");
-    }
-
-    if (!formData.sujet) {
-        errors.push("Merci de préciser l'objet de votre demande.");
-    }
-
-    if (!formData.message) {
-        errors.push("Le message ne peut pas être vide.");
-    }
-
-    if (formData.message.length > 1200) {
-        errors.push("Le message doit contenir moins de 1200 caractères.");
-    }
-
-    if (errors.length > 0) {
-        return renderRenseignementsPage(req, res, { errors, formData, message: null });
-    }
-
-    req.session.message = "Merci pour votre demande, nous reviendrons vers vous rapidement.";
-    return res.redirect("/renseignements");
-};
-
-/**
- * Afficher les articles d'un mois/année spécifique
- */
-export const getArticlesByMonth = async (req, res) => {
-    try {
-        const { year, month } = req.params;
-        
-        // Valider les paramètres
-        const monthNum = parseInt(month, 10);
-        const yearNum = parseInt(year, 10);
-        
-        if (isNaN(monthNum) || isNaN(yearNum) || monthNum < 1 || monthNum > 12) {
-            return res.status(400).render('404');
+    const featuredArticle = latest
+      ? {
+          id: latest.id,
+          titre: latest.title,
+          extrait: (latest.content || "").substring(0, 200),
+          date: latest.created_at,
+          image: latest.image,
+          categorie: latest.categorie?.name || null,
+          auteur: latest.author?.name || "Inconnu"
         }
+      : null;
 
-        // Calculer les dates du début et fin du mois
-        const startDate = new Date(yearNum, monthNum - 1, 1);
-        const endDate = new Date(yearNum, monthNum, 0, 23, 59, 59);
+    const categories = await Categorie.findAll({
+      order: [["name", "ASC"]]
+    });
 
-        // Récupérer les articles du mois
-        const articles = await Article.findAll({
-            where: {
-                date_publication: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate
-                }
-            },
-            include: [
-                { model: User, as: 'auteur' },
-                { model: Categorie, as: 'categorie' }
-            ],
-            order: [['date_publication', 'DESC']]
-        });
+    const categoryIds = categories.map((c) => c.id);
 
-        // Formater le nom du mois
-        const monthNames = [
-            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-        ];
-        const monthName = monthNames[monthNum - 1];
-        const title = `Articles de ${monthName} ${yearNum}`;
+    const articles = await Article.findAll({
+      where: {
+        categorieId: {
+          [Op.in]: categoryIds
+        }
+      },
+      include: [
+        { model: User, as: "author", attributes: ["id", "name"] },
+        { model: Categorie, as: "categorie", attributes: ["id", "name"] }
+      ],
+      order: [["created_at", "DESC"]]
+    });
 
-        res.render('articles-by-month', {
-            articles: articles.map(a => ({
-                id: a.id,
-                titre: a.titre,
-                extrait: (a.contenu || '').substring(0, 160),
-                date_publication: a.date_publication,
-                image: a.image,
-                categorie: a.categorie ? a.categorie.nom : null,
-                auteur: a.auteur ? a.auteur.nom_prenom : 'Inconnu'
-            })),
-            recentPosts: articles.slice(0, 3).map(a => ({
-                id: a.id,
-                titre: a.titre,
-                date_publication: a.date_publication
-            })),
-            title,
-            monthName,
-            year: yearNum,
-            month: monthNum,
-            categories: await Categorie.findAll({ order: [['nom', 'ASC']] })
-        });
-    } catch (error) {
-        console.error('Erreur lors de la récupération des articles du mois:', error);
-        res.status(500).render('500');
+    const carouselMap = new Map();
+    const topLikedMap = new Map();
+
+    for (const article of articles) {
+      if (!carouselMap.has(article.categorieId)) {
+        carouselMap.set(article.categorieId, article);
+      }
+
+      const current = topLikedMap.get(article.categorieId);
+      if (!current || (article.likes || 0) > (current.likes || 0)) {
+        topLikedMap.set(article.categorieId, article);
+      }
     }
+
+    const carouselItems = [...carouselMap.values()].map((a) => ({
+      id: a.id,
+      titre: a.title,
+      extrait: (a.content || "").substring(0, 160),
+      date: a.created_at,
+      image: a.image,
+      categorie: a.categorie?.name || null,
+      auteur: a.author?.name || "Inconnu"
+    }));
+
+    const topLikedSections = [...topLikedMap.values()].map((a) => ({
+      id: a.id,
+      titre: a.title,
+      extrait: (a.content || "").substring(0, 160),
+      date: a.created_at,
+      image: a.image,
+      categorie: a.categorie?.name || null,
+      auteur: a.author?.name || "Inconnu",
+      likes: a.likes || 0
+    }));
+
+    return res.render("index", {
+      title: "Accueil",
+      user: req.user,
+      recentPosts,
+      featuredArticle,
+      carouselItems,
+      topLikedSections
+    });
+
+  } catch (error) {
+    console.error("HOME ERROR:", error);
+    return res.status(500).render("index", {
+      title: "Accueil",
+      user: req.user,
+      recentPosts: [],
+      featuredArticle: null,
+      carouselItems: [],
+      topLikedSections: []
+    });
+  }
 };
-    
-export default { getHomePage, getRenseignementsPage, postRenseignements, getArticlesByMonth };
+
+// =========================
+// ARTICLES PAR MOIS
+// =========================
+export const getArticlesByMonth = async (req, res) => {
+  try {
+    const { year, month } = req.params;
+
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    const articles = await Article.findAll({
+      where: {
+        created_at: {
+          [Op.between]: [startDate, endDate]
+        }
+      },
+      include: [
+        { model: User, as: "author" },
+        { model: Categorie, as: "categorie" }
+      ],
+      order: [["created_at", "DESC"]]
+    });
+
+    const articlesMapped = articles.map((article) => ({
+      id: article.id,
+      titre: article.title,
+      contenu: article.content,
+      image: article.image,
+      categorie: article.categorie?.name || article.categorie?.nom || null,
+      auteur: article.author?.name || "Inconnu",
+      date_publication: article.createdAt
+    }));
+
+    res.render("articles-by-month", {
+      articles: articlesMapped,
+      title: "Articles du mois"
+    });
+
+  } catch (error) {
+    console.error("MONTH ERROR:", error);
+    res.status(500).render("500");
+  }
+};
+
+// =========================
+// RENSEIGNEMENTS (GET)
+// =========================
+export const getRenseignementsPage = (req, res) => {
+  res.render("renseignements", {
+    title: "Contact",
+    user: req.user,
+    errors: [],
+    formData: {}
+  });
+};
+
+// =========================
+// RENSEIGNEMENTS (POST)
+// =========================
+export const postRenseignements = (req, res) => {
+  req.session.message = "Message envoyé";
+  res.redirect("/renseignements");
+};

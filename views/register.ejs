@@ -1,13 +1,16 @@
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
   <%- include('partials/head') %>
+
   <body>
     <%- include('partials/header', { withContainer: true }) %>
+
     <main class="auth-wrapper">
       <div class="auth-container">
         <div class="auth-form-card">
+
           <h2>Créer un compte</h2>
-          
+
           <% if (errors && errors.length > 0) { %>
             <div class="auth-alert error">
               <ul>
@@ -17,34 +20,75 @@
               </ul>
             </div>
           <% } %>
-          
+
           <form method="POST" action="/auth/register" class="auth-form">
+
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <!-- NOM -->
             <div class="auth-form-group">
-              <label for="nom_prenom">Nom et prénom</label>
-              <input type="text" id="nom_prenom" name="nom_prenom" value="<%= formData.nom_prenom || '' %>" required>
+              <label for="name">Nom et prénom</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value="<%= formData.name || '' %>"
+                required
+              >
             </div>
+
+            <!-- EMAIL -->
             <div class="auth-form-group">
               <label for="email">Adresse email</label>
-              <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required autocomplete="username">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value="<%= formData.email || '' %>"
+                required
+                autocomplete="username"
+              >
             </div>
+
+            <!-- PASSWORD -->
             <div class="auth-form-group">
-              <label for="mot_de_passe">Mot de passe</label>
-              <input type="password" id="mot_de_passe" name="mot_de_passe" required autocomplete="new-password">
+              <label for="password">Mot de passe</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                autocomplete="new-password"
+              >
               <small>Min 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre</small>
             </div>
+
+            <!-- CONFIRM PASSWORD -->
             <div class="auth-form-group">
-              <label for="mot_de_passe_confirm">Confirmer le mot de passe</label>
-              <input type="password" id="mot_de_passe_confirm" name="mot_de_passe_confirm" required autocomplete="new-password">
+              <label for="password_confirm">Confirmer le mot de passe</label>
+              <input
+                type="password"
+                id="password_confirm"
+                name="password_confirm"
+                required
+                autocomplete="new-password"
+              >
             </div>
-            <button type="submit" class="auth-submit-btn">S'inscrire</button>
-          </form> 
+
+            <button type="submit" class="auth-submit-btn">
+              S'inscrire
+            </button>
+
+          </form>
+
           <div class="auth-footer">
             <a href="/auth">Déjà un compte ? Se connecter</a>
           </div>
+
         </div>
       </div>
     </main>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

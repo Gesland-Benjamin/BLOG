@@ -1,179 +1,179 @@
-import Article from "../models/Article.model.js";
-import Commentaire from "../models/Commentaire.model.js";
+import {
+  User,
+  Article,
+  Commentaire,
+  Categorie
+} from "../models/index.js";
+
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
-import User from "../models/User.model.js";
-import { Op } from 'sequelize';
+import { createPaginationData } from "../utils/pagination.js";
 
 export const getDashboard = async (req, res) => {
-      // Utilisateurs avec pagination
-      const userPage = parseInt(req.query.userPage) || 1;
-      const userPageSize = 8;
-      const totalUsers = await User.count();
-      const users = await User.findAll({
-        attributes: ['id', 'nom_prenom', 'email', 'role'],
-        order: [['id', 'DESC']],
-        offset: (userPage - 1) * userPageSize,
-        limit: userPageSize
-      });
-      const usersPagination = {
-        total: Math.ceil(totalUsers / userPageSize),
-        total_items: totalUsers,
-        pages: Array.from({length: Math.ceil(totalUsers / userPageSize)}, (_, i) => ({
-          number: i + 1,
-          url: `/admin/dashboard?userPage=${i + 1}`,
-          isActive: userPage === i + 1
-        })),
-        has_previous: userPage > 1,
-        has_next: userPage < Math.ceil(totalUsers / userPageSize),
-        previous_url: userPage > 1 ? `/admin/dashboard?userPage=${userPage - 1}` : null,
-        next_url: userPage < Math.ceil(totalUsers / userPageSize) ? `/admin/dashboard?userPage=${userPage + 1}` : null,
-        start_item: (userPage - 1) * userPageSize + 1,
-        end_item: Math.min(userPage * userPageSize, totalUsers)
-      };
   try {
-    // Statistiques générales
-    const totalArticles = await Article.count();
-    const totalCommentaires = await Commentaire.count();
-    const commentairesPending = await Commentaire.count({ where: { statut: "pending" } });
-    const totalAbonnes = await NewsletterSubscriber.count();
-    
-
-    // Pagination et recherche
-    const page = parseInt(req.query.page) || 1;
+    // 🔥 GLOBAL PAGE SIZE = 5 PARTOUT
     const pageSize = 5;
-    const search = req.query.search ? req.query.search.trim() : '';
 
-    // Filtrage des articles récents
-    const where = search ? { titre: { [Op.iLike]: `%${search}%` } } : {};
-    const recentArticlesCount = await Article.count({ where });
+    const userPage = Math.max(parseInt(req.query.userPage) || 1, 1);
+    const commentPage = Math.max(parseInt(req.query.commentPage) || 1, 1);
+    const subscriberPage = Math.max(parseInt(req.query.subscriberPage) || 1, 1);
+
+    // =========================
+    // STATS
+    // =========================
+    const [
+      totalUsers,
+      totalArticles,
+      totalCommentaires,
+      commentairesPending,
+      totalAbonnes
+    ] = await Promise.all([
+      User.count(),
+      Article.count(),
+      Commentaire.count(),
+      Commentaire.count({ where: { statut: "pending" } }),
+      NewsletterSubscriber.count()
+    ]);
+
+    console.log("📊 Dashboard stats loaded");
+
+    // =========================
+    // USERS
+    // =========================
+    const { count: usersCount, rows: users } = await User.findAndCountAll({
+      attributes: ["id", "name", "email", "role"],
+      order: [["id", "DESC"]],
+      limit: pageSize,
+      offset: (userPage - 1) * pageSize
+    });
+
+    console.log(`👤 Users loaded: ${users.length}/${usersCount}`);
+
+    // =========================
+    // ARTICLES RECENTS
+    // =========================
     const recentArticles = await Article.findAll({
-      where,
-      attributes: ['id', 'titre', 'date_publication', 'auteur_id', 'likes'],
+      attributes: ["id", "title", "likes", "created_at"],
       include: [
-        { model: User, as: "auteur", attributes: ['nom_prenom'] }
+        { model: User, as: "author", attributes: ["id", "name"] },
+        { model: Categorie, as: "categorie", attributes: ["id", "name"] }
       ],
-      order: [["date_publication", "DESC"]],
-      offset: (page - 1) * pageSize,
+      order: [["created_at", "DESC"]],
       limit: pageSize
     });
-    const recentArticlesPagination = {
-      total: Math.ceil(recentArticlesCount / pageSize),
-      total_items: recentArticlesCount,
-      pages: Array.from({length: Math.ceil(recentArticlesCount / pageSize)}, (_, i) => ({
-        number: i + 1,
-        url: `/admin/dashboard?page=${i + 1}`,
-        isActive: page === i + 1
-      })),
-      has_previous: page > 1,
-      has_next: page < Math.ceil(recentArticlesCount / pageSize),
-      previous_url: page > 1 ? `/admin/dashboard?page=${page - 1}` : null,
-      next_url: page < Math.ceil(recentArticlesCount / pageSize) ? `/admin/dashboard?page=${page + 1}` : null,
-      start_item: (page - 1) * pageSize + 1,
-      end_item: Math.min(page * pageSize, recentArticlesCount)
-    };
 
-    // Commentaires en attente
-    const pendingCommentsCount = await Commentaire.count({ where: { statut: "pending" } });
-    const pendingComments = await Commentaire.findAll({
-      where: { statut: "pending" },
-      include: [
-        { model: Article, as: "article", attributes: ['id', 'titre'] }
-      ],
-      order: [["date", "DESC"]],
-      offset: (page - 1) * pageSize,
-      limit: pageSize
-    });
-    const pendingCommentsPagination = {
-      total: Math.ceil(pendingCommentsCount / pageSize),
-      total_items: pendingCommentsCount,
-      pages: Array.from({length: Math.ceil(pendingCommentsCount / pageSize)}, (_, i) => ({
-        number: i + 1,
-        url: `/admin/dashboard?page=${i + 1}`,
-        isActive: page === i + 1
-      })),
-      has_previous: page > 1,
-      has_next: page < Math.ceil(pendingCommentsCount / pageSize),
-      previous_url: page > 1 ? `/admin/dashboard?page=${page - 1}` : null,
-      next_url: page < Math.ceil(pendingCommentsCount / pageSize) ? `/admin/dashboard?page=${page + 1}` : null,
-      start_item: (page - 1) * pageSize + 1,
-      end_item: Math.min(page * pageSize, pendingCommentsCount)
-    };
+    console.log(`📰 Recent articles loaded: ${recentArticles.length}`);
 
-    // Derniers abonnés
-    const recentSubscribersCount = await NewsletterSubscriber.count();
-    const recentSubscribers = await NewsletterSubscriber.findAll({
-      order: [["date_inscription", "DESC"]],
-      offset: (page - 1) * pageSize,
-      limit: pageSize
-    });
-    const recentSubscribersPagination = {
-      total: Math.ceil(recentSubscribersCount / pageSize),
-      total_items: recentSubscribersCount,
-      pages: Array.from({length: Math.ceil(recentSubscribersCount / pageSize)}, (_, i) => ({
-        number: i + 1,
-        url: `/admin/dashboard?page=${i + 1}`,
-        isActive: page === i + 1
-      })),
-      has_previous: page > 1,
-      has_next: page < Math.ceil(recentSubscribersCount / pageSize),
-      previous_url: page > 1 ? `/admin/dashboard?page=${page - 1}` : null,
-      next_url: page < Math.ceil(recentSubscribersCount / pageSize) ? `/admin/dashboard?page=${page + 1}` : null,
-      start_item: (page - 1) * pageSize + 1,
-      end_item: Math.min(page * pageSize, recentSubscribersCount)
-    };
+    // =========================
+    // COMMENTS
+    // =========================
+    const { count: commentsCount, rows: pendingComments } =
+      await Commentaire.findAndCountAll({
+        where: { statut: "pending" },
+        include: [
+          { model: Article, as: "article", attributes: ["id", "title"] },
+          { model: User, as: "user", attributes: ["id", "name"] }
+        ],
+        order: [["created_at", "DESC"]],
+        limit: pageSize,
+        offset: (commentPage - 1) * pageSize
+      });
 
-    // Articles les plus likés
-    const topArticlesCount = await Article.count();
+    console.log(`💬 Pending comments: ${pendingComments.length}/${commentsCount}`);
+
+    // =========================
+    // SUBSCRIBERS
+    // =========================
+    const { count: subCount, rows: recentSubscribers } =
+      await NewsletterSubscriber.findAndCountAll({
+        attributes: ["id", "email", "date_inscription"],
+        order: [["date_inscription", "DESC"]],
+        limit: pageSize,
+        offset: (subscriberPage - 1) * pageSize
+      });
+
+    console.log(`📧 Subscribers loaded: ${recentSubscribers.length}/${subCount}`);
+
+    // =========================
+    // TOP ARTICLES
+    // =========================
     const topArticles = await Article.findAll({
-      attributes: ['id', 'titre', 'likes', 'auteur_id'],
-      include: [
-        { model: User, as: "auteur", attributes: ['nom_prenom'] }
-      ],
+      attributes: ["id", "title", "likes"],
       order: [["likes", "DESC"]],
-      offset: (page - 1) * pageSize,
       limit: pageSize
     });
-    const topArticlesPagination = {
-      total: Math.ceil(topArticlesCount / pageSize),
-      total_items: topArticlesCount,
-      pages: Array.from({length: Math.ceil(topArticlesCount / pageSize)}, (_, i) => ({
-        number: i + 1,
-        url: `/admin/dashboard?page=${i + 1}`,
-        isActive: page === i + 1
-      })),
-      has_previous: page > 1,
-      has_next: page < Math.ceil(topArticlesCount / pageSize),
-      previous_url: page > 1 ? `/admin/dashboard?page=${page - 1}` : null,
-      next_url: page < Math.ceil(topArticlesCount / pageSize) ? `/admin/dashboard?page=${page + 1}` : null,
-      start_item: (page - 1) * pageSize + 1,
-      end_item: Math.min(page * pageSize, topArticlesCount)
-    };
 
-    res.render("admin-dashboard", {
+    console.log(`🔥 Top articles loaded: ${topArticles.length}`);
+
+    // =========================
+    // CATEGORIES
+    // =========================
+    const categories = await Categorie.findAll({
+      attributes: ["id", "name"],
+      order: [["name", "ASC"]],
+      limit: pageSize
+    });
+
+    console.log(`🏷️ Categories loaded: ${categories.length}`);
+
+    // =========================
+    // PAGINATION
+    // =========================
+    const usersPagination = createPaginationData(
+      usersCount,
+      userPage,
+      pageSize,
+      "/admin/dashboard",
+      "userPage"
+    );
+
+    const commentsPagination = createPaginationData(
+      commentsCount,
+      commentPage,
+      pageSize,
+      "/admin/dashboard",
+      "commentPage"
+    );
+
+    const subscribersPagination = createPaginationData(
+      subCount,
+      subscriberPage,
+      pageSize,
+      "/admin/dashboard",
+      "subscriberPage"
+    );
+
+    console.log("📄 Pagination generated");
+
+    // =========================
+    // RENDER
+    // =========================
+    return res.render("admin-dashboard", {
       stats: {
+        totalUsers,
         totalArticles,
         totalCommentaires,
         commentairesPending,
-        totalAbonnes,
-        totalUsers
+        totalAbonnes
       },
-      recentArticles,
-      recentArticlesPagination,
-      pendingComments,
-      pendingCommentsPagination,
-      recentSubscribers,
-      recentSubscribersPagination,
-      topArticles,
-      topArticlesPagination,
+
       users,
+      recentArticles,
+      pendingComments,
+      topArticles,
+      recentSubscribers,
+      categories,
+
       usersPagination,
-      search
+      commentsPagination,
+      subscribersPagination
     });
+
   } catch (error) {
-    console.error("Erreur getDashboard:", error);
-    res.status(500).render("500", {
-      error: error.stack || error.message || error,
-      message: "Erreur lors du chargement du dashboard"
+    console.error("❌ Dashboard error:", error);
+
+    return res.status(500).render("500", {
+      message: "Erreur dashboard",
+      error: error.message
     });
   }
 };

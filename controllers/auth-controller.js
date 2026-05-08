@@ -1,71 +1,217 @@
-
 import argon2 from "argon2";
-import User from "../models/User.model.js";
+import { User } from "../models/index.js";
+import { registerSchema } from "../validators/schemas.js";
 
-// Afficher la page de connexion
+// ==============================
+// PAGE LOGIN
+// ==============================
 export const getAuthPage = (req, res) => {
+  console.log("📄 GET /auth");
+
   res.render("auth", {
     title: "Authentification",
-    message: "Veuillez vous connecter pour accéder à votre compte",
-    user: req.user,
+    message: req.session.message || null,
+    user: req.session.user || null,
     errors: [],
     formData: {}
   });
+
+  delete req.session.message;
 };
 
-// Afficher la page d'inscription
+// ==============================
+// PAGE REGISTER
+// ==============================
 export const getRegisterPage = (req, res) => {
+  console.log("📄 GET /auth/register");
+
   res.render("register", {
     title: "Créer un compte",
-    message: "Veuillez remplir le formulaire pour vous inscrire",
-    user: req.user,
+    message: null,
+    user: req.session.user || null,
     errors: [],
     formData: {}
   });
 };
 
-// Traiter l’inscription
+// ==============================
+// REGISTER
+// ==============================
 export const register = async (req, res) => {
+  console.log("🚀 POST /auth/register");
+  console.log("BODY:", req.body);
+
   try {
-    const { nom_prenom, email, mot_de_passe, mot_de_passe_confirm } = req.body;
+    const { error, value } = registerSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
 
-    // Double sécurité côté serveur (au cas où la validation serait contournée)
-    if (mot_de_passe !== mot_de_passe_confirm) {
-      return res.status(400).send("Les mots de passe ne correspondent pas.");
+    if (error) {
+      return res.status(400).render("register", {
+        title: "Créer un compte",
+        errors: error.details.map(e => e.message),
+        user: req.session.user || null,
+        formData: req.body
+      });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).send("Un compte avec cet email existe déjà.");
+    const { name, email, password } = value;
+    const emailLower = email.trim().toLowerCase();
+
+    const existing = await User.findOne({
+      where: { email: emailLower }
+    });
+
+    if (existing) {
+      return res.status(400).render("register", {
+        title: "Créer un compte",
+        errors: ["Email déjà utilisé"],
+        user: req.session.user || null,
+        formData: req.body
+      });
     }
 
-    const hashedPassword = await argon2.hash(mot_de_passe);
+    if (!password) {
+      return res.status(400).render("register", {
+        title: "Créer un compte",
+        errors: ["Mot de passe manquant"],
+        user: req.session.user || null,
+        formData: req.body
+      });
+    }
 
-    await User.create({
-      nom_prenom,
-      email,
-      mot_de_passe: hashedPassword,
+    let hashed;
+    try {
+      hashed = await argon2.hash(password);
+    } catch (err) {
+      console.error("ARGON2 ERROR:", err);
+
+      return res.status(500).render("register", {
+        title: "Créer un compte",
+        errors: ["Erreur hash mot de passe"],
+        user: req.session.user || null,
+        formData: req.body
+      });
+    }
+
+    const newUser = await User.create({
+      name: name.trim(),
+      email: emailLower,
+      password: hashed,
       role: "visiteur"
     });
 
-    res.redirect("/auth");
+    console.log("🎉 USER CREATED:", newUser.id);
+
+    req.session.message = "Compte créé avec succès";
+    return res.redirect("/auth");
+
   } catch (error) {
-    console.error("Erreur inscription:", error);
-    res.status(500).send("Erreur lors de l'inscription");
+    console.error("💥 REGISTER ERROR:", error);
+
+    return res.status(500).render("register", {
+      title: "Créer un compte",
+      errors: ["Erreur serveur"],
+      user: req.session.user || null,
+      formData: req.body
+    });
   }
 };
 
+// ==============================
+// LOGIN
+// ==============================
 export const login = async (req, res) => {
-  const { email, mot_de_passe } = req.body;
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return res.status(401).send("Identifiants invalides.");
+  console.log("🔐 POST /auth");
+
+  try {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const password = req.body.password || "";
+
+    if (!email || !password) {
+      return res.status(400).render("auth", {
+        title: "Authentification",
+        errors: ["Email et mot de passe requis"],
+        user: null,
+        formData: { email }
+      });
+    }
+
+    const user = await User.scope("withPassword").findOne({
+      where: { email }
+    });
+
+    if (!user) {
+      return res.status(401).render("auth", {
+        title: "Authentification",
+        errors: ["Identifiants invalides"],
+        user: null,
+        formData: { email }
+      });
+    }
+
+    let valid = false;
+
+    try {
+      valid = await argon2.verify(user.password, password);
+    } catch (err) {
+      console.error("ARGON2 VERIFY ERROR:", err);
+      valid = false;
+    }
+
+    if (!valid) {
+      return res.status(401).render("auth", {
+        title: "Authentification",
+        errors: ["Identifiants invalides"],
+        user: null,
+        formData: { email }
+      });
+    }
+
+    console.log("✅ LOGIN SUCCESS:", user.id);
+
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error("SESSION ERROR:", err);
+        return res.status(500).render("auth", {
+          title: "Authentification",
+          errors: ["Erreur session"],
+          user: null,
+          formData: { email }
+        });
+      }
+
+      req.session.user = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      };
+
+      req.session.save((err) => {
+        if (err) {
+          console.error("SESSION SAVE ERROR:", err);
+          return res.status(500).render("auth", {
+            title: "Authentification",
+            errors: ["Erreur session"],
+            user: null,
+            formData: { email }
+          });
+        }
+
+        return res.redirect("/");
+      });
+    });
+
+  } catch (error) {
+    console.error("💥 LOGIN ERROR:", error);
+
+    return res.status(500).render("auth", {
+      title: "Authentification",
+      errors: ["Erreur serveur"],
+      user: null,
+      formData: {}
+    });
   }
-  const valid = await argon2.verify(user.mot_de_passe, mot_de_passe);
-  if (!valid) {
-    return res.status(401).send("Identifiants invalides.");
-  }
-  // Enregistre l'utilisateur dans la session
-  req.session.user = user;
-  res.redirect("/"); // Redirige vers l'accueil ou une autre page
 };

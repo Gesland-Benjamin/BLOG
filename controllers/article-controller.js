@@ -2,322 +2,323 @@ import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
 import Commentaire from "../models/Commentaire.model.js";
-import { generateOpenGraphImage } from "../services/imageHelper.js";
+
+import { Op, literal } from "sequelize";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
+import { generateOpenGraphImage } from "../services/imageHelper.js";
 import { prepareVideoUrl, getVideoType } from "../utils/videoHelper.js";
 
-
-const getArticlePage = (req, res) => {
-    res.render("article", { articlesParCategorie: {}, user: req.user }); 
+/* =========================
+   PAGE SIMPLE ARTICLES
+========================= */
+export const getArticlePage = async (req, res) => {
+  try {
+    return res.render("article", {
+      articlesParCategorie: [],
+      user: req.user
+    });
+  } catch (error) {
+    console.error("getArticlePage error:", error);
+    return res.status(500).send("Erreur page articles");
+  }
 };
-export default { getArticlePage };
 
-
-
+/* =========================
+   ARTICLES PAR CATÉGORIE
+========================= */
 export const getArticlesParCategorie = async (req, res) => {
   try {
-    // Récupère toutes les catégories de la base de données
-    const toutesCategories = await Categorie.findAll({
-      order: [["nom", "ASC"]]
+    const categories = await Categorie.findAll({
+      order: [["name", "ASC"]]
     });
 
     const articlesParCategorie = [];
 
-    // Pour chaque catégorie, récupère le dernier article
-    for (const categorie of toutesCategories) {
-      const article = await Article.findOne({
-        where: { categorie_id: categorie.id },
+    for (const categorie of categories) {
+      const articles = await Article.findAll({
+        where: { categorieId: categorie.id },
         include: [
-          { model: User, as: "auteur" },
+          { model: User, as: "author" },
           { model: Categorie, as: "categorie" }
         ],
-        order: [["date_publication", "DESC"]]
+        order: [["created_at", "DESC"]],
+        limit: 5
       });
 
-      if (article) {
+      if (articles.length > 0) {
         articlesParCategorie.push({
-          categorie: categorie.nom,
-          id: article.id,
-          titre: article.titre,
-          contenu: article.contenu,
-          image: article.image,
-          image_alt: article.image_alt || article.titre,
-          auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu",
-          date_publication: article.date_publication
+          categorie: categorie.name,
+          articles: articles.map(a => ({
+            id: a.id,
+            titre: a.title,
+            contenu: a.content,
+            image: a.image,
+            image_alt: a.image_alt || a.title,
+            auteur: a.author?.name || "Inconnu",
+            date_publication: a.createdAt
+          }))
         });
       }
     }
 
-    res.render("article", { articlesParCategorie, user: req.user });
+    return res.render("article", {
+      articlesParCategorie,
+      user: req.user
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Erreur lors du chargement des articles.");
+    console.error("getArticlesParCategorie error:", error);
+    return res.status(500).send("Erreur chargement articles");
   }
 };
 
-
-
+/* =========================
+   ARTICLE BY ID (FIX FINAL)
+========================= */
 export const getArticleById = async (req, res) => {
-  const id = req.params.id;
   try {
+    const id = Number(req.params.id);
+
     const article = await Article.findByPk(id, {
       include: [
-        { model: User, as: "auteur" },
+        { model: User, as: "author" },
         { model: Categorie, as: "categorie" }
       ]
     });
 
-    if (!article) {
-      return res.status(404).send("Article non trouvé.");
-    }
-
-    let alreadyLiked = false;
-    const rawCookie = req.cookies?.likedArticles;
-    if (rawCookie) {
-      try {
-        const parsed = JSON.parse(rawCookie);
-        if (Array.isArray(parsed)) {
-          alreadyLiked = parsed.map(Number).filter(Number.isFinite).includes(Number(id));
-        }
-      } catch (err) {
-        console.warn("Cookie likedArticles illisible, on continue sans", err);
-      }
-    }
+    if (!article) return res.status(404).send("Article non trouvé");
 
     const articleData = {
       id: article.id,
-      titre: article.titre,
-      contenu: article.contenu,
-      auteur: article.auteur ? article.auteur.nom_prenom : "Inconnu",
-      categorie: article.categorie ? article.categorie.nom : null,
-      date_publication: article.date_publication,
+      titre: article.title,
+      contenu: article.content,
+      auteur: article.author?.name || "Inconnu",
+      categorie: article.categorie?.name || null,
+      date_publication: article.createdAt,
       image: article.image,
-      image_alt: article.image_alt || article.titre,
+      image_alt: article.image_alt || article.title,
       video: article.video ? prepareVideoUrl(article.video) : null,
       videoType: article.video ? getVideoType(article.video) : null,
       likes: article.likes || 0,
-      liked: alreadyLiked,
-      // Meta données pour SEO
-      description: (article.contenu || '').substring(0, 160),
-      url: `${process.env.SITE_URL || 'http://localhost:3000'}/article/${article.id}`,
-      openGraphImage: article.image || `${process.env.SITE_URL || 'http://localhost:3000'}/default-og-image.png`
+      description: (article.content || "").substring(0, 160),
+      url: `${process.env.SITE_URL || "http://localhost:3000"}/article/${article.id}`
     };
 
-    // Pagination des commentaires
-    const commentsPageSize = 10;
-    const { offset: commentsOffset, limit: commentsLimit, page: commentsPage } = getPaginationParams(req.query.page, commentsPageSize);
-    const commentsWhere = { article_id: id, statut: "approved", parent_id: null };
+    /* =========================
+       COMMENTS FIX DEFINITIF
+    ========================= */
+    const pageSize = 10;
+    const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
 
-    const totalComments = await Commentaire.count({ where: commentsWhere });
+    const where = {
+      articleId: id,
+      statut: "approved",
+      parentId: null
+    };
 
-    const commentaires = await Commentaire.findAll({
-      where: commentsWhere,
-      include: [
-        { 
-          model: Commentaire, 
-          as: "replies",
-          where: { statut: "approved" },
-          required: false,
-          include: [{ model: User, as: "user" }],
-          order: [["date", "ASC"]]
-        }
-      ],
-      order: [["date", "DESC"]],
-      limit: commentsLimit,
-      offset: commentsOffset
+    const total = await Commentaire.count({ where });
+
+    let commentaires = [];
+
+    try {
+      const rawComments = await Commentaire.findAll({
+        where,
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: ["id", "name"],
+            required: false
+          }
+        ],
+        order: [[literal("created_at DESC")]], // ✅ FIX ULTIME
+        limit,
+        offset
+      });
+
+      commentaires = rawComments.map(c => ({
+        id: c.id,
+        nom: c.nom || "Lecteur",
+        contenu: c.contenu,
+        date: c.date,
+        replies: []
+      }));
+
+    } catch (err) {
+      console.error("⚠️ fallback commentaires:", err.message);
+
+      const rawComments = await Commentaire.findAll({
+        where,
+        order: [[literal("created_at DESC")]], // ✅ FIX ULTIME
+        limit,
+        offset
+      });
+
+      commentaires = rawComments.map(c => ({
+        id: c.id,
+        nom: c.nom || "Lecteur",
+        contenu: c.contenu,
+        date: c.date,
+        replies: []
+      }));
+    }
+
+    const pagination = createPaginationData(
+      total,
+      page,
+      pageSize,
+      `/article/${id}`
+    );
+
+    const ogTags = generateOpenGraphImage({
+      imageUrl: article.image,
+      imageAlt: article.image_alt,
+      width: "1200",
+      height: "630"
     });
 
-    const commentsBaseUrl = `/article/${id}`;
-    const commentsPagination = createPaginationData(totalComments, commentsPage, commentsPageSize, commentsBaseUrl);
-
-    const commentSubmitted = req.query && req.query.comment_submitted === "1";
-
-    // Générer les meta tags OpenGraph
-    const ogImageTags = generateOpenGraphImage({
-      imageUrl: articleData.openGraphImage,
-      imageAlt: articleData.image_alt,
-      width: '1200',
-      height: '630'
-    });
-
-    res.render("article-detail", { 
-      article: articleData, 
-      user: req.user, 
-      commentaires, 
-      commentSubmitted,
-      ogImageTags,
+    return res.render("article-detail", {
+      article: articleData,
+      user: req.user,
+      commentaires,
+      commentsPagination: pagination,
+      commentsBaseUrl: `/article/${id}`,
+      ogImageTags: ogTags,
+      commentSubmitted: req.query.comment_submitted === "1",
       errors: [],
-      formData: {},
-      commentsPagination,
-      commentsBaseUrl
+      formData: {}
     });
+
   } catch (error) {
-    console.error("Erreur getArticleById:", error);
-    res.status(500).send("Erreur lors du chargement de l'article.");
+    console.error("getArticleById error:", error);
+    return res.status(500).send("Erreur article");
   }
 };
 
+/* =========================
+   POST COMMENT
+========================= */
 export const postComment = async (req, res) => {
-  const articleId = Number(req.params.id);
-  const { nom, contenu } = req.body || {};
-
-  if (!Number.isInteger(articleId)) {
-    return res.status(400).send("Article invalide");
-  }
-
-  if (!contenu || (!req.user && !nom)) {
-    return res.status(400).send("Nom et contenu requis");
-  }
-
   try {
+    const articleId = Number(req.params.id);
+    const { nom, contenu } = req.body;
+
+    if (!articleId || !contenu) {
+      return res.status(400).send("Données invalides");
+    }
+
     const article = await Article.findByPk(articleId);
     if (!article) return res.status(404).send("Article introuvable");
 
-    // Heuristique anti-spam simple
-    const lower = (contenu || "").toLowerCase();
-    const looksSpam = lower.includes("http://") || lower.includes("https://") || lower.includes("www.");
+    const spam = /(http|www)/i.test(contenu);
 
     await Commentaire.create({
-      article_id: articleId,
-      contenu,
-      nom: req.user ? req.user.nom_prenom : nom,
-      user_id: req.user ? req.user.id : null,
+      articleId,
+      content: contenu,
+      name: req.user?.name || nom,
+      userId: req.user?.id || null,
       statut: req.user ? "approved" : "pending",
-      is_spam: looksSpam
+      is_spam: spam
     });
 
     return res.redirect(`/article/${articleId}?comment_submitted=1`);
+
   } catch (error) {
-    console.error("Erreur postComment:", error);
-    return res.status(500).send("Impossible d'enregistrer le commentaire pour le moment");
+    console.error("postComment error:", error);
+    return res.status(500).send("Erreur commentaire");
   }
 };
 
-// Permet à n'importe quel visiteur (connecté ou non) de liker un article
+/* =========================
+   LIKE ARTICLE
+========================= */
 export const likeArticle = async (req, res) => {
-  const id = Number(req.params.id);
-
-  if (!Number.isInteger(id)) {
-    return res.status(400).json({ message: "Identifiant d'article invalide" });
-  }
-
   try {
+    const id = Number(req.params.id);
+
     const article = await Article.findByPk(id);
-    if (!article) {
-      return res.status(404).json({ message: "Article introuvable" });
-    }
-
-    const rawCookie = req.cookies?.likedArticles;
-    let likedArticles = [];
-    if (rawCookie) {
-      try {
-        const parsed = JSON.parse(rawCookie);
-        if (Array.isArray(parsed)) {
-          likedArticles = parsed.map(Number).filter(Number.isFinite);
-        }
-      } catch (err) {
-        console.warn("Cookie likedArticles illisible, on repart à zéro", err);
-      }
-    }
-
-    const alreadyLiked = likedArticles.includes(id);
-    if (alreadyLiked) {
-      return res.json({ likes: article.likes || 0, liked: true });
-    }
+    if (!article) return res.status(404).json({ message: "Not found" });
 
     await article.increment("likes", { by: 1 });
     await article.reload();
 
-    const updatedLiked = [...likedArticles, id];
-    res.cookie("likedArticles", JSON.stringify(updatedLiked), {
-      httpOnly: false,
-      sameSite: "lax",
-      maxAge: 365 * 24 * 60 * 60 * 1000
-    });
+    return res.json({ likes: article.likes });
 
-    return res.json({ likes: article.likes || 0, liked: true });
   } catch (error) {
-    console.error("Erreur likeArticle:", error);
-    return res.status(500).json({ message: "Erreur lors de l'enregistrement du like" });
+    console.error("likeArticle error:", error);
+    return res.status(500).json({ message: "Erreur like" });
   }
 };
 
+/* =========================
+   ARTICLES BY CATEGORY NAME
+========================= */
 export const getArticlesByCategorieName = async (req, res) => {
-  const rawNom = req.params.nom || '';
-  const decoded = decodeURIComponent(rawNom);
-  const normalize = str =>
-    (str || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-
   try {
-    const toutesCategories = await Categorie.findAll();
-    const categorieTrouvee = toutesCategories.find(c => normalize(c.nom) === normalize(decoded));
+    const name = decodeURIComponent(req.params.nom || "");
 
-    if (!categorieTrouvee) {
-      return res.status(404).render('articles-by-category', { 
-        articles: [], 
-        categorie: decoded, 
+    const category = await Categorie.findOne({
+      where: { name }
+    });
+
+    if (!category) {
+      return res.render("articles-by-category", {
+        articles: [],
+        categorie: name,
         user: req.user,
         pagination: { page: 1, pages: 0, total: 0 },
-        search: '',
-        baseUrl: `/article/categorie/${encodeURIComponent(decoded)}`
+        search: "",
+        baseUrl: `/article/categorie/${encodeURIComponent(name)}`
       });
     }
 
     const pageSize = 6;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
-    const search = req.query.search || '';
+    const search = req.query.search || "";
 
-    const where = { categorie_id: categorieTrouvee.id };
+    const where = {
+      categorieId: category.id
+    };
+
     if (search) {
-      where.titre = { [Article.sequelize.Sequelize.Op.iLike]: `%${search}%` };
+      where.title = { [Op.like]: `%${search}%` };
     }
 
     const { count, rows } = await Article.findAndCountAll({
       where,
-      include: [{ model: User, as: "auteur" }, { model: Categorie, as: "categorie" }],
-      order: [["date_publication", "DESC"]],
+      include: [
+        { model: User, as: "author" },
+        { model: Categorie, as: "categorie" }
+      ],
+      order: [["created_at", "DESC"]],
       limit,
       offset
     });
 
-    const articlesSimplifies = rows.map(a => ({
+    const articles = rows.map(a => ({
       id: a.id,
-      titre: a.titre,
-      contenu: a.contenu,
-      extrait: a.contenu ? a.contenu.substring(0, 200) : '',
-      auteur: a.auteur ? a.auteur.nom_prenom : "Inconnu",
-      date_publication: a.date_publication,
+      titre: a.title,
+      contenu: a.content,
+      auteur: a.author?.name || "Inconnu",
+      date_publication: a.createdAt,
       image: a.image,
-      image_alt: a.image_alt || a.titre,
-      categorie: a.categorie ? a.categorie.nom : null
+      image_alt: a.image_alt || a.title
     }));
 
-    const baseUrl = `/article/categorie/${encodeURIComponent(categorieTrouvee.nom)}`;
-    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
-    if (search) {
-      paginationData.pages = paginationData.pages.map(p => ({
-        ...p,
-        url: p.url + `&search=${encodeURIComponent(search)}`
-      }));
-      paginationData.previous_url = paginationData.previous_url ? paginationData.previous_url + `&search=${encodeURIComponent(search)}` : null;
-      paginationData.next_url = paginationData.next_url ? paginationData.next_url + `&search=${encodeURIComponent(search)}` : null;
-    }
+    const baseUrl = `/article/categorie/${encodeURIComponent(category.name)}`;
+    const pagination = createPaginationData(count, page, pageSize, baseUrl);
 
-    res.render("articles-by-category", { 
-      articles: articlesSimplifies, 
-      categorie: categorieTrouvee.nom, 
+    return res.render("articles-by-category", {
+      articles,
+      categorie: category.name,
       user: req.user,
-      pagination: paginationData,
+      pagination,
       search,
       baseUrl
     });
+
   } catch (error) {
-    console.error("Erreur getArticlesByCategorieName:", error);
-    res.status(500).send("Erreur lors du chargement des articles de la catégorie.");
+    console.error("getArticlesByCategorieName error:", error);
+    return res.status(500).send("Erreur catégorie");
   }
 };

@@ -3,9 +3,12 @@
   <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
+
     <main class="admin-wrapper">
       <div class="admin-container-narrow">
-        <div class="admin-panel" >
+
+        <div class="admin-panel">
+          
           <div class="admin-panel-header">
             <h1 style="margin-bottom:0">
               <% if (category) { %>
@@ -15,7 +18,9 @@
               <% } %>
             </h1>
           </div>
+
           <div class="admin-panel-body">
+
             <% if (error) { %>
               <div class="admin-alert error" role="alert">
                 <%= error %>
@@ -23,33 +28,46 @@
               </div>
             <% } %>
 
-            <% if (errors && errors.length > 0) { %>
-              <div class="admin-alert error" role="alert">
-                <ul>
-                  <% errors.forEach(err => { %>
-                    <li><%= err %></li>
-                  <% }) %>
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            <% } %>
+            <form
+              method="POST"
+              action="<%= category ? '/admin/categories/' + category.id + '?_method=PUT' : '/admin/categories' %>"
+              class="admin-form"
+            >
 
-            <form method="POST" action="<%= category ? '/admin/categories/' + category.id + '?_method=PUT' : '/admin/categories' %>" class="admin-form">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+              <!-- NAME -->
               <div class="admin-form-group">
-                <label for="nom">Nom de la catégorie</label>
+                <label for="name">Nom de la catégorie</label>
+
                 <input
                   type="text"
-                  class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('nom'))) ? 'invalid' : '' %>"
-                  id="nom"
-                  name="nom"
-                  value="<%= category ? category.nom : (formData.nom || '') %>"
+                  class="admin-input"
+                  id="name"
+                  name="name"
+                  value="<%= category ? category.name : (formData.name || '') %>"
                   required
                   placeholder="Ex: Beauté, Nutrition, Développement personnel"
                 />
-                <small class="admin-form-hint">Min 3 caractères</small>
+
+                <small class="admin-form-hint">
+                  Minimum 3 caractères
+                </small>
               </div>
 
+              <!-- DESCRIPTION (optionnel) -->
+              <div class="admin-form-group">
+                <label for="description">Description (optionnel)</label>
+
+                <textarea
+                  id="description"
+                  name="description"
+                  class="admin-textarea"
+                  placeholder="Description de la catégorie..."
+                ><%= category ? (category.description || '') : (formData.description || '') %></textarea>
+              </div>
+
+              <!-- ACTIONS -->
               <div class="admin-form-actions">
                 <button type="submit" class="admin-btn primary">
                   <% if (category) { %>
@@ -58,13 +76,20 @@
                     Créer
                   <% } %>
                 </button>
-                <a href="/admin/categories" class="admin-btn secondary">Annuler</a>
+
+                <a href="/admin/categories" class="admin-btn secondary">
+                  Annuler
+                </a>
               </div>
+
             </form>
+
           </div>
         </div>
+
       </div>
     </main>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

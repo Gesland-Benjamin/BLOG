@@ -70,7 +70,7 @@
 html, body, *, *:hover, *:active, *:focus,
 a, button, input, textarea, select,
 .btn, .btn-gear, .stylish-gear-btn, .dropdown-toggle, .dropdown-item {
-  cursor: url("/logo10.png"), auto !important;
+  
   font-family: Plus Jakarta Sans, sans-serif !important;
 }
 
@@ -88,7 +88,7 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text-dark);
-  background: url(../ChatGPT\ Image\ 18\ déc.\ 2025\,\ 15_29_48.png) center /
+  background: url("../images/ChatGPT-Image-18-dec-2025-15_29_48.png") center /
     cover no-repeat fixed;
   min-height: 100vh;
   overflow-x: hidden;

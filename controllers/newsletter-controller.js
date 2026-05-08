@@ -1,193 +1,233 @@
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
-import { sendNewsletterConfirmationEmail, sendNewsletterWelcomeEmail } from "../services/email.js";
-import crypto from 'crypto';
+import {
+  sendNewsletterConfirmationEmail,
+  sendNewsletterWelcomeEmail
+} from "../services/email.js";
+import crypto from "crypto";
 
+// =========================
+// FORM PAGE
+// =========================
 export const showNewsletterForm = (req, res) => {
-  res.render("newsletter", { 
-    title: "Inscription à la newsletter", 
+  res.render("newsletter", {
+    title: "Newsletter",
     user: req.user,
     errors: [],
+    message: null,
     formData: {}
   });
 };
 
+// =========================
+// SUBSCRIBE
+// =========================
 export const subscribeNewsletter = async (req, res) => {
-  const { email } = req.body;
-  
-  try {
-    // Vérifier si l'email existe déjà
-    const existing = await NewsletterSubscriber.findOne({ where: { email } });
-    
-    if (existing) {
-      if (existing.confirmed) {
-        return res.render("newsletter", { 
-          title: "Inscription à la newsletter", 
-          message: "Cet email est déjà inscrit à notre newsletter.", 
-          user: req.user,
-          errors: [],
-          formData: { email }
-        });
-      } else {
-        // Renvoyer l'email de confirmation
-        await sendNewsletterConfirmationEmail(email, existing.confirmation_token);
-        return res.render("newsletter", { 
-          title: "Inscription à la newsletter", 
-          message: "Un email de confirmation a été renvoyé à votre adresse. Veuillez vérifier votre boîte mail.", 
-          user: req.user,
-          errors: [],
-          formData: {}
-        });
-      }
-    }
-    
-    // Générer un token de confirmation
-    const confirmationToken = crypto.randomBytes(32).toString('hex');
-    
-    // Créer l'abonnement en attente de confirmation
-    await NewsletterSubscriber.create({ 
-      email,
-      confirmed: false,
-      confirmation_token: confirmationToken,
-      user_id: req.user ? req.user.id : null
-    });
-    
-    // Envoyer l'email de confirmation
-    try {
-      await sendNewsletterConfirmationEmail(email, confirmationToken);
-      res.render("newsletter", { 
-        title: "Inscription à la newsletter", 
-        message: "Merci ! Un email de confirmation a été envoyé à votre adresse. Veuillez vérifier votre boîte mail et cliquer sur le lien pour confirmer votre inscription.", 
-        user: req.user,
-        errors: [],
-        formData: {}
-      });
-    } catch (emailError) {
-      console.error('Erreur envoi email:', emailError);
-      res.render("newsletter", { 
-        title: "Inscription à la newsletter", 
-        message: "Inscription enregistrée, mais l'email de confirmation n'a pas pu être envoyé. Veuillez réessayer plus tard.", 
-        user: req.user,
-        errors: [],
-        formData: {}
-      });
-    }
-    
-  } catch (error) {
-    console.error('Erreur inscription newsletter:', error);
-    res.render("newsletter", { 
-      title: "Inscription à la newsletter", 
-      message: "Erreur lors de l'inscription. Veuillez réessayer.", 
+  const emailRaw = req.body?.email || "";
+  const email = emailRaw.trim().toLowerCase();
+
+  if (!email) {
+    return res.status(400).render("newsletter", {
+      title: "Newsletter",
       user: req.user,
-      errors: [],
+      errors: ["Email requis"],
+      message: null,
       formData: { email }
     });
   }
-};
 
-export const confirmSubscription = async (req, res) => {
-  const { token } = req.params;
-  
   try {
-    const subscriber = await NewsletterSubscriber.findOne({ 
-      where: { confirmation_token: token } 
+    const existing = await NewsletterSubscriber.findOne({
+      where: { email }
     });
-    
-    if (!subscriber) {
-      return res.render("newsletter-confirm", {
-        title: "Confirmation d'inscription",
-        success: false,
-        message: "Ce lien de confirmation est invalide ou a expiré.",
-        user: req.user
-      });
-    }
-    
-    if (subscriber.confirmed) {
-      return res.render("newsletter-confirm", {
-        title: "Confirmation d'inscription",
-        success: true,
-        message: "Votre inscription est déjà confirmée !",
-        user: req.user
-      });
-    }
-    
-    // Confirmer l'inscription
-    subscriber.confirmed = true;
-    subscriber.confirmed_at = new Date();
-    subscriber.confirmation_token = null; // Invalider le token
-    await subscriber.save();
-    
-    // Envoyer l'email de bienvenue
-    try {
-      await sendNewsletterWelcomeEmail(subscriber.email);
-    } catch (emailError) {
-      console.error('Erreur envoi email bienvenue:', emailError);
-    }
-    
-    res.render("newsletter-confirm", {
-      title: "Confirmation d'inscription",
-      success: true,
-      message: "Merci ! Votre inscription à la newsletter est confirmée. Vous allez recevoir nos prochains articles par email.",
-      user: req.user
-    });
-    
-  } catch (error) {
-    console.error('Erreur confirmation newsletter:', error);
-    res.status(500).render("500", { error: error.message });
-  }
-};
 
-export const showUnsubscribeForm = async (req, res) => {
-  const { email } = req.query;
-  
-  res.render("newsletter-unsubscribe", {
-    title: "Se désabonner de la newsletter",
-    email: email || '',
-    user: req.user,
-    errors: [],
-    formData: { email: email || '' }
-  });
-};
-
-export const unsubscribe = async (req, res) => {
-  const { email } = req.body;
-  
-  try {
-    const subscriber = await NewsletterSubscriber.findOne({ where: { email } });
-    
-    if (!subscriber) {
-      return res.render("newsletter-unsubscribe", {
-        title: "Se désabonner de la newsletter",
-        message: "Cette adresse email n'est pas inscrite à notre newsletter.",
-        email,
+    // Déjà inscrit confirmé
+    if (existing && existing.confirmed) {
+      return res.render("newsletter", {
+        title: "Newsletter",
         user: req.user,
         errors: [],
+        message: "Cet email est déjà inscrit.",
         formData: { email }
       });
     }
-    
-    // Supprimer l'abonnement
-    await subscriber.destroy();
-    
-    res.render("newsletter-unsubscribe", {
-      title: "Désinscription confirmée",
-      success: true,
-      message: "Vous avez été désinscrit avec succès de notre newsletter. Nous sommes désolés de vous voir partir !",
-      email: '',
-      user: req.user,
-      errors: [],
-      formData: {}
-    });
-    
-  } catch (error) {
-    console.error('Erreur désinscription newsletter:', error);
-    res.render("newsletter-unsubscribe", {
-      title: "Se désabonner de la newsletter",
-      message: "Erreur lors de la désinscription. Veuillez réessayer.",
+
+    // Existe mais non confirmé → renvoi email
+    if (existing && !existing.confirmed) {
+      await sendNewsletterConfirmationEmail(
+        email,
+        existing.confirmation_token
+      );
+
+      return res.render("newsletter", {
+        title: "Newsletter",
+        user: req.user,
+        errors: [],
+        message: "Email de confirmation renvoyé.",
+        formData: {}
+      });
+    }
+
+    // Nouveau subscriber
+    const token = crypto.randomBytes(32).toString("hex");
+
+    await NewsletterSubscriber.create({
       email,
+      confirmed: false,
+      confirmation_token: token,
+      user_id: req.user?.id || null
+    });
+
+    try {
+      await sendNewsletterConfirmationEmail(email, token);
+
+      return res.render("newsletter", {
+        title: "Newsletter",
+        user: req.user,
+        errors: [],
+        message:
+          "Un email de confirmation a été envoyé. Vérifiez votre boîte mail.",
+        formData: {}
+      });
+    } catch (emailError) {
+      console.error("EMAIL ERROR:", emailError);
+
+      return res.render("newsletter", {
+        title: "Newsletter",
+        user: req.user,
+        errors: [],
+        message:
+          "Inscription enregistrée mais erreur d’envoi email.",
+        formData: {}
+      });
+    }
+  } catch (error) {
+    console.error("SUBSCRIBE ERROR:", error);
+
+    return res.status(500).render("newsletter", {
+      title: "Newsletter",
       user: req.user,
-      errors: [],
+      errors: ["Erreur serveur"],
+      message: null,
       formData: { email }
     });
   }
 };
 
+// =========================
+// CONFIRM
+// =========================
+export const confirmSubscription = async (req, res) => {
+  const token = req.params?.token;
+
+  try {
+    const subscriber = await NewsletterSubscriber.findOne({
+      where: { confirmation_token: token }
+    });
+
+    if (!subscriber) {
+      return res.render("newsletter-confirm", {
+        title: "Confirmation",
+        success: false,
+        message: "Lien invalide ou expiré",
+        user: req.user
+      });
+    }
+
+    if (subscriber.confirmed) {
+      return res.render("newsletter-confirm", {
+        title: "Confirmation",
+        success: true,
+        message: "Déjà confirmé",
+        user: req.user
+      });
+    }
+
+    subscriber.confirmed = true;
+    subscriber.confirmed_at = new Date();
+    subscriber.confirmation_token = null;
+
+    await subscriber.save();
+
+    try {
+      await sendNewsletterWelcomeEmail(subscriber.email);
+    } catch (e) {
+      console.error("WELCOME EMAIL ERROR:", e);
+    }
+
+    return res.render("newsletter-confirm", {
+      title: "Confirmation",
+      success: true,
+      message: "Inscription confirmée avec succès",
+      user: req.user
+    });
+  } catch (error) {
+    console.error("CONFIRM ERROR:", error);
+    return res.status(500).render("500", { error: error.message });
+  }
+};
+
+// =========================
+// UNSUBSCRIBE FORM
+// =========================
+export const showUnsubscribeForm = (req, res) => {
+  res.render("newsletter-unsubscribe", {
+    title: "Désinscription",
+    user: req.user,
+    errors: [],
+    message: null,
+    formData: { email: req.query.email || "" }
+  });
+};
+
+// =========================
+// UNSUBSCRIBE
+// =========================
+export const unsubscribe = async (req, res) => {
+  const email = (req.body?.email || "").trim().toLowerCase();
+
+  if (!email) {
+    return res.render("newsletter-unsubscribe", {
+      title: "Désinscription",
+      user: req.user,
+      errors: ["Email requis"],
+      message: null,
+      formData: { email }
+    });
+  }
+
+  try {
+    const subscriber = await NewsletterSubscriber.findOne({
+      where: { email }
+    });
+
+    if (!subscriber) {
+      return res.render("newsletter-unsubscribe", {
+        title: "Désinscription",
+        user: req.user,
+        errors: [],
+        message: "Email non trouvé",
+        formData: { email }
+      });
+    }
+
+    await subscriber.destroy();
+
+    return res.render("newsletter-unsubscribe", {
+      title: "Désinscription",
+      user: req.user,
+      errors: [],
+      message: "Désinscription réussie",
+      formData: {}
+    });
+  } catch (error) {
+    console.error("UNSUBSCRIBE ERROR:", error);
+
+    return res.status(500).render("newsletter-unsubscribe", {
+      title: "Désinscription",
+      user: req.user,
+      errors: ["Erreur serveur"],
+      message: null,
+      formData: { email }
+    });
+  }
+};

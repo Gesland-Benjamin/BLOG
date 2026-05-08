@@ -1,218 +1,231 @@
-
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
   <%- include('partials/head') %>
+
   <body>
     <%- include('partials/header', { withContainer: true }) %>
+
     <main class="admin-wrapper">
       <div class="admin-container">
-        
 
-
-        <!-- 4 petites cards compteur en haut du dashboard -->
+        <!-- STATS -->
         <div class="admin-stats-row">
-                    <div class="admin-stat-card mini info">
-                      <div class="admin-stat-value"><%= stats.totalUsers %></div>
-                      <div class="admin-stat-label">Utilisateurs</div>
-                    </div>
+
+          <div class="admin-stat-card mini info">
+            <div class="admin-stat-value"><%= stats.totalUsers %></div>
+            <div class="admin-stat-label">Utilisateurs</div>
+          </div>
+
           <div class="admin-stat-card mini primary">
             <div class="admin-stat-value"><%= stats.totalArticles %></div>
             <div class="admin-stat-label">Articles</div>
           </div>
+
           <div class="admin-stat-card mini warning">
             <div class="admin-stat-value"><%= stats.commentairesPending %></div>
             <div class="admin-stat-label">Commentaires en attente</div>
           </div>
+
           <div class="admin-stat-card mini info">
             <div class="admin-stat-value"><%= stats.totalCommentaires %></div>
             <div class="admin-stat-label">Commentaires</div>
           </div>
+
           <div class="admin-stat-card mini success">
             <div class="admin-stat-value"><%= stats.totalAbonnes %></div>
             <div class="admin-stat-label">Abonnés</div>
           </div>
-          <div class="admin-stat-card mini success">
-            <div class="admin-stat-value"><%= stats.totalUsers %></div>
-            <div class="admin-stat-label">Utilisateurs</div>
-          </div>
+
         </div>
 
-        <!-- Organisation des panels en grille -->
+        <!-- GRID -->
         <div class="admin-panels-grid">
+
+          <!-- USERS -->
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Liste des utilisateurs</h5>
             </div>
+
             <div class="admin-list">
-              <% if (users.length === 0) { %>
+              <% if (!users || users.length === 0) { %>
                 <div class="admin-list-empty">Aucun utilisateur</div>
-              <% } else { %>
-                <% users.forEach(u => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <strong><%= u.nom_prenom %></strong>
-                      <div class="admin-list-meta">
-                        <%= u.email %> — <span class="admin-badge <%= u.role === 'admin' ? 'primary' : 'info' %>"><%= u.role %></span>
-                      </div>
-                    </div>
-                    <form method="POST" action="/admin/users/delete/<%= u.id %>" style="margin:0;">
-                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
-                    </form>
-                  </div>
-                <% }) %>
               <% } %>
+
+              <% users.forEach(u => { %>
+                <div class="admin-list-item">
+                  <div class="admin-list-content">
+                    <strong><%= u.name %></strong>
+                    <div class="admin-list-meta">
+                      <%= u.email %> —
+                      <span class="admin-badge <%= u.role === 'admin' ? 'primary' : 'info' %>">
+                        <%= u.role %>
+                      </span>
+                    </div>
+                  </div>
+
+                  <form method="POST" action="/admin/users/delete/<%= u.id %>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="admin-btn-sm danger">Supprimer</button>
+                  </form>
+                </div>
+              <% }) %>
             </div>
-            <%- include('partials/pagination', { pagination: usersPagination, baseUrl: '/admin/dashboard', pageParam: 'userPage' }) %>
+
+            <%- include('partials/pagination', {
+              pagination: usersPagination,
+              baseUrl: '/admin/dashboard'
+            }) %>
           </div>
+
+          <!-- ARTICLES -->
           <div class="admin-panel">
             <div class="admin-panel-header">
-              <div class="admin-panel-header-row">
-                <h5>Articles récents</h5>
-                <a href="/admin/articles/new" class="btn-general admin-create-btn">Créer</a>
-              </div>
-              <form method="GET" action="/admin/dashboard">
-                <input type="text" name="search" placeholder="Rechercher un article..." value="<%= typeof search !== 'undefined' ? search : '' %>" class="admin-input" style="max-width:220px;">
-                <button type="submit" class="btn-general">Rechercher</button>
-              </form>
+              <h5>Articles récents</h5>
+              <a href="/admin/articles/new" class="btn-general">Créer</a>
             </div>
+
             <div class="admin-list">
-              <% if (recentArticles.length === 0) { %>
+              <% if (!recentArticles || recentArticles.length === 0) { %>
                 <div class="admin-list-empty">Aucun article</div>
-              <% } else { %>
-                <% recentArticles.slice(0, 3).forEach(a => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
-                      <div class="admin-list-meta">
-                        <%= new Date(a.date_publication).toLocaleDateString() %> — <%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %>
-                        <div class="admin-list-actions" style="margin-top:0.7rem;">
-                          <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
-                        </div>
-                      </div>
+              <% } %>
+
+              <% recentArticles.slice(0, 3).forEach(a => { %>
+                <div class="admin-list-item">
+                  <div class="admin-list-content">
+                    <a href="/article/<%= a.id %>" class="admin-list-title">
+                      <%= a.title %>
+                    </a>
+
+                    <div class="admin-list-meta">
+                      <%= new Date(a.created_at).toLocaleDateString() %>
+                      — <%= a.likes || 0 %> like(s)
+                    </div>
+
+                    <div class="admin-list-actions">
+                      <a href="/admin/articles/<%= a.id %>/edit" class="admin-btn-sm secondary">
+                        Éditer
+                      </a>
                     </div>
                   </div>
-                <% }) %>
-              <% } %>
+                </div>
+              <% }) %>
             </div>
           </div>
 
+          <!-- COMMENTS -->
           <div class="admin-panel">
             <div class="admin-panel-header">
               <h5>Commentaires en attente</h5>
               <a href="/admin/commentaires" class="btn-general">Voir tout</a>
             </div>
+
             <div class="admin-list">
-              <% if (pendingComments.length === 0) { %>
-                <div class="admin-list-empty">Aucun commentaire en attente</div>
-              <% } else { %>
-                <% pendingComments.forEach(c => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <div class="admin-comment-author"><%= c.nom || 'Lecteur' %></div>
-                      <div class="admin-comment-meta">
-                        <% if (c.article) { %>
-                          Sur : <a href="/article/<%= c.article.id %>"><%= c.article.titre %></a>
-                        <% } else { %>
-                          Article supprimé
-                        <% } %>
-                      </div>
-                      <div class="admin-comment-excerpt"><%= c.contenu.substring(0, 80) %><%= c.contenu.length > 80 ? '...' : '' %></div>
-                    </div>
-                    <div class="admin-list-actions">
-                      <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button class="admin-btn-sm success" type="submit">✓</button>
-                      </form>
-                      <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button class="admin-btn-sm danger" type="submit">✕</button>
-                      </form>
-                    </div>
-                  </div>
-                <% }) %>
+              <% if (!pendingComments || pendingComments.length === 0) { %>
+                <div class="admin-list-empty">Aucun commentaire</div>
               <% } %>
+
+              <% pendingComments.forEach(c => { %>
+                <div class="admin-list-item">
+                  <div class="admin-list-content">
+
+                    <strong><%= c.user?.name || 'Lecteur' %></strong>
+
+                    <div class="admin-list-meta">
+                      <% if (c.article) { %>
+                        Sur : <a href="/article/<%= c.article.id %>"><%= c.article.title %></a>
+                      <% } else { %>
+                        Article supprimé
+                      <% } %>
+                    </div>
+
+                    <div>
+                      <%= c.content.substring(0, 80) %>...
+                    </div>
+
+                  </div>
+
+                  <div class="admin-list-actions">
+
+                    <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button class="admin-btn-sm success">✓</button>
+                    </form>
+
+                    <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button class="admin-btn-sm danger">✕</button>
+                    </form>
+
+                  </div>
+                </div>
+              <% }) %>
             </div>
-            <%- include('partials/pagination', { pagination: pendingCommentsPagination, baseUrl: '/admin/dashboard' }) %>
+
+            <%- include('partials/pagination', {
+              pagination: commentsPagination,
+              baseUrl: '/admin/dashboard'
+            }) %>
           </div>
 
+          <!-- SUBSCRIBERS -->
           <div class="admin-panel">
             <div class="admin-panel-header">
-              <h5>Articles les plus aimés</h5>
-            </div>
-            <div class="admin-list">
-              <% if (topArticles.length === 0) { %>
-                <div class="admin-list-empty">Aucun article</div>
-              <% } else { %>
-                <% topArticles.forEach(a => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <a href="/article/<%= a.id %>" class="admin-list-title"><%= a.titre %></a>
-                    </div>
-                    <span class="admin-badge primary"><%= a.likes || 0 %> j'aime<%= (a.likes || 0) > 1 ? 's' : '' %></span>
-                  </div>
-                <% }) %>
-              <% } %>
-            </div>
-            <%- include('partials/pagination', { pagination: topArticlesPagination, baseUrl: '/admin/dashboard' }) %>
-          </div>
-
-          <div class="admin-panel">
-            <div class="admin-panel-header">
-              <h5>Derniers abonnés newsletter</h5>
+              <h5>Abonnés newsletter</h5>
               <a href="/admin/newsletter" class="btn-general">Gérer</a>
             </div>
-            <div class="admin-list">
-              <% if (recentSubscribers.length === 0) { %>
-                <div class="admin-list-empty">Aucun abonné</div>
-              <% } else { %>
-                <% recentSubscribers.forEach(s => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <strong><%= s.email %></strong>
-                    </div>
-                    <div class="admin-list-date"><%= new Date(s.date_inscription).toLocaleDateString() %></div>
-                    <form method="POST" action="/admin/newsletter/<%= s.id %>?_method=DELETE" style="margin:0;display:inline-block;">
-                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet abonné ?')">Supprimer</button>
-                    </form>
-                  </div>
-                <% }) %>
-              <% } %>
-            </div>
-            <%- include('partials/pagination', { pagination: recentSubscribersPagination, baseUrl: '/admin/dashboard' }) %>
-          </div>
-        <!-- Début de la card Toutes les catégories placée dans la grille -->
-          <div class="admin-panel">
-            <div class="admin-panel-header">
-              <h5>Toutes les catégories</h5>
-              <div style="display: flex; gap: 0.7rem; align-items: center;">
-                <a href="/categories" class="btn-general secondary">Voir toutes</a>
-                <a href="/admin/categories/new" class="btn-general">Ajouter</a>
-              </div>
-            </div>
-            <div class="admin-list">
-              <% if (categories && categories.length === 0) { %>
-                <div class="admin-list-empty">Aucune catégorie</div>
-              <% } else { %>
-                <% categories.forEach(cat => { %>
-                  <div class="admin-list-item">
-                    <div class="admin-list-content">
-                      <strong><%= cat.nom %></strong>
-                      <div class="admin-list-meta">
-                        <span class="admin-badge secondary"><%= cat.articleCount %></span> articles
-                      </div>
-                    </div>
-                    <a href="/admin/categories/<%= cat.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
-                  </div>
-                <% }) %>
-              <% } %>
-            </div>
-          </div>
-        <!-- Fin de la card Toutes les catégories -->
-        </div>
 
+            <div class="admin-list">
+              <% if (!recentSubscribers || recentSubscribers.length === 0) { %>
+                <div class="admin-list-empty">Aucun abonné</div>
+              <% } %>
+
+              <% recentSubscribers.forEach(s => { %>
+                <div class="admin-list-item">
+                  <div class="admin-list-content">
+                    <strong><%= s.email %></strong>
+                    <div class="admin-list-meta">
+                      <%= new Date(s.created_at).toLocaleDateString() %>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <%- include('partials/pagination', {
+              pagination: subscribersPagination,
+              baseUrl: '/admin/dashboard'
+            }) %>
+          </div>
+
+          <!-- CATEGORIES -->
+         <div class="admin-panel">
+  <div class="admin-panel-header">
+    <h5>Catégories</h5>
+
+    <div style="display:flex; gap:0.7rem; align-items:center;">
+     
+
+      <a href="/admin/categories/new" class="btn-general">
+        Ajouter
+      </a>
+    </div>
+
+  </div>
+
+            <div class="admin-list">
+              <% categories.forEach(cat => { %>
+                <div class="admin-list-item">
+                  <strong><%= cat.name %></strong>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+
+        </div>
       </div>
+    </main>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

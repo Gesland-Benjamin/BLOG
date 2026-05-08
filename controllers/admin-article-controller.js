@@ -1,234 +1,165 @@
 import Article from "../models/Article.model.js";
 import Categorie from "../models/Categorie.model.js";
+import User from "../models/User.model.js";
 import { deleteProcessedImages } from "../services/image.js";
 import path from "path";
-import fs from "fs/promises";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-
+/* =========================
+   FORM CREATE ARTICLE
+========================= */
 export async function showNewArticleForm(req, res) {
   try {
-    const categories = await Categorie.findAll();
-    res.render("new-article", { categories, isEditing: false, article: {}, errors: [], formData: {}, ogImageTags: '' });
+    const categories = await Categorie.findAll({
+      order: [["name", "ASC"]]
+    });
+
+    res.render("new-article", {
+      categories,
+      isEditing: false,
+      article: {},
+      errors: [],
+      formData: {},
+      ogImageTags: ""
+    });
   } catch (error) {
-    console.error("Erreur findAll Categorie:", error);
-    res.status(500).send("Erreur lors du chargement des catégories");
+    console.error("showNewArticleForm error:", error);
+    res.status(500).send("Erreur chargement catégories");
   }
 }
 
+/* =========================
+   CREATE ARTICLE (FIXED)
+========================= */
 export const createArticle = async (req, res) => {
   try {
-    const { titre, contenu, categorie_id, image_alt, video } = req.body;
-    let image = null;
-    let imageAlt = image_alt || null;
-    let videoUrl = video || null;
+    console.log("🟡 BODY RECEIVED:", req.body);
+    console.log("🟡 FILE:", req.file || req.processedImage);
 
-    // Utiliser l'image traitée si disponible
-    if (req.processedImage) {
-      // Utiliser la version moyenne pour le preview
-      image = `/uploads/${req.processedImage.basename}_md.webp`;
-      
-      // Générer un alt text par défaut si pas fourni
-      if (!imageAlt) {
-        imageAlt = titre || 'Image de l\'article';
-      }
+    const { title, content, categorieId } = req.body;
+
+    if (!req.user?.id) {
+      return res.status(401).send("Utilisateur non authentifié");
     }
 
-    // Debug logs pour diagnostiquer les problèmes d'insertion
-    console.log('createArticle payload:', { titre, categorie_id, image, imageAlt, videoUrl });
-    console.log('createArticle req.user:', req.user ? { id: req.user.id, nom: req.user.nom_prenom } : null);
-
-    // Validation : s'assurer que la catégorie existe
-    const categorieIdNum = parseInt(categorie_id, 10);
-    if (Number.isNaN(categorieIdNum)) {
-      console.error('categorie_id invalide:', categorie_id);
-      return res.status(400).send('Identifiant de catégorie invalide');
+    if (!title || !content || !categorieId) {
+      return res.status(400).send("Champs manquants");
     }
 
-    const categorie = await Categorie.findByPk(categorieIdNum);
-    if (!categorie) {
-      console.error('Categorie introuvable pour id:', categorieIdNum);
-      return res.status(400).send('Catégorie introuvable');
+    const categoryIdNum = Number(categorieId);
+
+    const category = await Categorie.findByPk(categoryIdNum);
+    if (!category) {
+      return res.status(400).send("Catégorie introuvable");
     }
 
-    const newArticle = await Article.create({
-      titre,
-      contenu,
-      categorie_id: categorieIdNum,
-      auteur_id: req.user ? req.user.id : null,
-      image,
-      image_alt: imageAlt,
-      video: videoUrl
+    const image = req.processedImage
+      ? `/uploads/${req.processedImage.basename}_md.webp`
+      : null;
+
+    const article = await Article.create({
+      title: title.trim(),
+      content: content.trim(),
+      categorieId: categoryIdNum,
+      userId: req.user.id,
+      image
     });
 
-    console.log('Article créé id=', newArticle.id);
+    console.log("✅ ARTICLE CREATED:", article.id);
 
-    res.redirect("/article");
+    return res.redirect("/article");
+
   } catch (error) {
-    console.error(error);
-    
-    // Supprimer les images traitées en cas d'erreur
+    console.error("❌ createArticle error:", error);
+
     if (req.processedImage) {
-      try {
-        const uploadsDir = path.join(__dirname, "../public/uploads");
-        await deleteProcessedImages(uploadsDir, req.processedImage.basename);
-      } catch (deleteError) {
-        console.error('Erreur lors de la suppression des images:', deleteError);
-      }
+      const uploadsDir = path.join(__dirname, "../public/uploads");
+      await deleteProcessedImages(uploadsDir, req.processedImage.basename)
+        .catch(console.error);
     }
-    
-    res.status(500).send("Erreur lors de la création de l'article");
+
+    return res.status(500).send("Erreur création article");
   }
 };
 
+/* =========================
+   EDIT FORM
+========================= */
 export const showEditArticleForm = async (req, res) => {
   try {
-    const articleId = req.params.id;
-    
-    const article = await Article.findByPk(articleId, {
-      include: [{ model: Categorie, as: "categorie" }]
+    const article = await Article.findByPk(req.params.id, {
+      include: [
+        { model: Categorie, as: "categorie" },
+        { model: User, as: "author" }
+      ]
     });
 
-    if (!article) {
-      return res.status(404).send('Article non trouvé');
-    }
+    if (!article) return res.status(404).send("Article non trouvé");
 
-    const categories = await Categorie.findAll();
-    
-    res.render("new-article", { 
+    const categories = await Categorie.findAll({
+      order: [["name", "ASC"]]
+    });
+
+    res.render("new-article", {
       categories,
-      article: {
-        id: article.id,
-        titre: article.titre,
-        contenu: article.contenu,
-        categorie_id: article.categorie_id,
-        image: article.image,
-        image_alt: article.image_alt
-      },
       isEditing: true,
+      article,
       errors: [],
       formData: {},
-      ogImageTags: ''
+      ogImageTags: ""
     });
+
   } catch (error) {
-    console.error("Erreur showEditArticleForm:", error);
-    res.status(500).send("Erreur lors du chargement de l'article");
+    console.error("showEditArticleForm error:", error);
+    res.status(500).send("Erreur chargement article");
   }
 };
 
+/* =========================
+   UPDATE ARTICLE
+========================= */
 export const updateArticle = async (req, res) => {
   try {
-    const articleId = req.params.id;
-    const { titre, contenu, categorie_id, image_alt, video } = req.body;
+    const article = await Article.findByPk(req.params.id);
+    if (!article) return res.status(404).send("Article non trouvé");
 
-    const article = await Article.findByPk(articleId);
-    if (!article) {
-      return res.status(404).send('Article non trouvé');
-    }
-
-    // Validation : s'assurer que la catégorie existe
-    const categorieIdNum = parseInt(categorie_id, 10);
-    if (Number.isNaN(categorieIdNum)) {
-      return res.status(400).send('Identifiant de catégorie invalide');
-    }
-
-    const categorie = await Categorie.findByPk(categorieIdNum);
-    if (!categorie) {
-      return res.status(400).send('Catégorie introuvable');
-    }
-
-    // Mettre à jour l'image si fournie
-    let imageAlt = image_alt || article.image_alt;
-    let videoUrl = video || article.video;
-    
-    if (req.processedImage) {
-      // Supprimer l'ancienne image si elle existe
-      if (article.image) {
-        try {
-          const oldBasename = article.image
-            .split('/').pop()  // Récupérer le nom du fichier
-            .replace(/_[a-z]{2}\.webp$/, '');  // Enlever le suffixe de taille
-          
-          const uploadsDir = path.join(__dirname, "../public/uploads");
-          await deleteProcessedImages(uploadsDir, oldBasename);
-        } catch (error) {
-          console.error('Erreur lors de la suppression de l\'ancienne image:', error);
-        }
-      }
-      
-      // Utiliser la version moyenne de la nouvelle image
-      article.image = `/uploads/${req.processedImage.basename}_md.webp`;
-      
-      // Générer un alt text par défaut si pas fourni
-      if (!imageAlt) {
-        imageAlt = titre || 'Image de l\'article';
-      }
-    }
+    const { title, content, categorieId } = req.body;
 
     await article.update({
-      titre,
-      contenu,
-      categorie_id: categorieIdNum,
-      image: article.image,
-      image_alt: imageAlt,
-      video: videoUrl
+      title,
+      content,
+      categorieId: Number(categorieId)
     });
 
-    console.log('Article mis à jour id=', articleId);
+    console.log("✅ ARTICLE UPDATED:", article.id);
 
     res.redirect("/article");
+
   } catch (error) {
-    console.error('Erreur updateArticle:', error);
-    
-    // Supprimer les images traitées en cas d'erreur
-    if (req.processedImage) {
-      try {
-        const uploadsDir = path.join(__dirname, "../public/uploads");
-        await deleteProcessedImages(uploadsDir, req.processedImage.basename);
-      } catch (deleteError) {
-        console.error('Erreur lors de la suppression des images:', deleteError);
-      }
-    }
-    
-    res.status(500).send("Erreur lors de la mise à jour de l'article");
+    console.error("updateArticle error:", error);
+    res.status(500).send("Erreur update article");
   }
 };
 
+/* =========================
+   DELETE ARTICLE
+========================= */
 export const deleteArticle = async (req, res) => {
   try {
-    const articleId = req.params.id;
-
-    const article = await Article.findByPk(articleId);
-    if (!article) {
-      return res.status(404).json({ error: 'Article non trouvé' });
-    }
-
-    // Supprimer les images associées
-    if (article.image) {
-      try {
-        const basename = article.image
-          .split('/').pop()  // Récupérer le nom du fichier
-          .replace(/_[a-z]{2}\.webp$/, '');  // Enlever le suffixe de taille
-        
-        const uploadsDir = path.join(__dirname, "../public/uploads");
-        await deleteProcessedImages(uploadsDir, basename);
-        console.log(`Images supprimées pour l'article ${articleId}`);
-      } catch (error) {
-        console.error('Erreur lors de la suppression des images:', error);
-      }
-    }
+    const article = await Article.findByPk(req.params.id);
+    if (!article) return res.status(404).send("Article non trouvé");
 
     await article.destroy();
 
-    console.log('Article supprimé id=', articleId);
+    console.log("🗑 ARTICLE DELETED:", article.id);
 
-    return res.redirect('/');
+    res.redirect("/article");
+
   } catch (error) {
-    console.error('Erreur deleteArticle:', error);
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'article' });
+    console.error("deleteArticle error:", error);
+    res.status(500).send("Erreur suppression article");
   }
 };

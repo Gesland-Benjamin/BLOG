@@ -1,26 +1,83 @@
-import { DataTypes, Op } from 'sequelize';
-import {sequelize} from '../config/database.js';
-import User from './User.model.js';
-import Categorie from './Categorie.model.js';
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
 
-const Article = sequelize.define('Article', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  titre: { type: DataTypes.STRING(255), allowNull: false },
-  contenu: { type: DataTypes.TEXT, allowNull: false },
-  date_publication: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
-  auteur_id: { type: DataTypes.INTEGER, allowNull: false },
-  categorie_id: { type: DataTypes.INTEGER, allowNull: false },
-  image: { type: DataTypes.STRING, allowNull: true },
-  image_alt: { type: DataTypes.STRING(255), allowNull: true, defaultValue: null },
-  video: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
-  likes: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 }
-}, {
-  tableName: 'article',
-  timestamps: false
-});
+const Article = sequelize.define(
+  "Article",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
 
-// Relations
-Article.belongsTo(User, { foreignKey: 'auteur_id', as: 'auteur' });
-Article.belongsTo(Categorie, { foreignKey: 'categorie_id', as: 'categorie' });
+    title: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+
+    likes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id"
+    },
+
+    categorieId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "categorie_id"
+    },
+
+    titre: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.title;
+      }
+    },
+
+    contenu: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.content;
+      }
+    },
+
+    date_publication: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.createdAt || this.created_at || null;
+      }
+    },
+
+    auteur: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.author?.nom_prenom || this.author?.name || null;
+      }
+    },
+
+  },
+  {
+    tableName: "articles",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    underscored: true
+  }
+);
 
 export default Article;

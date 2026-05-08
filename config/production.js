@@ -7,7 +7,7 @@ export const productionConfig = {
   // Server
   port: process.env.PORT || 3000,
   nodeEnv: 'production',
-  appUrl: process.env.APP_URL || 'https://yourdomain.com',
+  appUrl: process.env.APP_URL || 'https://emi-pulse.fr',
   
   // HTTPS & SSL
   https: {
@@ -31,7 +31,7 @@ export const productionConfig = {
   // CORS
   cors: {
     enabled: true,
-    origin: (process.env.CORS_ORIGINS || 'https://yourdomain.com').split(','),
+    origin: (process.env.CORS_ORIGINS || 'https://emi-pulse.fr').split(','),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

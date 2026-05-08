@@ -1,186 +1,172 @@
-import Joi from 'joi';
+import Joi from "joi";
 
-// Schéma d'inscription
-export const registerSchema = Joi.object({
-  nom_prenom: Joi.string()
-    .min(3)
-    .max(150)
-    .required()
-    .messages({
-      'string.empty': 'Le nom complet est requis',
-      'string.min': 'Le nom doit contenir au moins 3 caractères',
-      'string.max': 'Le nom ne peut pas dépasser 150 caractères',
-      'any.required': 'Le nom complet est requis'
-    }),
-  email: Joi.string()
-    .email()
-    .max(150)
-    .required()
-    .messages({
-      'string.empty': 'L\'adresse email est requise',
-      'string.email': 'L\'adresse email n\'est pas valide',
-      'string.max': 'L\'email ne peut pas dépasser 150 caractères',
-      'any.required': 'L\'adresse email est requise'
-    }),
-  mot_de_passe: Joi.string()
-    .min(8)
-    .max(255)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .required()
-    .messages({
-      'string.empty': 'Le mot de passe est requis',
-      'string.min': 'Le mot de passe doit contenir au moins 8 caractères',
-      'string.pattern.base': 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre',
-      'any.required': 'Le mot de passe est requis'
-    }),
-  mot_de_passe_confirm: Joi.string()
-    .valid(Joi.ref('mot_de_passe'))
-    .required()
-    .messages({
-      'any.only': 'Les mots de passe ne correspondent pas',
-      'any.required': 'La confirmation du mot de passe est requise'
-    })
-});
-
-// Schéma de connexion
+/* =========================
+   LOGIN
+========================= */
 export const loginSchema = Joi.object({
   email: Joi.string()
     .email()
     .required()
     .messages({
-      'string.empty': 'L\'adresse email est requise',
-      'string.email': 'L\'adresse email n\'est pas valide',
-      'any.required': 'L\'adresse email est requise'
+      "string.empty": "L'adresse email est requise",
+      "string.email": "L'adresse email n'est pas valide",
+      "any.required": "L'adresse email est requise"
     }),
-  mot_de_passe: Joi.string()
+
+  password: Joi.string()
     .required()
     .messages({
-      'string.empty': 'Le mot de passe est requis',
-      'any.required': 'Le mot de passe est requis'
+      "string.empty": "Le mot de passe est requis",
+      "any.required": "Le mot de passe est requis"
     })
 });
 
-// Schéma mot de passe oublié
-export const forgotPasswordSchema = Joi.object({
+
+/* =========================
+   REGISTER
+========================= */
+export const registerSchema = Joi.object({
+  name: Joi.string()
+    .min(3)
+    .max(100)
+    .required()
+    .messages({
+      "string.empty": "Le nom est requis",
+      "string.min": "Minimum 3 caractères",
+      "string.max": "Maximum 100 caractères",
+      "any.required": "Le nom est requis"
+    }),
+
   email: Joi.string()
     .email()
+    .max(150)
     .required()
     .messages({
-      'string.empty': 'L\'adresse email est requise',
-      'string.email': 'L\'adresse email n\'est pas valide',
-      'any.required': 'L\'adresse email est requise'
-    })
-});
+      "string.empty": "L'email est requis",
+      "string.email": "Email invalide",
+      "any.required": "L'email est requis"
+    }),
 
-// Schéma réinitialisation mot de passe
-export const resetPasswordSchema = Joi.object({
   password: Joi.string()
     .min(8)
     .max(255)
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
     .required()
     .messages({
-      'string.empty': 'Le nouveau mot de passe est requis',
-      'string.min': 'Le mot de passe doit contenir au moins 8 caractères',
-      'string.pattern.base': 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre',
-      'any.required': 'Le nouveau mot de passe est requis'
+      "string.empty": "Mot de passe requis",
+      "string.min": "Min 8 caractères",
+      "string.pattern.base": "Majuscule, minuscule et chiffre requis",
+      "any.required": "Mot de passe requis"
     }),
+
   password_confirm: Joi.string()
-    .valid(Joi.ref('password'))
+    .valid(Joi.ref("password"))
     .required()
     .messages({
-      'any.only': 'Les mots de passe ne correspondent pas',
-      'any.required': 'La confirmation du mot de passe est requise'
+      "any.only": "Les mots de passe ne correspondent pas",
+      "any.required": "Confirmation requise"
     })
 });
 
-// Schéma création/édition d'article
+
+/* =========================
+   FORGOT PASSWORD
+========================= */
+export const forgotPasswordSchema = Joi.object({
+  email: Joi.string()
+    .email()
+    .required()
+});
+
+
+/* =========================
+   RESET PASSWORD
+========================= */
+export const resetPasswordSchema = Joi.object({
+  password: Joi.string()
+    .min(8)
+    .max(255)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .required(),
+
+  password_confirm: Joi.string()
+    .valid(Joi.ref("password"))
+    .required()
+});
+
+
+/* =========================
+   ARTICLE (FIX CRITIQUE)
+========================= */
 export const articleSchema = Joi.object({
-  titre: Joi.string()
+  title: Joi.string()
     .min(5)
     .max(255)
     .required()
     .messages({
-      'string.empty': 'Le titre est requis',
-      'string.min': 'Le titre doit contenir au moins 5 caractères',
-      'string.max': 'Le titre ne peut pas dépasser 255 caractères',
-      'any.required': 'Le titre est requis'
+      "string.empty": "Le titre est requis",
+      "string.min": "Minimum 5 caractères",
+      "any.required": "Le titre est requis"
     }),
-  contenu: Joi.string()
+
+  content: Joi.string()
     .min(50)
     .required()
     .messages({
-      'string.empty': 'Le contenu est requis',
-      'string.min': 'Le contenu doit contenir au moins 50 caractères',
-      'any.required': 'Le contenu est requis'
+      "string.empty": "Le contenu est requis",
+      "string.min": "Minimum 50 caractères",
+      "any.required": "Le contenu est requis"
     }),
-  categorie_id: Joi.number()
+
+  categorieId: Joi.number()
     .integer()
     .positive()
     .required()
     .messages({
-      'number.base': 'La catégorie est invalide',
-      'number.integer': 'La catégorie est invalide',
-      'number.positive': 'La catégorie est invalide',
-      'any.required': 'La catégorie est requise'
+      "number.base": "Catégorie invalide",
+      "any.required": "Catégorie requise"
     }),
+
   video: Joi.string()
     .uri()
+    .allow("")
     .optional()
-    .allow('')
-    .messages({
-      'string.uri': 'L\'URL de la vidéo doit être valide'
-    })
 });
 
-// Schéma catégorie
+
+/* =========================
+   CATEGORY (OPTIONNEL)
+========================= */
 export const categorySchema = Joi.object({
-  nom: Joi.string()
+  name: Joi.string()
     .min(3)
     .max(100)
     .required()
-    .messages({
-      'string.empty': 'Le nom de la catégorie est requis',
-      'string.min': 'Le nom doit contenir au moins 3 caractères',
-      'string.max': 'Le nom ne peut pas dépasser 100 caractères',
-      'any.required': 'Le nom de la catégorie est requis'
-    })
 });
 
-// Schéma commentaire
+
+/* =========================
+   COMMENT
+========================= */
 export const commentSchema = Joi.object({
   nom: Joi.string()
     .min(3)
     .max(150)
-    .optional()
-    .messages({
-      'string.empty': 'Votre nom est requis',
-      'string.min': 'Le nom doit contenir au moins 3 caractères',
-      'string.max': 'Le nom ne peut pas dépasser 150 caractères',
-      'any.required': 'Votre nom est requis'
-    }),
+    .optional(),
+
   contenu: Joi.string()
     .min(10)
     .max(1000)
     .required()
-    .messages({
-      'string.empty': 'Le commentaire est requis',
-      'string.min': 'Le commentaire doit contenir au moins 10 caractères',
-      'string.max': 'Le commentaire ne peut pas dépasser 1000 caractères',
-      'any.required': 'Le commentaire est requis'
-    })
 }).unknown(true);
 
-// Schéma newsletter
+
+/* =========================
+   NEWSLETTER
+========================= */
 export const newsletterSchema = Joi.object({
   email: Joi.string()
     .email()
     .max(150)
     .required()
-    .messages({
-      'string.empty': 'L\'adresse email est requise',
-      'string.email': 'L\'adresse email n\'est pas valide',
-      'string.max': 'L\'email ne peut pas dépasser 150 caractères',
-      'any.required': 'L\'adresse email est requise'
-    })
 });

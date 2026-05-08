@@ -3,11 +3,13 @@
   <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
+
     <main class="admin-wrapper">
       <div class="admin-container-narrow">
         <div class="admin-form-card">
+
           <h2><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h2>
-          
+
           <% if (errors && errors.length > 0) { %>
             <div class="admin-alert error" role="alert">
               <ul>
@@ -15,75 +17,113 @@
                   <li><%= error %></li>
                 <% }) %>
               </ul>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
           <% } %>
-          
-          <!-- Pour les formulaires multipart, on utilise _method dans la query (body non parsé avant multer) -->
-          <form method="POST" action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>" enctype="multipart/form-data" class="admin-form">
+
+          <form method="POST"
+                action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>"
+                enctype="multipart/form-data"
+                class="admin-form">
+
+            <!-- TITLE -->
             <div class="admin-form-group">
-              <label for="titre">Titre</label>
-              <input type="text" class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('titre'))) ? 'invalid' : '' %>" 
-                     id="titre" name="titre" value="<%= isEditing ? article.titre : (formData.titre || '') %>" required>
+              <label for="title">Titre</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value="<%= isEditing ? article.title : (formData.title || '') %>"
+                required>
               <small class="admin-form-hint">Min 5 caractères</small>
             </div>
+
+            <!-- CONTENT -->
             <div class="admin-form-group">
-              <label for="contenu">Contenu</label>
-              <textarea class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('contenu'))) ? 'invalid' : '' %>" 
-                        id="contenu" name="contenu" rows="6" required><%= isEditing ? article.contenu : (formData.contenu || '') %></textarea>
+              <label for="content">Contenu</label>
+              <textarea
+                id="content"
+                name="content"
+                rows="6"
+                required><%= isEditing ? article.content : (formData.content || '') %></textarea>
               <small class="admin-form-hint">Min 50 caractères</small>
             </div>
+
+            <!-- CATEGORY -->
             <div class="admin-form-group">
-              <label for="categorie_id">Catégorie</label>
-              <select class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('catégorie'))) ? 'invalid' : '' %>" 
-                      id="categorie_id" name="categorie_id" required>
+              <label for="categorieId">Catégorie</label>
+              <select id="categorieId" name="categorieId" required>
+                <option value="">-- Choisir une catégorie --</option>
                 <% categories.forEach(cat => { %>
-                  <option value="<%= cat.id %>" <%= isEditing && cat.id === article.categorie_id ? 'selected' : (formData.categorie_id == cat.id ? 'selected' : '') %>><%= cat.nom %></option>
+                  <option value="<%= cat.id %>"
+                    <%= isEditing && cat.id === article.categorieId ? 'selected' : '' %>>
+                    <%= cat.name %>
+                  </option>
                 <% }) %>
               </select>
             </div>
+
+            <!-- IMAGE -->
             <div class="admin-form-group">
               <label for="image">Ajouter une image</label>
               <input type="file" id="image" name="image" accept="image/*">
+
               <small class="admin-form-hint">
                 Formats acceptés: JPEG, PNG, GIF, WebP (Max 5 MB)<br>
-                L'image sera automatiquement compressée et redimensionnée en plusieurs versions
+                L'image sera automatiquement optimisée
               </small>
+
               <% if (isEditing && article.image) { %>
                 <div class="admin-image-preview">
-                  <small>Image actuelle:</small>
-                  <img src="<%= article.image %>" alt="<%= article.image_alt || article.titre %>">
+                  <small>Image actuelle :</small>
+                  <img src="<%= article.image %>" alt="<%= article.title %>">
                 </div>
               <% } %>
             </div>
+
+            <!-- IMAGE ALT -->
             <div class="admin-form-group">
-              <label for="image_alt">Description d'image (Alt text) - Important pour le SEO</label>
-              <input type="text" id="image_alt" name="image_alt" 
-                     value="<%= isEditing ? (article.image_alt || '') : (formData.image_alt || '') %>"
-                     placeholder="Ex: Exemple de photographie de beauté">
+              <label for="image_alt">Description image (SEO)</label>
+              <input
+                type="text"
+                id="image_alt"
+                name="image_alt"
+                value="<%= isEditing ? (article.image_alt || '') : (formData.image_alt || '') %>"
+                placeholder="Ex: Photo beauté visage naturel">
+
               <small class="admin-form-hint">
-                Description brève et descriptive de l'image (10-125 caractères)<br>
-                Utile pour l'accessibilité et le SEO
+                Important pour SEO et accessibilité
               </small>
             </div>
+
+            <!-- VIDEO -->
             <div class="admin-form-group">
-              <label for="video">URL de la vidéo (optionnel)</label>
-              <input type="url" class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('vidéo'))) ? 'invalid' : '' %>" 
-                     id="video" name="video" placeholder="https://www.youtube.com/watch?v=... ou https://vimeo.com/..."
-                     value="<%= isEditing ? (article.video || '') : (formData.video || '') %>">
-              <small class="admin-form-hint">
-                Formats acceptés: YouTube (watch?v= ou /embed/), Vimeo, ou lien direct vers une vidéo<br>
-                L'URL sera automatiquement convertie au bon format
-              </small>
+              <label for="video">URL vidéo (optionnel)</label>
+              <input
+                type="url"
+                id="video"
+                name="video"
+                placeholder="https://youtube.com/..."
+                value="<%= isEditing ? (article.video || '') : (formData.video || '') %>">
             </div>
+
+            <!-- ACTIONS -->
             <div class="admin-form-actions">
-              <button type="submit" class="admin-btn primary"><%= isEditing ? 'Mettre à jour l\'article' : 'Créer l\'article' %></button>
-          <a href="/article" class="btn-smeg secondary">Annuler</a>
+              <button type="submit" class="admin-btn primary">
+                <%= isEditing ? 'Mettre à jour' : 'Créer' %>
+              </button>
+
+              <a href="/article" class="btn-smeg secondary">
+                Annuler
+              </a>
+            </div>
+
+          </form>
+
         </div>
-      </form>
-    </div>
-  </div>
-</main>
+      </div>
+    </main>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

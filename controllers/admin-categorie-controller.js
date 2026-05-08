@@ -2,185 +2,279 @@ import Categorie from '../models/Categorie.model.js';
 import Article from '../models/Article.model.js';
 import { Op } from 'sequelize';
 import { getPaginationParams, createPaginationData } from '../utils/pagination.js';
+import { categorySchema } from '../validators/schemas.js';
 
-// Liste toutes les catégories
+// =========================
+// LIST
+// =========================
 export const listCategories = async (req, res) => {
   try {
+    console.log("📦 [LIST] GET /admin/categories");
+    console.log("📄 Query:", req.query);
+
     const pageSize = 20;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
 
+    console.log("📊 Pagination:", { offset, limit, page });
+
     const { count, rows } = await Categorie.findAndCountAll({
-      attributes: ['id', 'nom'],
-      order: [['nom', 'ASC']],
+      attributes: ['id', 'name', 'description'],
+      order: [['name', 'ASC']],
       limit,
       offset
     });
 
-    // Ajouter le nombre d'articles par catégorie
+    console.log(`📚 Categories trouvées: ${rows.length}/${count}`);
+
     const categoriesWithCount = await Promise.all(
       rows.map(async (cat) => {
-        const count = await Article.count({ where: { categorie_id: cat.id } });
-        return { ...cat.toJSON(), articleCount: count };
+        const articleCount = await Article.count({
+          where: { categorieId: cat.id }
+        });
+
+        return {
+          ...cat.toJSON(),
+          articleCount
+        };
       })
     );
 
-    const baseUrl = '/admin/categories';
-    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
+    console.log("✅ Categories enrichies avec articleCount");
 
-    res.render('admin-categories', { 
+    const pagination = createPaginationData(
+      count,
+      page,
+      pageSize,
+      '/admin/categories'
+    );
+
+    res.render('admin-categories', {
       categories: categoriesWithCount,
-      pagination: paginationData,
-      baseUrl
+      pagination,
+      baseUrl: '/admin/categories',
+      message: req.session.message || null
     });
+
+    delete req.session.message;
+
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories:', error);
+    console.error("❌ LIST CATEGORIES ERROR:", error);
     res.status(500).render('500');
   }
 };
 
-// Affiche le formulaire d'ajout
-export const showAddCategoryForm = async (req, res) => {
-  try {
-    res.render('admin-category-form', { category: null, error: null });
-  } catch (error) {
-    console.error('Erreur lors de l\'affichage du formulaire:', error);
-    res.status(500).render('500');
-  }
+// =========================
+// FORM ADD
+// =========================
+export const showAddCategoryForm = (req, res) => {
+  console.log("📄 [FORM] GET /admin/categories/new");
+
+  res.render('admin-category-form', {
+    category: null,
+    error: null,
+    formData: {}
+  });
 };
 
-// Ajoute une nouvelle catégorie
-export const createCategory = async (req, res) => {
-  try {
-    const { nom } = req.body;
-
-    // Validation
-    if (!nom || nom.trim() === '') {
-      return res.render('admin-category-form', {
-        category: null,
-        error: 'Le nom de la catégorie est requis'
-      });
-    }
-
-    // Vérifier si la catégorie existe déjà
-    const existingCategory = await Categorie.findOne({
-      where: { nom: nom.trim() }
-    });
-
-    if (existingCategory) {
-      return res.render('admin-category-form', {
-        category: null,
-        error: 'Une catégorie avec ce nom existe déjà'
-      });
-    }
-
-    // Créer la catégorie
-    await Categorie.create({
-      nom: nom.trim()
-    });
-
-    req.session.message = { type: 'success', text: 'Catégorie créée avec succès' };
-    res.redirect('/admin/categories');
-  } catch (error) {
-    console.error('Erreur lors de la création de la catégorie:', error);
-    res.status(500).render('500');
-  }
-};
-
-// Affiche le formulaire d'édition
+// =========================
+// FORM EDIT
+// =========================
 export const showEditCategoryForm = async (req, res) => {
   try {
-    const { id } = req.params;
-    const category = await Categorie.findByPk(id, {
-      attributes: ['id', 'nom']
-    });
+    console.log("✏️ [FORM EDIT] ID:", req.params.id);
+
+    const category = await Categorie.findByPk(req.params.id);
 
     if (!category) {
+      console.log("❌ Category NOT FOUND");
       return res.status(404).render('404');
     }
 
-    res.render('admin-category-form', { category: category.toJSON(), error: null });
+    console.log("✅ Category trouvé:", category.name);
+
+    res.render('admin-category-form', {
+      category: category.toJSON(),
+      error: null,
+      formData: {}
+    });
+
   } catch (error) {
-    console.error('Erreur lors de l\'affichage du formulaire d\'édition:', error);
+    console.error("❌ EDIT FORM ERROR:", error);
     res.status(500).render('500');
   }
 };
 
-// Met à jour une catégorie
-export const updateCategory = async (req, res) => {
+// =========================
+// CREATE
+// =========================
+export const createCategory = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { nom } = req.body;
+    console.log("🚀 [CREATE CATEGORY] POST /admin/categories");
+    console.log("📦 BODY REÇU:", req.body);
 
-    const category = await Categorie.findByPk(id, {
-      attributes: ['id', 'nom']
-    });
+    const { name, description } = req.body;
 
-    if (!category) {
-      return res.status(404).render('404');
-    }
+    console.log("🔎 name:", name);
+    console.log("🔎 description:", description);
 
-    // Validation
-    if (!nom || nom.trim() === '') {
+    // 🔥 VALIDATION
+    const { error } = categorySchema.validate({ name });
+
+    if (error) {
+      console.log("❌ VALIDATION ERROR:", error.details);
       return res.render('admin-category-form', {
-        category: category.toJSON(),
-        error: 'Le nom de la catégorie est requis'
+        category: null,
+        error: error.details[0].message,
+        formData: req.body
       });
     }
 
-    // Vérifier si un autre catégorie a déjà ce nom
-    const existingCategory = await Categorie.findOne({
-      where: { 
-        nom: nom.trim(),
-        id: { [Op.ne]: id }
-      }
+    const cleanName = name.trim();
+    console.log("🧼 Clean name:", cleanName);
+
+    const existing = await Categorie.findOne({
+      where: { name: cleanName }
     });
 
-    if (existingCategory) {
+    if (existing) {
+      console.log("⚠️ Category déjà existante");
       return res.render('admin-category-form', {
-        category: category.toJSON(),
-        error: 'Une autre catégorie avec ce nom existe déjà'
+        category: null,
+        error: 'Cette catégorie existe déjà',
+        formData: req.body
       });
     }
 
-    // Mettre à jour
-    await category.update({ nom: nom.trim() });
+    const created = await Categorie.create({
+      name: cleanName,
+      description: description || null
+    });
 
-    req.session.message = { type: 'success', text: 'Catégorie mise à jour avec succès' };
-    res.redirect('/admin/categories');
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour de la catégorie:', error);
-    res.status(500).render('500');
-  }
-};
-
-// Supprime une catégorie
-export const deleteCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const category = await Categorie.findByPk(id);
-
-    if (!category) {
-      return res.status(404).render('404');
-    }
-
-    // Compter les articles liés
-    const articleCount = await Article.count({ where: { categorie_id: id } });
-
-    // Supprimer tous les articles liés
-    if (articleCount > 0) {
-      await Article.destroy({ where: { categorie_id: id } });
-    }
-
-    // Supprimer la catégorie
-    await category.destroy();
+    console.log("✅ CATEGORY CREATED:", created.id, created.name);
 
     req.session.message = {
       type: 'success',
-      text: `Catégorie supprimée avec succès. ${articleCount > 0 ? articleCount + ' article(s) liés ont aussi été supprimés.' : ''}`
+      text: 'Catégorie créée'
     };
-    res.redirect('/admin/categories');
+
+    return res.redirect('/admin/categories');
+
   } catch (error) {
-    console.error('Erreur lors de la suppression de la catégorie:', error);
+    console.error("❌ CREATE CATEGORY ERROR:", error);
+    res.status(500).render('500');
+  }
+};
+
+// =========================
+// UPDATE
+// =========================
+export const updateCategory = async (req, res) => {
+  try {
+    console.log("✏️ [UPDATE CATEGORY] ID:", req.params.id);
+    console.log("📦 BODY:", req.body);
+
+    const { name, description } = req.body;
+
+    const category = await Categorie.findByPk(req.params.id);
+
+    if (!category) {
+      console.log("❌ CATEGORY NOT FOUND");
+      return res.status(404).render('404');
+    }
+
+    console.log("📌 Existing category:", category.name);
+
+    const { error } = categorySchema.validate({ name });
+
+    if (error) {
+      console.log("❌ VALIDATION ERROR:", error.details);
+      return res.render('admin-category-form', {
+        category: category.toJSON(),
+        error: error.details[0].message,
+        formData: req.body
+      });
+    }
+
+    const cleanName = name.trim();
+
+    const existing = await Categorie.findOne({
+      where: {
+        name: cleanName,
+        id: { [Op.ne]: req.params.id }
+      }
+    });
+
+    if (existing) {
+      console.log("⚠️ NAME ALREADY USED");
+      return res.render('admin-category-form', {
+        category: category.toJSON(),
+        error: 'Nom déjà utilisé',
+        formData: req.body
+      });
+    }
+
+    await category.update({
+      name: cleanName,
+      description: description || null
+    });
+
+    console.log("✅ CATEGORY UPDATED");
+
+    req.session.message = {
+      type: 'success',
+      text: 'Catégorie mise à jour'
+    };
+
+    res.redirect('/admin/categories');
+
+  } catch (error) {
+    console.error("❌ UPDATE CATEGORY ERROR:", error);
+    res.status(500).render('500');
+  }
+};
+
+// =========================
+// DELETE
+// =========================
+export const deleteCategory = async (req, res) => {
+  try {
+    console.log("🗑️ [DELETE CATEGORY] ID:", req.params.id);
+
+    const category = await Categorie.findByPk(req.params.id);
+
+    if (!category) {
+      console.log("❌ CATEGORY NOT FOUND");
+      return res.status(404).render('404');
+    }
+
+    const articleCount = await Article.count({
+      where: { categorieId: category.id }
+    });
+
+    console.log("📊 Articles liés:", articleCount);
+
+    if (articleCount > 0) {
+      console.log("🚫 DELETE BLOCKED (articles liés)");
+      req.session.message = {
+        type: 'error',
+        text: `Impossible de supprimer : ${articleCount} article(s) lié(s)`
+      };
+      return res.redirect('/admin/categories');
+    }
+
+    await category.destroy();
+
+    console.log("✅ CATEGORY DELETED");
+
+    req.session.message = {
+      type: 'success',
+      text: 'Catégorie supprimée'
+    };
+
+    res.redirect('/admin/categories');
+
+  } catch (error) {
+    console.error("❌ DELETE CATEGORY ERROR:", error);
     res.status(500).render('500');
   }
 };

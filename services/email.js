@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport(
     ? {
         host: process.env.EMAIL_HOST,
         port: Number(process.env.EMAIL_PORT) || 587,
-        secure: process.env.EMAIL_SECURE === 'true',
+        secure: Number(process.env.EMAIL_PORT) === 465,
         auth: user && pass ? { user, pass } : undefined,
       }
     : {
@@ -275,7 +275,7 @@ Ce lien est valide pendant 24 heures.
 Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email en toute sécurité.
 
 Cordialement,
-L'équipe Mi Amor
+L'équipe Emi-Pulse
       `
     };
 
@@ -353,14 +353,12 @@ export async function sendNewsletterWelcomeEmail(email) {
         </html>
       `,
       text: `
-Bienvenue chez Mi Amor !
+Bienvenue chez Emi Pulse !
 
 Félicitations ! Votre inscription à notre newsletter est maintenant confirmée.
 
-Vous allez désormais recevoir régulièrement nos meilleurs articles sur :
-- La beauté et le bien-être
-- La nutrition et la santé  
-- Le développement personnel
+Vous allez désormais recevoir régulièrement nos meilleurs articles.
+
 
 Découvrez nos derniers articles sur : ${process.env.APP_URL || 'http://localhost:3000'}
 

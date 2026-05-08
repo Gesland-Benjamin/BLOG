@@ -1,16 +1,56 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export const sequelize = new Sequelize(
-  process.env.DB_NAME || 'blog',
-  process.env.DB_USER || 'ben',
-  process.env.DB_PASSWORD || '',
-  {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    dialect: process.env.DB_DIALECT || 'postgres',
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+dotenv.config({
+  path: path.resolve(__dirname, "../.env"),
+  override: true
+});
+
+const DB_NAME = process.env.DB_NAME;
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_HOST = process.env.DB_HOST;
+const DB_DIALECT = process.env.DB_DIALECT || "mysql";
+
+if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST) {
+  console.error("❌ Variables d’environnement DB manquantes !");
+  process.exit(1);
+}
+
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: DB_DIALECT,
+
+  logging: false, // 🔥 IMPORTANT (évite pollution logs en prod)
+
+  define: {
+    freezeTableName: true,
+
+    // 🔥 BASE SNAKE_CASE STRICT
+    underscored: true,
+
+    timestamps: true,
+
+    // 🔥 IMPORTANT: force cohérence totale Sequelize ↔ DB
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+    deletedAt: false
   }
-);
+});
+
+export default sequelize;
+export { sequelize };
+
+export async function testConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Connexion à la base réussie !");
+  } catch (error) {
+    console.error("❌ Impossible de se connecter à la base :", error.message);
+  }
+}

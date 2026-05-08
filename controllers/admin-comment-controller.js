@@ -2,144 +2,194 @@ import Commentaire from "../models/Commentaire.model.js";
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
+import { Op } from "sequelize";
 
+/* =========================
+   LIST COMMENTS ADMIN
+========================= */
 export const listCommentsAdmin = async (req, res) => {
   try {
     const pageSize = 10;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
-    const search = req.query.search ? req.query.search.trim() : '';
+    const search = req.query.search?.trim() || "";
 
-    // Construction du filtre
-    let where = { parent_id: null };
-    let userWhere = undefined;
+    const where = {
+      parentId: null
+    };
+
     if (search) {
-      // On filtre soit sur le nom du commentaire, soit sur le nom_prenom de l'utilisateur
-      // Sequelize Op
-      const { Op } = await import('sequelize');
-      where = {
-        ...where,
-        [Op.or]: [
-          { nom: { [Op.iLike]: `%${search}%` } },
-        ]
-      };
-      userWhere = {
-        nom_prenom: { [Op.iLike]: `%${search}%` }
-      };
+      where[Op.or] = [
+        { content: { [Op.like]: `%${search}%` } },
+        { name: { [Op.like]: `%${search}%` } }
+      ];
     }
 
     const { count, rows } = await Commentaire.findAndCountAll({
       where,
+
+      // 🔥 IMPORTANT FIX Sequelize COUNT + JOIN
+      distinct: true,
+      subQuery: false,
+
       include: [
-        { model: Article, as: "article" },
-        { model: User, as: "user", where: userWhere, required: false },
-        { 
-          model: Commentaire, 
-          as: "replies",
-          include: [{ model: User, as: "user" }],
-          order: [["date", "ASC"]]
+        {
+          model: Article,
+          as: "article",
+          attributes: ["id", "title"],
+          required: false
+        },
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name"],
+          required: false
         }
       ],
-      order: [["date", "DESC"]],
+
+      // 🔥 FIX compat MySQL + timestamps Sequelize
+      order: [["created_at", "DESC"]],
+
       limit,
       offset
     });
+    const baseUrl = "/admin/commentaires";
+    
+    const pagination = createPaginationData(
+      count,
+      page,
+      pageSize,
+      "/admin/commentaires"
+    );
 
-    // Pour garder le paramètre search dans la pagination
-    let baseUrl = '/admin/commentaires';
-    if (search) {
-      baseUrl += `?search=${encodeURIComponent(search)}`;
-    }
-    const paginationData = createPaginationData(count, page, pageSize, baseUrl);
-
-    res.render("admin-commentaires", { 
+    return res.render("admin-commentaires", {
       comments: rows,
-      pagination: paginationData,
-      baseUrl,
-      search
+      pagination,
+      search,
+      baseUrl
     });
+
   } catch (error) {
-    console.error("Erreur listCommentsAdmin:", error);
-    res.status(500).send("Erreur lors du chargement des commentaires");
+    console.error("❌ listCommentsAdmin:", error);
+    return res.status(500).send("Erreur commentaire admin");
   }
 };
 
+/* =========================
+   APPROVE
+========================= */
 export const approveComment = async (req, res) => {
   try {
-    const comment = await Commentaire.findByPk(req.params.id);
-    if (!comment) return res.status(404).send("Commentaire introuvable");
-    await comment.update({ statut: "approved", is_spam: false });
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).send("ID invalide");
+
+    const comment = await Commentaire.findByPk(id);
+    if (!comment) return res.status(404).send("Introuvable");
+
+    await comment.update({
+      statut: "approved",
+      is_spam: false
+    });
+
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("Erreur approveComment:", error);
-    res.status(500).send("Erreur lors de l'approbation");
+    console.error("❌ approveComment:", error);
+    res.status(500).send("Erreur approve");
   }
 };
 
+/* =========================
+   REJECT
+========================= */
 export const rejectComment = async (req, res) => {
   try {
-    const comment = await Commentaire.findByPk(req.params.id);
-    if (!comment) return res.status(404).send("Commentaire introuvable");
-    await comment.update({ statut: "rejected" });
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).send("ID invalide");
+
+    const comment = await Commentaire.findByPk(id);
+    if (!comment) return res.status(404).send("Introuvable");
+
+    await comment.update({
+      statut: "rejected"
+    });
+
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("Erreur rejectComment:", error);
-    res.status(500).send("Erreur lors de la mise en attente");
+    console.error("❌ rejectComment:", error);
+    res.status(500).send("Erreur reject");
   }
 };
 
+/* =========================
+   MARK SPAM
+========================= */
 export const markSpamComment = async (req, res) => {
   try {
-    const comment = await Commentaire.findByPk(req.params.id);
-    if (!comment) return res.status(404).send("Commentaire introuvable");
-    await comment.update({ statut: "rejected", is_spam: true });
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).send("ID invalide");
+
+    const comment = await Commentaire.findByPk(id);
+    if (!comment) return res.status(404).send("Introuvable");
+
+    await comment.update({
+      is_spam: true,
+      statut: "rejected"
+    });
+
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("Erreur markSpamComment:", error);
-    res.status(500).send("Erreur lors du marquage spam");
+    console.error("❌ markSpamComment:", error);
+    res.status(500).send("Erreur spam");
   }
 };
 
+/* =========================
+   DELETE
+========================= */
 export const deleteComment = async (req, res) => {
   try {
-    const comment = await Commentaire.findByPk(req.params.id);
-    if (!comment) return res.status(404).send("Commentaire introuvable");
+    const id = parseInt(req.params.id, 10);
+    if (!id) return res.status(400).send("ID invalide");
+
+    const comment = await Commentaire.findByPk(id);
+    if (!comment) return res.status(404).send("Introuvable");
+
     await comment.destroy();
+
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("Erreur deleteComment:", error);
-    res.status(500).send("Erreur lors de la suppression");
+    console.error("❌ deleteComment:", error);
+    res.status(500).send("Erreur delete");
   }
 };
 
+/* =========================
+   REPLY
+========================= */
 export const replyToComment = async (req, res) => {
   try {
-    const parentId = req.params.id;
-    const { contenu } = req.body;
-    
-    if (!contenu || contenu.trim().length === 0) {
-      return res.status(400).send("Le contenu de la réponse est requis");
-    }
-    
-    // Vérifier que le commentaire parent existe
-    const parentComment = await Commentaire.findByPk(parentId);
-    if (!parentComment) {
-      return res.status(404).send("Commentaire parent introuvable");
-    }
-    
-    // Créer la réponse
+    const parentId = parseInt(req.params.id, 10);
+    const content = req.body.contenu?.trim();
+
+    if (!parentId) return res.status(400).send("ID invalide");
+    if (!content) return res.status(400).send("Contenu requis");
+
+    const parent = await Commentaire.findByPk(parentId);
+    if (!parent) return res.status(404).send("Parent introuvable");
+
     await Commentaire.create({
-      contenu: contenu.trim(),
-      parent_id: parentId,
-      article_id: parentComment.article_id,
-      user_id: req.user.id,
-      nom: req.user.nom_prenom,
+      content,
+      parentId,
+      articleId: parent.articleId,
+      userId: req.user?.id || null,
+      name: req.user?.name || "Admin",
       is_admin_reply: true,
-      statut: 'approved' // Les réponses admin sont automatiquement approuvées
+      statut: "approved"
     });
-    
+
     res.redirect("/admin/commentaires");
+
   } catch (error) {
-    console.error("Erreur replyToComment:", error);
-    res.status(500).send("Erreur lors de la création de la réponse");
+    console.error("❌ replyToComment:", error);
+    res.status(500).send("Erreur reply");
   }
 };

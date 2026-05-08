@@ -3,22 +3,33 @@ import User from '../models/User.model.js';
 import { sequelize } from '../config/database.js';
 
 async function createAdmin() {
-  await sequelize.sync();
+  await sequelize.authenticate();
 
-  const adminExists = await User.findOne({ where: { role: 'admin' } });
+  const email = 'delbeemilie27500@gmail.com';
+  const adminExists = await User.findOne({ where: { email } });
+
   if (!adminExists) {
     const hash = await argon2.hash('Alexandre145');
     await User.create({
-      nom_prenom: 'Admin Principal',
-      email: 'delbeemilie27500@gmail.com',
-      mot_de_passe: hash,
+      name: 'Admin Principal',
+      email,
+      password: hash,
       role: 'admin'
     });
     console.log('Admin créé');
   } else {
-    console.log('Admin déjà existant');
+    await adminExists.update({
+      name: 'Admin Principal',
+      role: 'admin'
+    });
+    console.log('Admin déjà existant, mis à jour');
   }
-  process.exit();
+
+  await sequelize.close();
 }
 
-createAdmin();
+createAdmin().catch(async (error) => {
+  console.error('Erreur création admin:', error);
+  await sequelize.close();
+  process.exit(1);
+});

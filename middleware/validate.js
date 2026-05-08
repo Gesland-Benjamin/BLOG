@@ -1,51 +1,78 @@
-// Middleware de validation avec Joi
-export const validateRequest = (schema) => {
-  return (req, res, next) => {
-    const { error, value } = schema.validate(req.body, {
-      abortEarly: false, // Retourne toutes les erreurs, pas seulement la première
-      stripUnknown: true  // Supprime les champs non définis dans le schéma
-    });
+import Categorie from "../models/Categorie.model.js";
 
-    if (error) {
-      // Extraction des messages d'erreur
-      const errors = error.details.map(detail => detail.message);
-      
-      // Stockage des erreurs dans req pour les rendre disponibles
-      req.validationErrors = errors;
-      
-      // Si c'est une requête AJAX, retourner JSON
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(400).json({
-          success: false,
-          errors: errors
+/* =========================
+   VALIDATION MIDDLEWARE
+   (ADMIN + API SAFE VERSION)
+========================= */
+export const validateRequest = (schema, options = {}) => {
+  return async (req, res, next) => {
+    try {
+      const { error, value } = schema.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: true
+      });
+
+      if (error) {
+        const errors = error.details.map(d => d.message);
+
+        console.log("❌ VALIDATION ERROR:", errors);
+
+        // =========================
+        // API MODE (JSON)
+        // =========================
+        if (
+          req.xhr ||
+          req.headers.accept?.includes("application/json") ||
+          options.api === true
+        ) {
+          return res.status(400).json({
+            success: false,
+            errors
+          });
+        }
+
+        // =========================
+        // ADMIN MODE (VIEW RENDER)
+        // =========================
+        let categories = [];
+
+        try {
+          categories = await Categorie.findAll({
+            order: [["name", "ASC"]]
+          });
+        } catch (e) {
+          console.error("❌ Error loading categories:", e);
+        }
+
+        return res.status(400).render("new-article", {
+          errors,
+          formData: req.body,
+          categories,
+          isEditing: false,
+          article: {}
         });
       }
-      
-      // Sinon, rediriger avec les erreurs en session
-      req.session.errors = errors;
-      req.session.formData = req.body; // Sauvegarder les données du formulaire
-      
-      // Redirection intelligente : utiliser referrer ou l'URL précédente
-      const referrer = req.get('referer') || '/article';
-      return res.redirect(referrer);
-    }
 
-    // Remplacer req.body avec les valeurs validées et nettoyées
-    req.body = value;
-    next();
+      req.body = value;
+      next();
+    } catch (err) {
+      console.error("❌ validateRequest crash:", err);
+      return res.status(500).send("Erreur validation serveur");
+    }
   };
 };
 
-// Middleware pour extraire les erreurs de session et les passer aux vues
+/* =========================
+   FLASH ERRORS (OPTIONNEL UI)
+========================= */
 export const getFlashErrors = (req, res, next) => {
-  res.locals.errors = (req.session && req.session.errors) ? req.session.errors : [];
-  res.locals.formData = (req.session && req.session.formData) ? req.session.formData : {};
-  
-  // Nettoyer les erreurs après lecture
+  res.locals.errors = req.session?.errors || [];
+  res.locals.formData = req.session?.formData || {};
+
   if (req.session) {
     delete req.session.errors;
     delete req.session.formData;
   }
-  
+
   next();
 };
