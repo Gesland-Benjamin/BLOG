@@ -6,6 +6,21 @@ import { Article, User, Categorie } from "../models/index.js";
 // =========================
 export const getHomePage = async (req, res) => {
   try {
+    const archiveMonths = Array.from({ length: 12 }, (_, index) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - index);
+
+      return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        label: new Intl.DateTimeFormat("fr-FR", {
+          month: "long",
+          year: "numeric"
+        }).format(date),
+        url: `/archive/${date.getFullYear()}/${date.getMonth() + 1}`
+      };
+    });
+
     const recentArticles = await Article.findAll({
       include: [
         { model: User, as: "author", attributes: ["id", "name"] },
@@ -99,7 +114,8 @@ export const getHomePage = async (req, res) => {
       recentPosts,
       featuredArticle,
       carouselItems,
-      topLikedSections
+      topLikedSections,
+      archiveMonths
     });
 
   } catch (error) {
@@ -110,7 +126,8 @@ export const getHomePage = async (req, res) => {
       recentPosts: [],
       featuredArticle: null,
       carouselItems: [],
-      topLikedSections: []
+      topLikedSections: [],
+      archiveMonths: []
     });
   }
 };

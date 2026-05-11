@@ -5,64 +5,179 @@
     <%- include('partials/header', { includeNavbar: true }) %>
 
 
-    <main class="content-wrapper">
-      <div class="legal-content">
-        <div class="card-legal">
-          <h1 >Mentions Légales</h1>
+    <main class="content-wrapper mentions-page">
+      <div class="legal-container">
+        <div class="legal-header">
+          <h1>Mentions Légales</h1>
+          <p class="legal-intro">Informations légales et mentions concernant la publication et l'hébergement de ce site</p>
+        </div>
+
+        <div class="legal-content">
           <section class="legal-section">
             <h2>Éditeur du site</h2>
             <p>
-              <strong>Emi'Pulse</strong><br>
-              Site web dédié aux articles, vidéos et actualités
+              <strong>Nom du site :</strong> Emi'Pulse<br>
+              <strong>Type de site :</strong> Blog et actualités (articles, vidéos, contenus multimédia)<br>
+              <strong>Responsable de la publication :</strong> Emi'Pulse<br>
+              <strong>Adresse e-mail :</strong> <a href="mailto:contact@emi-pulse.fr">contact@emi-pulse.fr</a>
             </p>
           </section>
+
           <section class="legal-section">
             <h2>Hébergement</h2>
             <p>
-              Ce site est hébergé par un service web professionnel assurant la disponibilité et la sécurité des données.
+              <strong>Hébergeur :</strong> Hostinger<br>
+              <strong>Adresse :</strong> Voir les conditions de service de Hostinger<br>
+              <strong>Site :</strong> <a href="https://www.hostinger.fr" target="_blank" rel="noopener noreferrer">https://www.hostinger.fr</a>
+            </p>
+            <p>
+              Ce site est hébergé par Hostinger, un service web professionnel assurant la disponibilité, la sécurité et la performance des données. Les données sont stockées sur des serveurs sécurisés et conformes aux normes de protection des données en vigueur.
             </p>
           </section>
+
+          <section class="legal-section">
+            <h2>Conditions d'utilisation</h2>
+            <p>
+              L'accès au site Emi'Pulse est gratuit et libre pour tous les utilisateurs. Vous acceptez les conditions d'utilisation en accédant au site. Vous vous engagez à utiliser ce site de manière responsable et légale.
+            </p>
+            <p>
+              Il est interdit de :
+            </p>
+            <ul>
+              <li>Reproduire ou dupliquer le contenu sans autorisation explicite</li>
+              <li>Utiliser le site à des fins contraires à la loi ou à l'ordre public</li>
+              <li>Accéder non autorisé au système informatique du site</li>
+              <li>Diffuser des contenus offensants, diffamatoires ou contraires aux bonnes mœurs</li>
+              <li>Utiliser le site à des fins commerciales sans autorisation</li>
+            </ul>
+          </section>
+
           <section class="legal-section">
             <h2>Propriété intellectuelle</h2>
             <p>
-              L'ensemble du contenu présent sur ce site (textes, images, vidéos, graphismes) est la propriété exclusive d'Emi'Pulse ou de ses partenaires. Toute reproduction, distribution ou transmission du contenu sans autorisation préalable est strictement interdite.
+              L'ensemble du contenu présent sur ce site (textes, images, vidéos, graphismes, logo, code source) est la propriété exclusive d'Emi'Pulse ou de ses partenaires autorisés. Tous les droits sont réservés.
+            </p>
+            <p>
+              Toute reproduction, distribution, transmission ou adaptation du contenu sans l'autorisation préalable écrite est strictement interdite et pourrait entraîner des poursuites légales.
+            </p>
+            <p>
+              Les marques déposées et les logos mentionnés sur ce site appartiennent à leurs propriétaires respectifs.
             </p>
           </section>
+
           <section class="legal-section">
             <h2>Données personnelles et RGPD</h2>
             <p>
-              Nous respectons le Règlement Général sur la Protection des Données (RGPD). Les informations que vous nous fournissez lors de votre inscription à la newsletter ou via le formulaire de contact sont traitées de manière confidentielle et ne sont jamais partagées avec des tiers sans votre consentement.
+              Emi'Pulse respecte le Règlement Général sur la Protection des Données (RGPD) et toute législation applicable en matière de protection des données personnelles.
             </p>
+            <h3>Collecte des données</h3>
             <p>
-              Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour exercer ces droits, contactez-nous via le formulaire de renseignements.
+              Les informations que vous fournissez via le formulaire de contact ou lors de votre abonnement à la newsletter sont collectées et traitées de manière confidentielle. Nous collectons uniquement les données nécessaires au traitement de votre demande.
+            </p>
+            <h3>Utilisation des données</h3>
+            <p>
+              Vos données personnelles sont utilisées exclusivement pour :
+            </p>
+            <ul>
+              <li>Répondre à vos demandes de renseignements</li>
+              <li>Vous envoyer les contenus de la newsletter auxquels vous avez consentu</li>
+              <li>Améliorer nos services</li>
+              <li>Respecter nos obligations légales</li>
+            </ul>
+            <h3>Partage des données</h3>
+            <p>
+              Vos données ne sont jamais partagées avec des tiers sans votre consentement explicite, sauf si la loi l'exige.
+            </p>
+            <h3>Droits des utilisateurs</h3>
+            <p>
+              Vous disposez des droits suivants concernant vos données personnelles :
+            </p>
+            <ul>
+              <li><strong>Droit d'accès :</strong> Connaître les données que nous détenons sur vous</li>
+              <li><strong>Droit de rectification :</strong> Corriger vos données inexactes</li>
+              <li><strong>Droit à l'oubli :</strong> Demander la suppression de vos données</li>
+              <li><strong>Droit à la portabilité :</strong> Récupérer vos données dans un format structuré</li>
+              <li><strong>Droit d'opposition :</strong> Vous opposer au traitement de vos données</li>
+            </ul>
+            <p>
+              Pour exercer l'un de ces droits, veuillez nous contacter via le <a href="/renseignements">formulaire de renseignements</a>.
             </p>
           </section>
+
+          <section class="legal-section">
+            <h2>Cookies et technologies de suivi</h2>
+            <p>
+              Ce site peut utiliser des cookies et d'autres technologies de suivi pour :
+            </p>
+            <ul>
+              <li>Améliorer votre expérience utilisateur</li>
+              <li>Analyser l'utilisation du site</li>
+              <li>Personnaliser le contenu</li>
+              <li>Mesurer l'efficacité des campagnes publicitaires</li>
+            </ul>
+            <p>
+              Vous avez le droit de refuser ou de désactiver les cookies. Pour cela, consultez les paramètres de confidentialité de votre navigateur. Notez que certains cookies sont essentiels au fonctionnement du site.
+            </p>
+          </section>
+
           <section class="legal-section">
             <h2>Responsabilité</h2>
             <p>
-              Emi'Pulse décline toute responsabilité en cas d'erreur, d'omission ou d'interruption du service. Le contenu est fourni à titre informatif et n'engage pas la responsabilité du site.
+              Emi'Pulse s'efforce de maintenir des informations exactes et à jour. Cependant, le site décline toute responsabilité en cas de :
             </p>
-          </section>
-          <section class="legal-section">
-            <h2>Cookies</h2>
+            <ul>
+              <li>Erreur ou omission dans le contenu</li>
+              <li>Interruption ou indisponibilité du service</li>
+              <li>Dommages causés par l'accès ou l'utilisation du site</li>
+              <li>Contenu fourni par des tiers</li>
+              <li>Altération du contenu après sa transmission</li>
+            </ul>
             <p>
-              Ce site peut utiliser des cookies pour améliorer votre expérience utilisateur. Vous pouvez désactiver les cookies dans les paramètres de votre navigateur.
+              Le contenu est fourni à titre informatif et n'engage pas la responsabilité légale du site.
             </p>
           </section>
+
+          <section class="legal-section">
+            <h2>Limitation de responsabilité</h2>
+            <p>
+              En aucun cas, Emi'Pulse ne sera responsable des dommages directs, indirects, accessoires, spéciaux ou consécutifs découlant de l'utilisation ou de l'impossibilité d'utiliser ce site, même si l'entreprise a été informée de la possibilité de tels dommages.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h2>Liens externes</h2>
+            <p>
+              Ce site peut contenir des liens vers d'autres sites web. Emi'Pulse n'est pas responsable du contenu de ces sites externes. Consultez les mentions légales de ces sites pour connaître leurs conditions d'utilisation.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h2>Modification des conditions</h2>
+            <p>
+              Emi'Pulse se réserve le droit de modifier ces mentions légales à tout moment. Les modifications sont effectives dès leur publication sur le site. Nous vous recommandons de consulter régulièrement cette page.
+            </p>
+          </section>
+
+          <section class="legal-section">
+            <h2>Droit applicable</h2>
+            <p>
+              Ces mentions légales sont régies par la loi française. Tout litige découlant de l'utilisation de ce site sera soumis à la juridiction des tribunaux compétents français.
+            </p>
+          </section>
+
           <section class="legal-section">
             <h2>Contact</h2>
             <p>
-              Pour toute question ou remarque concernant ces mentions légales, veuillez nous <a href="/renseignements">contacter via le formulaire de renseignements</a>.
+              Pour toute question, réclamation ou demande concernant ces mentions légales ou la protection de vos données, n'hésitez pas à nous <a href="/renseignements">contacter via le formulaire de renseignements</a> ou à nous écrire directement à : <a href="mailto:contact@emi-pulse.fr">contact@emi-pulse.fr</a>
             </p>
           </section>
         </div>
       </div>
 
-    <div class="error-actions">
-      <a href="/" class="btn-general">Retour à l'accueil</a>
-    </div>
-  </div>
-</main>
+      <div class="legal-actions">
+        <a href="/" class="btn-general">Retour à l'accueil</a>
+      </div>
+    </main>
 
     <%- include('partials/footer') %>
   </body>

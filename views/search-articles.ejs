@@ -19,7 +19,7 @@
                 <select name="categorie" id="categorie">
                   <option value="">Toutes</option>
                   <% categories.forEach(cat => { %>
-                    <option value="<%= cat.id %>" <%= filters.categorie == cat.id ? 'selected' : '' %>><%= cat.nom %></option>
+                    <option value="<%= cat.id %>" <%= filters.categorie == cat.id ? 'selected' : '' %>><%= cat.name %></option>
                   <% }) %>
                 </select>
               </div>

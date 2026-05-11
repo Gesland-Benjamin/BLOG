@@ -43,6 +43,19 @@ export const listCommentsAdmin = async (req, res) => {
           as: "user",
           attributes: ["id", "name"],
           required: false
+        },
+        {
+          model: Commentaire,
+          as: "replies",
+          required: false,
+          include: [
+            {
+              model: User,
+              as: "user",
+              attributes: ["id", "name"],
+              required: false
+            }
+          ]
         }
       ],
 

@@ -823,6 +823,13 @@
   font-size: 0.95rem;
 }
 
+.admin-table tbody td.admin-table-name {
+  font-weight: 700;
+  color: #2d1400 !important;
+  word-break: break-word;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
 .admin-table tbody tr:last-child {
   border-bottom: none;
 }
@@ -1132,6 +1139,12 @@
   .admin-table tbody td {
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
+    color: #2d1400 !important;
+  }
+
+  .admin-table tbody td.admin-table-name {
+    font-weight: 700 !important;
+    color: #1a0c00 !important;
   }
   .table-actions {
     flex-direction: column;

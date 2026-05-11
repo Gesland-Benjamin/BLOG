@@ -36,13 +36,17 @@
                 <tbody>
                   <% categories.forEach(category => { %>
                     <tr>
-                      <td class="admin-table-name"><%= category.nom %></td>
+                      <td class="admin-table-name">
+                        <span style="color:#1a0c00 !important; font-weight:700; display:inline-block;">
+                          <%= category.name || category.nom %>
+                        </span>
+                      </td>
                       <td class="text-center">
                         <span class="admin-badge secondary"><%= category.articleCount %></span>
                       </td>
                       <td class="text-end">
                         <a href="/admin/categories/<%= category.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
-                        <button class="admin-btn-sm danger" onclick="deleteCategory('<%= category.id %>', '<%= category.nom %>')">Supprimer</button>
+                        <button class="admin-btn-sm danger" onclick="deleteCategory('<%= category.id %>', '<%= category.name || category.nom %>')">Supprimer</button>
                       </td>
                     </tr>
                   <% }) %>

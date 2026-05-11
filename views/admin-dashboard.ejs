@@ -220,6 +220,12 @@
                 </div>
               <% }) %>
             </div>
+
+            <%- include('partials/pagination', {
+              pagination: categoriesPagination,
+              baseUrl: '/admin/dashboard',
+              pageParam: 'categoriesPage'
+            }) %>
           </div>
 
         </div>

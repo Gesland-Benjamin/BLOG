@@ -104,18 +104,11 @@
                 <div class="sidebar-section">
                   <h4 class="sidebar-title">Archives</h4>
                   <ol class="sidebar-list">
-                    <li><a href="/archive/2025/12">Décembre 2025</a></li>
-                    <li><a href="/archive/2025/11">Novembre 2025</a></li>
-                    <li><a href="/archive/2025/10">Octobre 2025</a></li>
-                    <li><a href="/archive/2025/9">Septembre 2025</a></li>
-                    <li><a href="/archive/2025/8">Août 2025</a></li>
-                    <li><a href="/archive/2025/7">Juillet 2025</a></li>
-                    <li><a href="/archive/2025/6">Juin 2025</a></li>
-                    <li><a href="/archive/2025/5">Mai 2025</a></li>
-                    <li><a href="/archive/2025/4">Avril 2025</a></li>
-                    <li><a href="/archive/2025/3">Mars 2025</a></li>
-                    <li><a href="/archive/2025/2">Février 2025</a></li>
-                    <li><a href="/archive/2025/1">Janvier 2025</a></li>
+                    <% (archiveMonths || []).forEach((month, index) => { %>
+                      <li>
+                        <a class="<%= index === 0 ? 'is-current-archive' : '' %>" href="<%= month.url %>"><%= month.label.charAt(0).toUpperCase() + month.label.slice(1) %></a>
+                      </li>
+                    <% }) %>
                   </ol>
                 </div>
               </article>

@@ -16,6 +16,7 @@ export const getDashboard = async (req, res) => {
     const userPage = Math.max(parseInt(req.query.userPage) || 1, 1);
     const commentPage = Math.max(parseInt(req.query.commentPage) || 1, 1);
     const subscriberPage = Math.max(parseInt(req.query.subscriberPage) || 1, 1);
+    const categoriesPage = Math.max(parseInt(req.query.categoriesPage) || 1, 1);
 
     // =========================
     // STATS
@@ -107,13 +108,16 @@ export const getDashboard = async (req, res) => {
     // =========================
     // CATEGORIES
     // =========================
-    const categories = await Categorie.findAll({
+    const categoriesCount = await Categorie.count();
+
+    const { rows: categories } = await Categorie.findAndCountAll({
       attributes: ["id", "name"],
       order: [["name", "ASC"]],
-      limit: pageSize
+      limit: pageSize,
+      offset: (categoriesPage - 1) * pageSize
     });
 
-    console.log(`🏷️ Categories loaded: ${categories.length}`);
+    console.log(`🏷️ Categories loaded: ${categories.length}/${categoriesCount}`);
 
     // =========================
     // PAGINATION
@@ -142,6 +146,14 @@ export const getDashboard = async (req, res) => {
       "subscriberPage"
     );
 
+    const categoriesPagination = createPaginationData(
+      categoriesCount,
+      categoriesPage,
+      pageSize,
+      "/admin/dashboard",
+      "categoriesPage"
+    );
+
     console.log("📄 Pagination generated");
 
     // =========================
@@ -165,7 +177,8 @@ export const getDashboard = async (req, res) => {
 
       usersPagination,
       commentsPagination,
-      subscribersPagination
+      subscribersPagination,
+      categoriesPagination
     });
 
   } catch (error) {

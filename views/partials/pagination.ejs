@@ -1,11 +1,16 @@
 <% if (pagination && pagination.total > 1) { %>
+<%
+  const pageKey = typeof pageParam !== 'undefined' && pageParam ? pageParam : 'page';
+  const separator = baseUrl && baseUrl.includes('?') ? '&' : '?';
+  const buildUrl = (page) => `${baseUrl}${separator}${pageKey}=${page}`;
+%>
 <nav aria-label="Pagination" class="pagination-nav">
   <ul class="pagination pagination-center">
 
     <!-- Première page -->
     <li class="page-item <%= !pagination.has_previous ? 'disabled' : '' %>">
       <a class="page-link"
-         href="<%= pagination.has_previous ? baseUrl + '?' + pageParam + '=1' : '#' %>">
+         href="<%= pagination.has_previous ? buildUrl(1) : '#' %>">
         &laquo;
       </a>
     </li>
@@ -13,7 +18,7 @@
     <!-- Précédent -->
     <li class="page-item <%= !pagination.has_previous ? 'disabled' : '' %>">
       <a class="page-link"
-         href="<%= pagination.has_previous ? baseUrl + '?' + pageParam + '=' + (pagination.current - 1) : '#' %>">
+         href="<%= pagination.has_previous ? buildUrl(pagination.current - 1) : '#' %>">
         &lsaquo;
       </a>
     </li>
@@ -22,7 +27,7 @@
     <% pagination.pages.forEach(p => { %>
       <li class="page-item <%= p.isActive ? 'active' : '' %>">
         <a class="page-link"
-           href="<%= baseUrl + '?' + pageParam + '=' + p.number %>">
+           href="<%= buildUrl(p.number) %>">
           <%= p.number %>
         </a>
       </li>
@@ -31,7 +36,7 @@
     <!-- Suivant -->
     <li class="page-item <%= !pagination.has_next ? 'disabled' : '' %>">
       <a class="page-link"
-         href="<%= pagination.has_next ? baseUrl + '?' + pageParam + '=' + (pagination.current + 1) : '#' %>">
+         href="<%= pagination.has_next ? buildUrl(pagination.current + 1) : '#' %>">
         &rsaquo;
       </a>
     </li>
@@ -39,7 +44,7 @@
     <!-- Dernière -->
     <li class="page-item <%= !pagination.has_next ? 'disabled' : '' %>">
       <a class="page-link"
-         href="<%= pagination.has_next ? baseUrl + '?' + pageParam + '=' + pagination.total : '#' %>">
+         href="<%= pagination.has_next ? buildUrl(pagination.total) : '#' %>">
         &raquo;
       </a>
     </li>

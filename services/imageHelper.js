@@ -275,6 +275,10 @@ export function validateAltText(alt) {
 export function generateOpenGraphImage(options) {
   const { imageUrl, imageAlt, width, height } = options;
 
+  if (!imageUrl) {
+    return '';
+  }
+
   let tags = `<meta property="og:image" content="${imageUrl}">\n`;
   
   if (imageAlt) {

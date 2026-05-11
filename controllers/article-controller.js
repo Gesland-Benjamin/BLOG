@@ -129,6 +129,20 @@ export const getArticleById = async (req, res) => {
             as: "user",
             attributes: ["id", "name"],
             required: false
+          },
+          {
+            model: Commentaire,
+            as: "replies",
+            where: { statut: "approved" },
+            required: false,
+            include: [
+              {
+                model: User,
+                as: "user",
+                attributes: ["id", "name"],
+                required: false
+              }
+            ]
           }
         ],
         order: [[literal("created_at DESC")]], // ✅ FIX ULTIME
@@ -141,7 +155,14 @@ export const getArticleById = async (req, res) => {
         nom: c.nom || "Lecteur",
         contenu: c.contenu,
         date: c.date,
-        replies: []
+        replies: (c.replies || []).map(r => ({
+          id: r.id,
+          nom: r.nom || "Lecteur",
+          contenu: r.contenu,
+          date: r.date,
+          is_admin_reply: r.is_admin_reply,
+          user: r.user
+        }))
       }));
 
     } catch (err) {

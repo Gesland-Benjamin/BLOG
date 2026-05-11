@@ -418,6 +418,10 @@ header::before {
   color: #e4405f;
 }
 
+.social-icon-yt {
+  color: #ff0000;
+}
+
   .mobile-duo-actions .dropdown {
     flex: 1;
   }
