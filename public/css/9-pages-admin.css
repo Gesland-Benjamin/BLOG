@@ -156,6 +156,14 @@
   padding: 2rem;
 }
 
+.admin-container-narrow {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* ============================================
    SIDEBAR ADMINISTRATION
    ============================================ */
@@ -1285,124 +1293,379 @@
    FORMULAIRE CRÉATION ARTICLE ADMIN (SMEG)
    ============================================ */
 .admin-form-card {
-  max-width: 540px;
-  margin : 0 auto 2rem auto;
-  
+  max-width: 620px;
+  margin: 0 auto 2.5rem auto;
+  padding: 2.8rem 2.5rem;
   border-radius: 42px;
   border: 2.5px solid #9a4f18;
-  background: radial-gradient(ellipse at center, #fff4e4 0%, #f9ddb5 42%, #efc48d 100%);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.13), inset 0 0 0 6px rgba(255,248,230,0.7);
+  background: radial-gradient(ellipse at center, #fff6df 0%, #f8ddb0 45%, #ebc58c 100%);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
+    inset 0 9px 16px rgba(255, 255, 255, 0.6);
   display: flex;
-  flex-direction: column ;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 1.8rem;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
+
+.admin-form-card:hover {
+  transform: translateY(-8px);
+  filter: brightness(1.03);
+  box-shadow:
+    0 28px 52px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
+    inset 0 9px 16px rgba(255, 255, 255, 0.6);
+}
+
 .admin-form-card h2 {
   font-size: 2rem;
   color: #6b3500;
-  margin-bottom: 1.2rem;
+  margin: 0 0 0.8rem 0;
   text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
+
 .admin-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.8rem;
 }
+
 .admin-form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.65rem;
 }
+
 .admin-form-group label {
   font-weight: 700;
-  color: #9a4f18;
+  color: #6b3500;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin-bottom: 0.2rem;
 }
+
 .admin-form-group input,
 .admin-form-group textarea,
 .admin-form-group select {
   border-radius: 18px;
-  border: 1.5px solid #e19a4f;
-  padding: 0.8rem 1.1rem;
+  border: 1.5px solid #d4a574;
+  padding: 0.95rem 1.25rem;
   font-size: 1rem;
   background: #fff;
   color: #6b3500;
-  transition: border 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  transition: all 0.25s ease;
 }
+
+.admin-form-group input::placeholder,
+.admin-form-group textarea::placeholder {
+  color: #b97a2a;
+  opacity: 0.7;
+}
+
 .admin-form-group input:focus,
 .admin-form-group textarea:focus,
 .admin-form-group select:focus {
-  border-color: #e19a4f;
-  box-shadow: 0 0 0 2px #f9ddb5;
   outline: none;
+  border-color: #e19a4f;
+  background: #fffbf5;
+  box-shadow: 0 0 0 3px rgba(225, 154, 79, 0.15);
 }
+
+.admin-form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
 .admin-form-group input.invalid,
 .admin-form-group textarea.invalid,
 .admin-form-group select.invalid {
   border-color: #d32f2f;
   background: #fff0f0;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
 }
+
 .admin-form-hint {
   font-size: 0.85rem;
-  color: #b97a2a;
-  margin-top: 0.1rem;
+  color: #9a6f42;
+  margin-top: -0.3rem;
+  font-style: italic;
+  line-height: 1.4;
 }
+
 .admin-image-preview {
-  margin-top: 0.5rem;
-  background: #fff8e6;
-  border-radius: 16px;
-  padding: 0.7rem;
+  margin-top: 0.8rem;
+  background: linear-gradient(135deg, #fff8e6 0%, #fff2d6 100%);
+  border-radius: 18px;
+  border: 1.5px solid #e19a4f;
+  padding: 1rem;
   text-align: center;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
+.admin-image-preview small {
+  display: block;
+  font-weight: 700;
+  color: #6b3500;
+  margin-bottom: 0.7rem;
+}
+
 .admin-image-preview img {
   max-width: 100%;
-  max-height: 180px;
-  border-radius: 12px;
-  margin-top: 0.5rem;
-  box-shadow: 0 2px 8px rgba(225,154,79,0.10);
+  max-height: 200px;
+  border-radius: 14px;
+  margin-top: 0.7rem;
+  box-shadow: 0 4px 12px rgba(225, 154, 79, 0.15);
 }
+
 .admin-form-actions {
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.2rem;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
 }
-@media (max-width: 768px) {
+
+.admin-form-actions .admin-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.75rem 1.8rem;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-form-actions .admin-btn.primary {
+  background: linear-gradient(135deg, #e19a4f 0%, #d68a3f 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(225, 154, 79, 0.3);
+}
+
+.admin-form-actions .admin-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(225, 154, 79, 0.4);
+}
+
+.admin-form-actions .admin-btn.secondary,
+.admin-form-actions .btn-smeg.secondary {
+  background: #f5f5f5;
+  color: #6b3500;
+  border: 1.5px solid #d4a574;
+}
+
+.admin-form-actions .admin-btn.secondary:hover,
+.admin-form-actions .btn-smeg.secondary:hover {
+  background: #ebebeb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 992px) {
   .admin-form-card {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
-    border-radius: 18px;
+    max-width: 580px;
+    padding: 2.2rem 2rem;
+    gap: 1.5rem;
+    border-radius: 32px;
   }
+
   .admin-form-card h2 {
-    font-size: 1.3rem;
+    font-size: 1.7rem;
+    margin-bottom: 0.5rem;
   }
+
+  .admin-form {
+    gap: 1.5rem;
+  }
+
+  .admin-form-group label {
+    font-size: 0.95rem;
+  }
+
   .admin-form-group input,
   .admin-form-group textarea,
   .admin-form-group select {
-    font-size: 0.95rem;
-    padding: 0.7rem 0.8rem;
+    padding: 0.85rem 1rem;
+    border-radius: 16px;
+    font-size: 1rem;
+  }
+
+  .admin-image-preview img {
+    max-height: 160px;
     border-radius: 12px;
   }
-  .admin-image-preview img {
-    max-height: 110px;
-    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .admin-form-card {
+    max-width: 100%;
+    margin: 0 auto 1.8rem auto;
+    padding: 1.6rem 1.2rem;
+    gap: 1.2rem;
+    border-radius: 24px;
+    border-width: 2px;
   }
+
+  .admin-form-card h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .admin-form {
+    gap: 1.2rem;
+  }
+
+  .admin-form-group {
+    gap: 0.5rem;
+  }
+
+  .admin-form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+
+  .admin-form-group input,
+  .admin-form-group textarea,
+  .admin-form-group select {
+    padding: 0.75rem 0.95rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
+
+  .admin-form-group textarea {
+    min-height: 120px;
+  }
+
+  .admin-form-hint {
+    font-size: 0.8rem;
+    margin-top: -0.2rem;
+  }
+
+  .admin-image-preview {
+    padding: 0.8rem;
+    border-radius: 12px;
+  }
+
+  .admin-image-preview img {
+    max-height: 130px;
+    border-radius: 10px;
+  }
+
   .admin-form-actions {
     flex-direction: column;
-    gap: 0.5rem;
-    align-items: stretch;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .admin-form-actions .admin-btn,
+  .admin-form-actions .btn-smeg {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    border-radius: 16px;
+    font-size: 0.95rem;
   }
 }
+
 @media (max-width: 576px) {
   .page-title {
     font-size: 1.2rem;
     padding: 0.5em 0.7em;
     margin: 1.2rem 0 1rem 0;
   }
+
+  .admin-wrapper {
+    padding: 0.5rem;
+  }
+
+  .admin-container-narrow {
+    padding: 0 0.5rem;
+  }
+
   .admin-form-card {
-    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+    padding: 1.2rem 0.9rem;
+    margin: 0 auto 1.2rem auto;
+    border-radius: 16px;
+    gap: 1rem;
+    border-width: 2px;
+  }
+
+  .admin-form-card h2 {
+    font-size: 1.15rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .admin-form {
+    gap: 1rem;
+  }
+
+  .admin-form-group {
+    gap: 0.4rem;
+  }
+
+  .admin-form-group label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .admin-form-group input,
+  .admin-form-group textarea,
+  .admin-form-group select {
+    padding: 0.7rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+
+  .admin-form-group textarea {
+    min-height: 100px;
+    line-height: 1.4;
+  }
+
+  .admin-form-hint {
+    font-size: 0.75rem;
+    margin-top: -0.15rem;
+  }
+
+  .admin-image-preview {
+    padding: 0.6rem;
     border-radius: 10px;
   }
-  .admin-form-card h2 {
-    font-size: 1.1rem;
+
+  .admin-image-preview small {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-image-preview img {
+    max-height: 110px;
+    border-radius: 8px;
+  }
+
+  .admin-form-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+
+  .admin-form-actions .admin-btn,
+  .admin-form-actions .btn-smeg {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
   }
     .admin-wrapper {
     padding: 1rem 0.5rem;

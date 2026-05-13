@@ -194,7 +194,7 @@ export const replyToComment = async (req, res) => {
       parentId,
       articleId: parent.articleId,
       userId: req.user?.id || null,
-      name: req.user?.name || "Admin",
+      name: req.user?.name || "Emilie Delbe",
       is_admin_reply: true,
       statut: "approved"
     });

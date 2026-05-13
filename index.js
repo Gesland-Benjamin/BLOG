@@ -166,7 +166,13 @@ import { Categorie } from "./models/index.js";
 
 let cachedCategories = [];
 let categoriesLoadedAt = 0;
-const CACHE_TTL = 1000 * 60 * 5;
+const CACHE_TTL = 1000 * 60; // 1 minute au lieu de 5
+
+// Fonction pour invalider le cache immédiatement
+export const invalidateCategoriesCache = () => {
+  cachedCategories = [];
+  categoriesLoadedAt = 0;
+};
 
 app.use(async (req, res, next) => {
   try {

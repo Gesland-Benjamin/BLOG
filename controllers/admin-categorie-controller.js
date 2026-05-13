@@ -3,6 +3,7 @@ import Article from '../models/Article.model.js';
 import { Op } from 'sequelize';
 import { getPaginationParams, createPaginationData } from '../utils/pagination.js';
 import { categorySchema } from '../validators/schemas.js';
+import { invalidateCategoriesCache } from '../index.js';
 
 // =========================
 // LIST
@@ -152,6 +153,9 @@ export const createCategory = async (req, res) => {
 
     console.log("✅ CATEGORY CREATED:", created.id, created.name);
 
+    // Invalider le cache des catégories
+    invalidateCategoriesCache();
+
     req.session.message = {
       type: 'success',
       text: 'Catégorie créée'
@@ -220,6 +224,9 @@ export const updateCategory = async (req, res) => {
 
     console.log("✅ CATEGORY UPDATED");
 
+    // Invalider le cache des catégories
+    invalidateCategoriesCache();
+
     req.session.message = {
       type: 'success',
       text: 'Catégorie mise à jour'
@@ -265,6 +272,9 @@ export const deleteCategory = async (req, res) => {
     await category.destroy();
 
     console.log("✅ CATEGORY DELETED");
+
+    // Invalider le cache des catégories
+    invalidateCategoriesCache();
 
     req.session.message = {
       type: 'success',
