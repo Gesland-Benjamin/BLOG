@@ -4,6 +4,7 @@ import User from "../models/User.model.js";
 import { deleteProcessedImages } from "../services/image.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { prepareVideoUrl } from "../utils/videoHelper.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,7 +40,7 @@ export const createArticle = async (req, res) => {
     console.log("🟡 BODY RECEIVED:", req.body);
     console.log("🟡 FILE:", req.file || req.processedImage);
 
-    const { title, content, categorieId } = req.body;
+    const { title, content, categorieId, video } = req.body;
 
     if (!req.user?.id) {
       return res.status(401).send("Utilisateur non authentifié");
@@ -65,7 +66,8 @@ export const createArticle = async (req, res) => {
       content: content.trim(),
       categorieId: categoryIdNum,
       userId: req.user.id,
-      image
+      image,
+      video: video ? prepareVideoUrl(video.trim()) : null
     });
 
     console.log("✅ ARTICLE CREATED:", article.id);
@@ -126,12 +128,13 @@ export const updateArticle = async (req, res) => {
     const article = await Article.findByPk(req.params.id);
     if (!article) return res.status(404).send("Article non trouvé");
 
-    const { title, content, categorieId } = req.body;
+    const { title, content, categorieId, video } = req.body;
 
     await article.update({
       title,
       content,
-      categorieId: Number(categorieId)
+      categorieId: Number(categorieId),
+      video: video ? prepareVideoUrl(video.trim()) : null
     });
 
     console.log("✅ ARTICLE UPDATED:", article.id);

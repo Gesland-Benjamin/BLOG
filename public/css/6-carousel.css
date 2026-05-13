@@ -18,6 +18,71 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   z-index: 2;
   box-shadow: none !important;
 }
+
+.main-carousel-text {
+  color: #2f1600;
+  background: linear-gradient(
+    135deg,
+    #fff6df 0%,
+    #f8ddb0 45%,
+    #ebc58c 75%,
+    #d4a468 100%
+  );
+  border-right: 1px solid rgba(122, 62, 0, 0.18);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.28);
+}
+
+.main-carousel-title {
+  font-family: 'Poppins', 'Gilroy', Arial, sans-serif;
+  font-size: clamp(1.65rem, 2.4vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #2b1400;
+  max-width: 16ch;
+}
+
+.main-carousel-excerpt {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(47, 22, 0, 0.82);
+  max-width: 42ch;
+}
+
+.main-carousel-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a4f18;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.main-carousel-link {
+  margin-top: 0.25rem;
+}
+
+.main-carousel-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.8rem 1.05rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #9a4f18 0%, #7a3e00 100%);
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(122, 62, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.main-carousel-link a:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+  box-shadow: 0 14px 28px rgba(122, 62, 0, 0.22);
+}
 /* ============================================
    6. CAROUSEL – CARROUSEL MIXTE
    ============================================ */
@@ -38,7 +103,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
-}}
+}
 
 #mixedCarousel:hover {
   transform: translateY(-6px);
@@ -46,24 +111,17 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
 }
 
 #mixedCarousel .carousel-inner {
-  overflow: visible;
+  overflow: hidden;
   position: relative;
 }
 
 #mixedCarousel .carousel-item {
-  display: none !important;
   min-height: 280px;
   position: relative;
 }
 
 #mixedCarousel .carousel-item.active {
-  display: block !important;
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  animation: none;
 }
 
 /* Masquer complètement les indicateurs du carrousel */
@@ -120,15 +178,14 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 2rem;
+  gap: 1rem;
   z-index: 10;
   width: 50%;
   position: relative;
   left: 0;
   top: 0;
   bottom: 0;
-  padding: 2.5rem 2rem 2.5rem 2.5rem;
-  background: transparent;
+  padding: 2.6rem 2.25rem 2.6rem 2.7rem;
   overflow: hidden;
   white-space: normal;
   word-break: break-word;
@@ -208,11 +265,11 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     position: static;
     width: 100%;
     padding: 1.5rem!important;
-    background: transparent;
+    background: linear-gradient(135deg, rgba(255, 248, 232, 0.96) 0%, rgba(255, 238, 204, 0.92) 100%);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.85rem;
     order: 2;
     box-sizing: border-box;
     overflow-wrap: break-word;
@@ -228,7 +285,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     top: 0 !important;
     bottom: 0 !important;
     padding: 2.5rem 2rem 2.5rem 2.5rem !important;
-    background: transparent !important;
+    background: linear-gradient(135deg, rgba(255, 248, 232, 0.96) 0%, rgba(255, 238, 204, 0.9) 100%) !important;
     overflow: hidden !important;
     white-space: normal !important;
     word-break: break-word !important;
@@ -239,7 +296,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     flex-direction: column !important;
     justify-content: center !important;
     align-items: flex-start !important;
-    gap: 2rem !important;
+    gap: 1rem !important;
     z-index: 10 !important;
   }
   .main-carousel-image-wrapper {

@@ -34,7 +34,7 @@ export const getHomePage = async (req, res) => {
       id: a.id,
       titre: a.title,
       extrait: (a.content || "").substring(0, 120),
-      date: a.created_at,
+      date: a.createdAt,
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu"
@@ -47,7 +47,7 @@ export const getHomePage = async (req, res) => {
           id: latest.id,
           titre: latest.title,
           extrait: (latest.content || "").substring(0, 200),
-          date: latest.created_at,
+          date: latest.createdAt,
           image: latest.image,
           categorie: latest.categorie?.name || null,
           auteur: latest.author?.name || "Inconnu"
@@ -91,7 +91,7 @@ export const getHomePage = async (req, res) => {
       id: a.id,
       titre: a.title,
       extrait: (a.content || "").substring(0, 160),
-      date: a.created_at,
+      date: a.createdAt,
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu"
@@ -101,7 +101,7 @@ export const getHomePage = async (req, res) => {
       id: a.id,
       titre: a.title,
       extrait: (a.content || "").substring(0, 160),
-      date: a.created_at,
+      date: a.createdAt,
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu",

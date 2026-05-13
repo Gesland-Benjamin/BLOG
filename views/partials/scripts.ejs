@@ -19,8 +19,8 @@ window.addEventListener('load', function() {
   }, 200);
 });
 </script>
-<!-- Bootstrap JS désactivé pour test dropdown custom -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> -->
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
 <!-- Désactive le dropdown Bootstrap pour éviter les conflits -->
 <script>
@@ -32,61 +32,43 @@ window.addEventListener('load', function() {
 <!-- Scripts personnalisés (versionné pour forcer le rechargement) -->
 <script src="/js/dropdown.js?v=<%= Date.now() %>"></script>
 
-<!-- Force autoplay du carrousel -->
+<!-- Carrousel: défilement gauche -> droite -->
 <script>
 (function() {
   function initCarousel() {
     var carouselEl = document.getElementById('mixedCarousel');
     if (!carouselEl) return;
-    
+
     var items = carouselEl.querySelectorAll('.carousel-item');
-    var prevBtn = carouselEl.querySelector('.carousel-control-prev');
-    var nextBtn = carouselEl.querySelector('.carousel-control-next');
-    
     if (items.length <= 1) return;
-    
+
+    if (window.bootstrap && window.bootstrap.Carousel) {
+      var carousel = window.bootstrap.Carousel.getOrCreateInstance(carouselEl, {
+        interval: false,
+        ride: false,
+        wrap: true,
+        touch: true,
+        keyboard: true
+      });
+
+      setInterval(function() {
+        carousel.prev();
+      }, 5000);
+      return;
+    }
+
     var currentIndex = 0;
-    
-    // Fonction pour afficher un slide
+
     function showSlide(index) {
-      items.forEach((item, i) => {
+      items.forEach(function(item, i) {
         item.classList.toggle('active', i === index);
       });
-      
-      // Mettre à jour les indicateurs
-      var indicators = carouselEl.querySelectorAll('.carousel-indicators button');
-      indicators.forEach((btn, i) => {
-        btn.classList.toggle('active', i === index);
-      });
     }
-    
-    // Suivant
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % items.length;
-      showSlide(currentIndex);
-    }
-    
-    // Précédent
-    function prevSlide() {
+
+    setInterval(function() {
       currentIndex = (currentIndex - 1 + items.length) % items.length;
       showSlide(currentIndex);
-    }
-    
-    // Clic sur boutons
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    
-    // Clic sur indicateurs
-    var indicators = carouselEl.querySelectorAll('.carousel-indicators button');
-    indicators.forEach((btn, i) => {
-      btn.addEventListener('click', () => {
-        currentIndex = i;
-        showSlide(currentIndex);
-      });
-    });
-    
-    // Autoplay toutes les 5 secondes
-    setInterval(nextSlide, 5000);
+    }, 5000);
   }
   
   // Attendre que le DOM soit prêt

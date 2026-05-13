@@ -103,8 +103,9 @@
                 type="url"
                 id="video"
                 name="video"
-                placeholder="https://youtube.com/..."
+                placeholder="YouTube ou Vimeo — coller l'URL complète"
                 value="<%= isEditing ? (article.video || '') : (formData.video || '') %>">
+              <small class="admin-form-hint">L'URL sera automatiquement convertie en format embed (YouTube/Vimeo).</small>
             </div>
 
             <!-- ACTIONS -->

@@ -19,7 +19,7 @@
             </div>
           <% } %>
           <div class="article-detail-content">
-            <p class="article-detail-date"><%= new Date(article.date_publication).toLocaleDateString() %></p>
+            <p class="article-detail-date"><%= article.date_publication_formatted || (article.date_publication ? new Date(article.date_publication).toLocaleDateString('fr-FR') : '') %></p>
             <h1 class="article-detail-title" style="text-align: left;"><%= article.titre %></h1>
             <p class="article-detail-meta">Par <strong><%= article.auteur %></strong><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
             <div class="article-detail-body">
@@ -99,57 +99,52 @@
               <p class="comments-empty">Soyez le premier à commenter cet article.</p>
             <% } else { %>
               <div class="comments-list">
-                <% commentaires.forEach(c => { %>
-                  <div class="comment-item">
-                    <div class="comment-header">
-                      <strong class="comment-author"><%= c.nom || 'Lecteur' %></strong>
-                      <span class="comment-date"><%= new Date(c.date).toLocaleDateString() %></span>
-                    </div>
-                      <p class="mb-1"><%= c.contenu %></p>
-                      
-                      <!-- Affichage des réponses -->
+                <% commentaires.forEach((c, index) => { %>
+                  <article class="comment-item" aria-label="Commentaire <%= index + 1 %>">
+                    <div class="comment-item-body">
+                      <div class="comment-item-header comment-item-header-compact">
+                        <strong class="comment-author"><%= c.nom || 'Lecteur' %></strong>
+                      </div>
+
+                      <p class="comment-body"><%= c.contenu %></p>
+
                       <% if (c.replies && c.replies.length > 0) { %>
-                        <div class="mt-3 pt-2 border-top">
+                        <div class="comment-replies">
                           <% if (c.replies.length <= 3) { %>
-                            <!-- Afficher toutes les réponses si 3 ou moins -->
                             <% c.replies.forEach(reply => { %>
-                              <div class="ms-4 mb-2 p-2 bg-light rounded">
-                                <div class="d-flex justify-content-between">
-                                  <small class="fw-bold text-primary">
-                                    <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Admin') %>
+                              <div class="comment-reply">
+                                <div class="comment-item-header comment-item-header-compact">
+                                  <strong class="comment-author">
+                                    <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Emilie.D') %>
                                     <% if (reply.is_admin_reply) { %>
-                                      <span class="badge text-bg-primary" style="font-size:0.65rem;">ADMIN</span>
+                                      <span class="badge text-bg-primary comment-admin-badge">ADMIN</span>
                                     <% } %>
-                                  </small>
-                                  <small class="text-muted"><%= new Date(reply.date).toLocaleDateString() %></small>
+                                  </strong>
                                 </div>
-                                <p class="mb-0 mt-1 small"><%= reply.contenu %></p>
+                                <p class="comment-body comment-body-reply"><%= reply.contenu %></p>
                               </div>
                             <% }) %>
                           <% } else { %>
-                            <!-- Menu déroulant si plus de 3 réponses -->
-
-                            <div class="accordion accordion-flush" id="accordion-comment-<%= c.id %>">
-                              <div class="accordion-item border-0">
+                            <div class="accordion comment-replies-accordion" id="accordion-comment-<%= c.id %>">
+                              <div class="accordion-item comment-accordion-item">
                                 <h2 class="accordion-header">
-                                  <button class="accordion-button collapsed p-2 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-comment-<%= c.id %>">
-                                    <small>Voir les <%= c.replies.length %> réponses</small>
+                                  <button class="accordion-button collapsed comment-replies-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-comment-<%= c.id %>">
+                                    <span>Voir les <%= c.replies.length %> réponses</span>
                                   </button>
                                 </h2>
                                 <div id="collapse-comment-<%= c.id %>" class="accordion-collapse collapse" data-bs-parent="#accordion-comment-<%= c.id %>">
-                                  <div class="accordion-body p-2">
+                                  <div class="accordion-body comment-accordion-body">
                                     <% c.replies.forEach(reply => { %>
-                                      <div class="ms-4 mb-2 p-2 bg-light rounded">
-                                        <div class="d-flex justify-content-between">
-                                          <small class="fw-bold text-primary">
-                                            <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Admin') %>
+                                      <div class="comment-reply">
+                                        <div class="comment-item-header comment-item-header-compact">
+                                          <strong class="comment-author">
+                                            <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Emilie.D') %>
                                             <% if (reply.is_admin_reply) { %>
-                                              <span class="badge text-bg-primary" style="font-size:0.65rem;">ADMIN</span>
+                                              <span class="badge text-bg-primary comment-admin-badge">ADMIN</span>
                                             <% } %>
-                                          </small>
-                                          <small class="text-muted"><%= new Date(reply.date).toLocaleDateString() %></small>
+                                          </strong>
                                         </div>
-                                        <p class="mb-0 mt-1 small"><%= reply.contenu %></p>
+                                        <p class="comment-body comment-body-reply"><%= reply.contenu %></p>
                                       </div>
                                     <% }) %>
                                   </div>
@@ -160,7 +155,8 @@
                         </div>
                       <% } %>
                     </div>
-                  <% }) %>
+                  </article>
+                <% }) %>
                 </div>
               <% } %>
 

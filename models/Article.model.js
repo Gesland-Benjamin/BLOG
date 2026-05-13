@@ -25,6 +25,11 @@ const Article = sequelize.define(
       allowNull: true
     },
 
+    video: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+
     likes: {
       type: DataTypes.INTEGER,
       defaultValue: 0
