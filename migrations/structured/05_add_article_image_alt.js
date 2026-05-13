@@ -1,4 +1,5 @@
 import { DataTypes } from 'sequelize';
+import { sequelize } from '../../config/database.js';
 
 export const name = "add_article_image_alt";
 
@@ -6,7 +7,7 @@ export const name = "add_article_image_alt";
  * Migration pour ajouter le champ image_alt à la table article
  * Permet de stocker un texte alternatif descriptif pour les images
  */
-export async function up(sequelize) {
+export async function up() {
   const queryInterface = sequelize.getQueryInterface();
   
   try {
@@ -28,7 +29,7 @@ export async function up(sequelize) {
   }
 }
 
-export async function down(sequelize) {
+export async function down() {
   const queryInterface = sequelize.getQueryInterface();
   
   try {

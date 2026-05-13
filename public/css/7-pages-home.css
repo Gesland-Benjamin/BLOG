@@ -42,22 +42,22 @@
 }
 .card-smeg {
   border-radius: 42px;
-  border: 2px solid #7a3e00;
+  border: 1px solid #7a3e00 !important;
   background: radial-gradient(
     ellipse at center,
     #fff6df 0%,
     #f8ddb0 45%,
     #ebc58c 75%,
     #d4a468 100%
-  );
-  box-shadow:
-    0 18px 36px rgba(0, 0, 0, 0.18),
-    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-    inset 0 8px 14px rgba(255, 255, 255, 0.55),
-    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+  ) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
   padding: 25px;
+  outline: none !important;
+}
+.card-smeg * {
+  border: none !important;
+  outline: none !important;
 }
 .card-smeg .list-group {
   margin: 0;
@@ -68,11 +68,10 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  border: none;
+  border: none !important;
   padding: 0.75rem 1rem;
   margin-bottom: 0.5rem;
   background: transparent;
-  border-top: 1px solid #e9ecef;
 }
 .card-smeg .list-group-item:first-child {
   border-top: none;
@@ -163,6 +162,27 @@
   max-height: unset;
 }
 
+/* Réduire la largeur des cards situées sous le carrousel et les centrer */
+.home-main-content .home-featured-card,
+.home-main-content .archive-article-card,
+.home-main-content .card,
+.home-main-content .article-card {
+  max-width: 920px;
+  width: calc(100% - 2rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 1024px) {
+  .home-main-content .home-featured-card,
+  .home-main-content .archive-article-card,
+  .home-main-content .card,
+  .home-main-content .article-card {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 .home-featured-card {
   height: auto;
   min-height: unset;
@@ -171,17 +191,17 @@
   align-items: stretch;
   position: relative;
   border-radius: 42px;
-  
+  border: 1px solid #7a3e00 !important;
   background: radial-gradient(
     ellipse at center,
     #fff6df 0%,
     #f8ddb0 45%,
     #ebc58c 75%,
     #d4a468 100%
-  );
-  
+  ) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
-  
+  outline: none !important;
 }
 .article-card-text {
   display: flex;
@@ -220,9 +240,6 @@
   width: 50%;
   border-radius: 0 18px 18px 0;
   background: transparent;
-  box-shadow:
-    0 0 0 5px rgba(255, 245, 220, 0.9) inset,
-    0 0 0 10px rgba(255, 255, 255, 0.55) inset;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,7 +283,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: #fff6df;
+  background: transparent;
   overflow: hidden;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
@@ -381,61 +398,72 @@
     height: auto;
     min-height: unset;
     max-height: unset;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 16px 0 16px !important;
+    width: calc(100% - 32px) !important;
+    box-sizing: border-box;
   }
 
-   .article-card-image-wrapper {
+  .article-card-image-wrapper {
     width: 100%;
     min-height: 140px;
     max-height: 220px;
-    
-    
-    box-shadow: none !important;
     background: transparent !important;
-   
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
   }
   .article-card-image-wrapper img {
-    width: 97% !important;
-    height: auto;
+    width: 100% !important;
+    height: 100%;
     max-height: 220px;
     object-fit: cover;
-    border-radius: 32px 32px 0 0 !important;
-    margin-top: 5px;
+    border-radius: 0 !important;
+    margin: 0 !important;
     border: none !important;
     display: block;
   }
-
   .article-card-text {
     width: 100%;
     gap: 0.5rem;
-    padding: 1.1rem 1.2rem 1.3rem 1.2rem;
-    border-radius: 0 0 32px 32px;
-    
+    padding: 1.2rem;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
   }
 
   .home-featured-card {
-    border-radius: 32px;
+    border-radius: 20px;
     overflow: hidden;
+  }
+
+  .card-smeg {
+    border-radius: 20px !important;
+    padding: 1.2rem !important;
+    margin: 0 16px 0 16px !important;
+    width: calc(100% - 32px) !important;
+    box-sizing: border-box;
   }
 
   .home-sidebar {
     margin: 0 !important;
     width: 100% !important;
   }
+  
   .carousel-wrapper {
-    margin-left: 17px !important;
-    margin-right: 20px;
-    width: 100% !important;
+    margin: 0 16px 0 16px !important;
+    padding: 0 !important;
+    width: calc(100% - 32px) !important;
+    box-sizing: border-box;
   }
+  
   .sections-wrapper{
-    margin-top: 15px;
-    margin-left: 40px !important;
-    margin-right: 40px !important;
-    padding-right: 30px;
-    /* Le padding à droite permet d'égaliser l'espace avec la gauche pour les cards */
-    
+    margin: 16px 16px 0 16px !important;
+    padding: 0 !important;
+    width: calc(100% - 32px) !important;
+    box-sizing: border-box;
   }
   
 }

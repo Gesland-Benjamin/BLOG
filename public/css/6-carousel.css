@@ -16,9 +16,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   border-radius: 0 42px 42px 0;
   pointer-events: none;
   z-index: 2;
-  box-shadow:
-    0 0 0 5px rgba(255,245,220,0.9) inset,
-    0 0 0 0px rgba(255,245,220,0.9) inset;
+  box-shadow: none !important;
 }
 /* ============================================
    6. CAROUSEL – CARROUSEL MIXTE
@@ -29,7 +27,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   height: 100%;
   position: relative;
   border-radius: 42px;
-  border: 2px solid #7a3e00;
+  border: 1px solid #7a3e00 !important;
   background: radial-gradient(
     ellipse at center,
     #fff6df 0%,
@@ -37,15 +35,10 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     #ebc58c 75%,
     #d4a468 100%
   );
-  box-shadow:
-    0 18px 36px rgba(0, 0, 0, 0.18),
-    inset 0 0 0 5px rgba(255, 245, 220, 0.9),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.1),
-    inset 0 8px 14px rgba(255, 255, 255, 0.55),
-    inset 0 0 0 10px rgba(122, 62, 0, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
-}
+}}
 
 #mixedCarousel:hover {
   transform: translateY(-6px);
@@ -261,12 +254,9 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
 }
 
   #mixedCarousel {
-    
-   border-radius: 32px;
-    margin-left: 16px;
-    margin-right: 16px;
-    width: auto;
-    max-width: calc(100vw - 32px);
+    border-radius: 20px;
+    margin: 0 16px 0 16px !important;
+    width: calc(100% - 32px) !important;
     box-sizing: border-box;
   }
   .carousel-article-card {
@@ -289,6 +279,9 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   .carousel-image-wrapper img {
     width: 100%;
     height: 100%;
+  .carousel-image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     
     display: block;
@@ -298,19 +291,11 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
-    padding: 1rem 1rem 1rem 1rem;
+    padding: 1.2rem;
     background: transparent;
   }
   .carousel-text h1 {
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
   }
-  .carousel-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 1.1rem 1.2rem 1.3rem 1.2rem;
-    background: transparent;
-  }
-  }
+}

@@ -227,7 +227,8 @@
 
         btn.addEventListener('click', async () => {
           btn.disabled = true;
-          btn.textContent = 'Merci !';
+          const label = btn.querySelector('.article-like-label');
+          if (label) label.textContent = 'Merci !';
 
           try {
             const response = await fetch(`/article/${articleId}/like`, {
@@ -238,8 +239,16 @@
               }
             });
 
+            if (response.status === 400) {
+              const err = await response.json().catch(() => ({ message: 'Vous avez déjà liké cet article' }));
+              btn.classList.add('liked');
+              if (label) label.textContent = 'Merci';
+              return;
+            }
+
             if (!response.ok) {
-              throw new Error('Like failed');
+              const err = await response.json().catch(() => ({ message: 'Erreur serveur' }));
+              throw new Error(err.message || 'Like failed');
             }
 
             const data = await response.json();
@@ -250,8 +259,8 @@
           } catch (error) {
             console.error('Erreur lors du like:', error);
             btn.disabled = false;
-            btn.textContent = "Je laisse un j'aime";
-            alert("Impossible d'enregistrer votre j'aime pour le moment. Merci de réessayer.");
+            if (label) label.textContent = "J'aime";
+            alert(error.message || "Impossible d'enregistrer votre j'aime pour le moment. Merci de réessayer.");
           }
         });
       });

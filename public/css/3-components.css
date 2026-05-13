@@ -1016,7 +1016,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 .card-bordered {
   position: relative;
   border-radius: 42px;
-  border: 2.5px solid #9a4f18;
+  border: 1px solid #7a3e00 !important;
   background: radial-gradient(
     ellipse at center,
     #fff4e4 0%,
@@ -1024,11 +1024,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
     #efc48d 72%,
     #e19a4f 100%
   );
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22),
-    inset 0 0 0 5px rgba(255, 248, 230, 0.9),
-    inset 0 -7px 12px rgba(0, 0, 0, 0.12),
-    inset 0 9px 16px rgba(255, 255, 255, 0.6),
-    inset 0 0 0 8px rgba(154, 79, 24, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
 }
@@ -1047,10 +1043,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
   border-radius: 0 42px 42px 0;
   pointer-events: none;
   z-index: 2;
-  box-shadow:
-    0 0 0 5px rgba(255,245,220,0.9) inset,
-    0 0 0 0px rgba(255,245,220,0.9) inset;
-  
+  box-shadow: none !important;
 }
 
 .card-smeg {
@@ -1314,6 +1307,28 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 .dropdown-item.active {
   background: var(--color-primary);
   color: white;
+}
+
+/* Corrections : empêcher les transforms globaux d'affecter les dropdowns
+   et harmoniser le style au survol sans déplacer les éléments */
+.dropdown .dropdown-toggle:hover,
+.dropdown .dropdown-item:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: var(--color-bg-light);
+  color: var(--color-secondary);
+}
+
+/* Contenir visuellement les hover et ombres à l'intérieur du menu */
+.dropdown-menu {
+  overflow: hidden !important;
+  border-radius: 8px;
+  will-change: background-color;
+}
+
+/* Rendre les items arrondis pour que les effets restent dans le conteneur */
+.dropdown-item {
+  border-radius: 6px;
 }
 
 /* ============================================

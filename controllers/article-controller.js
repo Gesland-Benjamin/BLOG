@@ -2,6 +2,7 @@ import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
 import Commentaire from "../models/Commentaire.model.js";
+import ArticleLike from "../models/ArticleLike.model.js";
 
 import { Op, literal } from "sequelize";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
@@ -88,6 +89,24 @@ export const getArticleById = async (req, res) => {
 
     if (!article) return res.status(404).send("Article non trouvé");
 
+    // déterminer si l'utilisateur (ou l'IP) a déjà liké
+    let hasLiked = false;
+    try {
+      if (req.user && req.user.id) {
+        const rec = await ArticleLike.findOne({ where: { articleId: id, userId: req.user.id } });
+        hasLiked = !!rec;
+      } else {
+        const ip = req.ip || req.headers["x-forwarded-for"] || null;
+        if (ip) {
+          const rec = await ArticleLike.findOne({ where: { articleId: id, ip } });
+          hasLiked = !!rec;
+        }
+      }
+    } catch (err) {
+      console.error("Erreur vérif like:", err);
+      hasLiked = false;
+    }
+
     const articleData = {
       id: article.id,
       titre: article.title,
@@ -100,6 +119,7 @@ export const getArticleById = async (req, res) => {
       video: article.video ? prepareVideoUrl(article.video) : null,
       videoType: article.video ? getVideoType(article.video) : null,
       likes: article.likes || 0,
+      liked: hasLiked,
       description: (article.content || "").substring(0, 160),
       url: `${process.env.SITE_URL || "http://localhost:3000"}/article/${article.id}`
     };
@@ -259,6 +279,31 @@ export const likeArticle = async (req, res) => {
 
     const article = await Article.findByPk(id);
     if (!article) return res.status(404).json({ message: "Not found" });
+
+    const ip = req.ip || (req.headers && req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null);
+
+    // Vérifier si l'utilisateur ou l'IP a déjà liké
+    try {
+      if (req.user && req.user.id) {
+        const already = await ArticleLike.findOne({ where: { articleId: id, userId: req.user.id } });
+        if (already) return res.status(400).json({ message: 'Vous avez déjà liké cet article' });
+        await ArticleLike.create({ articleId: id, userId: req.user.id, ip });
+      } else {
+        if (ip) {
+          const already = await ArticleLike.findOne({ where: { articleId: id, ip } });
+          if (already) return res.status(400).json({ message: 'Vous avez déjà liké cet article' });
+        }
+        await ArticleLike.create({ articleId: id, userId: null, ip });
+      }
+    } catch (err) {
+      const msg = (err && err.message) ? err.message.toLowerCase() : '';
+      const missingTable = msg.includes('does not exist') || msg.includes('no such table') || msg.includes("doesn't exist") || msg.includes('er_no_such_table');
+      if (missingTable) {
+        console.error('Migration manquante: article_likes table non trouvée.');
+        return res.status(500).json({ message: 'Migration manquante: créez la table article_likes (exécutez les migrations).' });
+      }
+      throw err;
+    }
 
     await article.increment("likes", { by: 1 });
     await article.reload();
