@@ -165,9 +165,22 @@ export const getArticlesByMonth = async (req, res) => {
       date_publication: article.createdAt
     }));
 
+    // Préparer le nom du mois et l'année pour la vue
+    const monthIndex = startDate.getMonth();
+    const monthName = new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(startDate);
+    const yearNum = startDate.getFullYear();
+
+    // Ajouter un extrait aux articles pour l'affichage
+    const articlesWithExcerpt = articlesMapped.map(a => ({
+      ...a,
+      extrait: (a.contenu || '').substring(0, 200)
+    }));
+
     res.render("articles-by-month", {
-      articles: articlesMapped,
-      title: "Articles du mois"
+      articles: articlesWithExcerpt,
+      title: "Articles du mois",
+      monthName,
+      year: yearNum
     });
 
   } catch (error) {

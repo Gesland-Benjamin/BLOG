@@ -17,15 +17,33 @@
     margin: 0;
   }
   .search-form-card {
-    background: radial-gradient(ellipse at center, #fff4e4 0%, #f9ddb5 42%, #efc48d 100%);
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(154,79,24,0.10), 0 1.5px 4px rgba(0,0,0,0.08);
-    padding: 1.1rem 0.7rem 1rem 0.7rem;
+    /* Harmonisation visuelle avec les cards principales */
+    background: radial-gradient(
+      ellipse at center,
+      #fff6df 0%,
+      #f8ddb0 45%,
+      #ebc58c 75%,
+      #d4a468 100%
+    ) !important;
+    border-radius: 42px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+    padding: 1.25rem 1rem;
     margin: 0 0 1.2rem 0;
-    border: 2px solid #e19a4f;
+    border: 1.5px solid rgba(122,62,0,0.18);
+    /* prendre toute la largeur sur mobile */
     width: 100%;
-    max-width: 100%;
+    max-width: none;
+    margin: 0;
     box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  /* Override spécifique pour .search-header-flex qui fixe 50% en desktop */
+  .search-header-flex .search-form-card {
+    width: 100% !important;
+    display: block !important;
+    gap: 0.6rem !important;
+    margin: 0 !important;
   }
   .search-form {
     width: 100%;
@@ -49,6 +67,19 @@
     width: 100%;
     box-sizing: border-box;
   }
+  /* sécurité: forcer les éléments à ne pas dépasser la largeur du conteneur */
+  .search-form-card .search-form-group input,
+  .search-form-card .search-form-group select,
+  .search-form-card .search-form-group button {
+    max-width: 100%;
+    display: block;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+  .search-form-group input:focus, .search-form-group select:focus {
+    box-shadow: 0 6px 18px rgba(154,79,24,0.12);
+    border-color: #d2944c;
+  }
   .search-form-group button {
     width: 100%;
     border-radius: 12px;
@@ -61,6 +92,11 @@
     margin-top: 0.5rem;
     box-shadow: 0 2px 8px rgba(225,154,79,0.10);
     transition: background 0.2s, box-shadow 0.2s;
+  }
+  .search-form-card .search-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
   }
   .search-form-group button:hover {
     background: linear-gradient(90deg, #e19a4f 0%, #efc48d 100%);
@@ -192,6 +228,58 @@ h1 {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+/* Style harmonieux supplémentaire pour la carte recherche (mobile) */
+@media (max-width: 576px) {
+  .search-form-card {
+    /* rendre plus aéré et cohérent */
+    padding: 1.4rem 1rem;
+    border-radius: 42px;
+    background: linear-gradient(180deg, #fffaf0 0%, #f7e8cf 100%);
+    border: 1px solid rgba(122,62,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.55);
+  }
+
+  .search-form-card .search-form-grid {
+    gap: 0.8rem;
+  }
+
+  .search-form-group label {
+    font-size: 0.8rem;
+    color: #8b4b18;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .search-form-group input,
+  .search-form-group select {
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(122,62,0,0.10);
+    background: #fff;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
+    font-size: 1rem;
+    color: #5b2d00;
+  }
+
+  .search-form-group input::placeholder {
+    color: rgba(91,45,0,0.45);
+  }
+
+  .search-form-group button {
+    padding: 0.95rem 0.8rem;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #d79b5a 0%, #b86a2a 100%);
+    box-shadow: 0 12px 26px rgba(184,106,42,0.12);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .search-form-group button:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .search-input {

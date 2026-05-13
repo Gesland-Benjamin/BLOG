@@ -241,24 +241,25 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   .main-carousel-image-wrapper {
     position: static !important;
     width: 100% !important;
-    height: auto !important;
-    min-height: 140px;
+    height: 220px !important;
+    min-height: 220px;
     max-height: 220px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
     border-radius: 32px 32px 0 0 !important;
-    
+    background: #d4a468;
     overflow: hidden;
     order: 1;
   }
   .main-carousel-image-wrapper img {
-    width: 96.5% !important;
-    margin: 0 auto ;
-    margin-top: 7px;
+    width: 100% !important;
     height: 100% !important;
     max-height: 220px;
     object-fit: cover;
+    object-position: center;
     border-radius: 32px 32px 0 0 !important;
-    
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
     display: block;
   }
   .main-carousel-text {
