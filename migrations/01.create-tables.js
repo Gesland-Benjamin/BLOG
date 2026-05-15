@@ -1,6 +1,8 @@
 import { sequelize } from "../config/database.js";
+import { initAssociations } from "../models/index.js";
 
 console.log("🚧 Creation des tables");
+initAssociations();
 await sequelize.sync({ force: true });
 
 const queryInterface = sequelize.getQueryInterface();
