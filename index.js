@@ -92,8 +92,6 @@ const sessionStore = new SequelizeStore({
   expiration: 24 * 60 * 60 * 1000
 });
 
-await sessionStore.sync();
-
 app.use(
   session({
     name: "sid",
@@ -237,8 +235,19 @@ app.use((err, req, res, next) => {
 // =========================
 // SERVER
 // =========================
-const server = app.listen(PORT, () => {
-  console.log(`🚀 http://localhost:${PORT}`);
+let server;
+
+async function startServer() {
+  await sessionStore.sync();
+
+  server = app.listen(PORT, () => {
+    console.log(`🚀 http://localhost:${PORT}`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error("❌ Échec du démarrage du serveur:", error);
+  process.exit(1);
 });
 
 // =========================
