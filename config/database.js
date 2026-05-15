@@ -14,12 +14,8 @@ dotenv.config({
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
-const rawDbHost = process.env.DB_HOST;
-const normalizedDbHost = (rawDbHost || "localhost").trim();
-const DB_HOST =
-  process.env.NODE_ENV === "production" && (normalizedDbHost === "localhost" || normalizedDbHost === "::1")
-    ? "127.0.0.1"
-    : normalizedDbHost;
+const rawDbHost = (process.env.DB_HOST || "localhost").trim();
+const DB_HOST = rawDbHost === "127.0.0.1" || rawDbHost === "::1" ? "localhost" : rawDbHost;
 const DB_DIALECT = process.env.DB_DIALECT || "mysql";
 
 if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST) {
@@ -30,9 +26,6 @@ if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST) {
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   dialect: DB_DIALECT,
-  dialectOptions: {
-    family: 4
-  },
 
   logging: false, // 🔥 IMPORTANT (évite pollution logs en prod)
 
