@@ -619,25 +619,55 @@
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  padding: 0.4rem 0.7rem;
+  padding: 0.6rem 0.8rem;
   font-size: 0.85rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 2px solid transparent;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.2s ease;
 }
+.admin-btn-sm.success {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+.admin-btn-sm.success:hover {
+  background: #a7f3d0;
+  transform: translateY(-2px);
+}
+.admin-btn-sm.success:active {
+  transform: translateY(0);
+}
+
 .admin-btn-sm.secondary {
-  background: #eef2ff;
-  color: #3949ab;
-  border-color: #c5cae9;
+  background: #efc48d;
+  color: #6b3500;
+  border-color: #e19a4f;
 }
-.admin-btn-sm.secondary:hover { background: #e8eaf6; }
+.admin-btn-sm.secondary:hover {
+  background: #e19a4f;
+  color: #fff;
+  transform: translateY(-2px);
+}
+.admin-btn-sm.secondary:active {
+  transform: translateY(0);
+}
+
 .admin-btn-sm.danger {
-  background: #ffebee;
-  color: #c62828;
-  border-color: #ffcdd2;
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
 }
-.admin-btn-sm.danger:hover { background: #ffcdd2; }
+.admin-btn-sm.danger:hover {
+  background: #fecaca;
+  transform: translateY(-2px);
+}
+.admin-btn-sm.danger:active {
+  transform: translateY(0);
+}
 
 .admin-table-card {
   position: relative;
@@ -1341,10 +1371,12 @@
     flex: 1;
   }
   .admin-panel-header .btn-general {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     flex-shrink: 0;
+    min-width: 90px;
+    text-align: center;
   }
 
   /* ==========================================
@@ -1408,57 +1440,37 @@
     width: 100%;
     flex-direction: row;
     gap: 0.6rem;
-    margin-top: 0;
+    margin-top: 0.6rem;
     display: flex;
+    justify-content: flex-start;
   }
   .admin-list-actions a,
   .admin-list-actions button,
   .admin-list-actions form {
     flex: 1;
     min-width: 0;
+    display: flex;
   }
   .admin-list-actions button,
   .admin-list-actions a {
     font-size: 0.85rem;
     border-radius: 12px;
     padding: 0.6rem 0.8rem;
-    border: none;
+    border: 2px solid transparent;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s ease;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     width: 100%;
     box-sizing: border-box;
+    text-decoration: none;
   }
   .admin-btn-sm {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.85rem;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-  .admin-btn-sm.success {
-    background: #d1fae5;
-    color: #065f46;
-  }
-  .admin-btn-sm.success:active {
-    background: #a7f3d0;
-  }
-  .admin-btn-sm.danger {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-  .admin-btn-sm.danger:active {
-    background: #fecaca;
-  }
-  .admin-btn-sm.secondary {
-    background: #efc48d;
-    color: #6b3500;
-  }
-  .admin-btn-sm.secondary:active {
-    background: #e19a4f;
-    color: #fff;
+    width: 100%;
+    justify-content: center;
   }
 
   /* ==========================================
