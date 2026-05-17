@@ -239,6 +239,22 @@
   text-decoration: underline;
 }
 
+/* Override: forcer fond blanc + texte noir sur les champs d'authentification
+   Corrige les cas où un thème sombre ou Bootstrap dark appliquerait un fond noir */
+.auth-form-card input,
+.auth-form-card textarea,
+.auth-form-card select,
+.auth-form-card .form-control {
+  background: #ffffff !important;
+  color: #0b0b0b !important;
+  border-color: #e9ecef !important;
+}
+.auth-form-card input::placeholder,
+.auth-form-card textarea::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+
 /* ============================================
    MESSAGES & ERREURS
    ============================================ */

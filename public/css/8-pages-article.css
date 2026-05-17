@@ -136,6 +136,22 @@
     filter: brightness(1.05);
   }
 
+  /* Override: forcer fond blanc + texte noir sur le textarea commentaire et les champs article */
+  .article-detail-card input,
+  .article-detail-card textarea,
+  .article-detail-card .form-control,
+  .comments-section textarea,
+  .comments-section input {
+    background: #ffffff !important;
+    color: #0b0b0b !important;
+    border-color: #d1d5db !important;
+  }
+  .article-detail-card input::placeholder,
+  .article-detail-card textarea::placeholder {
+    color: #9ca3af !important;
+    opacity: 1;
+  }
+
 
 .article-header {
   display: none;

@@ -658,6 +658,14 @@ h1 {
   font-weight: bold;
 }
 
+/* Card "Pourquoi nous écrire" : remplacer tout le gris clair par du noir */
+.contact-aside-card .text-muted,
+.contact-aside-card .small.text-muted,
+.contact-aside-card .text-uppercase.text-muted,
+.contact-aside-card h4.text-muted {
+  color: #000 !important;
+}
+
 .contact-form {
   display: flex;
   flex-direction: column;
