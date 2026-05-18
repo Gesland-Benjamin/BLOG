@@ -57,9 +57,13 @@ export const sendPasswordReset = async (req, res) => {
       reset_token_expiry: expiry
     });
 
-    const resetUrl = `${
-      process.env.APP_URL || "http://localhost:3000"
-    }/auth/reset/${token}`;
+    // Build a safe base URL: prefer APP_URL, otherwise use request host/protocol
+    const rawAppUrl = process.env.APP_URL || "";
+    const baseUrl = rawAppUrl && rawAppUrl.trim()
+      ? rawAppUrl.replace(/\/+$/, "")
+      : `${req.protocol}://${req.get("host")}`;
+
+    const resetUrl = `${baseUrl}/auth/reset/${token}`;
 
     try {
       await sendResetEmail(user.email, token, resetUrl);
