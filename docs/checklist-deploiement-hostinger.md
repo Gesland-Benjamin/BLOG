@@ -36,6 +36,27 @@ Cette checklist est pensée pour un redéploiement du site sur Hostinger en gard
 - [ ] Vérifier les paramètres du profil production dans [ecosystem.config.cjs](../ecosystem.config.cjs#L77).
 - [ ] Vérifier les règles de sécurité et CORS dans [config/production.js](../config/production.js#L14).
 
+## 4bis. Délivrabilité email Hostinger
+
+- [ ] Vérifier que l'adresse d'envoi est bien une boîte du domaine `emi-pulse.fr`.
+- [ ] Vérifier dans hPanel que le compte mail utilisé n'est pas désactivé pour l'envoi SMTP.
+- [ ] Ajouter ou confirmer l'enregistrement SPF du domaine dans la zone DNS.
+- [ ] Activer ou confirmer DKIM dans hPanel puis publier le TXT DKIM fourni par Hostinger.
+- [ ] Ajouter un enregistrement DMARC minimal pour commencer en mode surveillance.
+- [ ] Tester un envoi vers Mail-Tester et corriger les points remontés avant les envois réels.
+
+### Valeurs de départ recommandées
+
+- SPF : `v=spf1 include:_spf.mail.hostinger.com ~all`
+- DKIM : reprendre exactement la valeur TXT générée dans hPanel pour `default._domainkey`
+- DMARC : `v=DMARC1; p=none; rua=mailto:postmaster@emi-pulse.fr; adkim=s; aspf=s; pct=100`
+
+### Après validation
+
+- [ ] Passer DMARC de `p=none` à `p=quarantine` si les rapports sont propres.
+- [ ] Passer ensuite à `p=reject` seulement si SPF et DKIM sont stables.
+- [ ] Conserver les envois de test pendant quelques jours pour surveiller les retours.
+
 ## 5. Ce qu'il faut modifier selon le type de changement
 
 ### Si tu changes uniquement le design

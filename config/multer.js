@@ -2,6 +2,7 @@ import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import { processImage, isValidImage } from "../services/image.js";
+import { getTempUploadsDir, getUploadsDir } from "../utils/uploadPaths.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // Configuration du stockage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads/tmp/"));
+    cb(null, getTempUploadsDir());
   },
   filename: (req, file, cb) => {
     // Générer un nom de fichier aléatoire
@@ -67,7 +68,7 @@ export function uploadWithProcessing(preset = 'article') {
 
         // Traiter l'image
         const basename = path.parse(req.file.filename).name;
-        const outputDir = path.join(__dirname, "../public/uploads/");
+        const outputDir = getUploadsDir();
         
         const imageResult = await processImage(
           req.file.path,
@@ -122,7 +123,7 @@ export function uploadMultipleWithProcessing(fieldName = 'images', maxFiles = 5,
 
           // Traiter l'image
           const basename = path.parse(file.filename).name;
-          const outputDir = path.join(__dirname, "../public/uploads/");
+          const outputDir = getUploadsDir();
           
           const imageResult = await processImage(
             file.path,

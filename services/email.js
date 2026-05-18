@@ -20,12 +20,45 @@ const transporter = nodemailer.createTransport(
         port: Number(process.env.EMAIL_PORT) || 587,
         secure: Number(process.env.EMAIL_PORT) === 465,
         auth: user && pass ? { user, pass } : undefined,
+        logger: process.env.EMAIL_DEBUG === 'true',
+        debug: process.env.EMAIL_DEBUG === 'true',
       }
     : {
         service: process.env.EMAIL_SERVICE || 'gmail',
         auth: user && pass ? { user, pass } : undefined,
+        logger: process.env.EMAIL_DEBUG === 'true',
+        debug: process.env.EMAIL_DEBUG === 'true',
       }
 );
+
+// Helper centralisé pour l'envoi, avec logs détaillés pour debug en production
+async function sendMailWithLogging(mailOptions) {
+  try {
+    console.log('📨 Envoi mail — from:', mailOptions.from, 'to:', mailOptions.to, 'subject:', mailOptions.subject);
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Envoi OK — response:', info && info.response ? info.response : info);
+    return info;
+  } catch (error) {
+    console.error('❌ Erreur sendMail:', error && error.message ? error.message : error);
+    if (error && error.response) console.error('response:', error.response);
+    if (error && error.responseCode) console.error('responseCode:', error.responseCode);
+    if (error && error.code) console.error('code:', error.code);
+    console.error('mailOptions envelope:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+    });
+    throw error;
+  }
+}
+
+function getBrandFromAddress() {
+  return `Mi Amor <${process.env.EMAIL_USER || 'contact@emi-pulse.fr'}>`;
+}
+
+function buildNewsletterText(lines) {
+  return lines.filter(Boolean).join('\n\n');
+}
 
 // Vérifier la connexion
 if (user && pass) {
@@ -44,9 +77,10 @@ if (user && pass) {
 export async function sendResetEmail(email, resetToken, resetUrl) {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@miamor.com',
+      from: getBrandFromAddress(),
       to: email,
-      subject: 'Réinitialisation de votre mot de passe - Mi Amor',
+      subject: 'Réinitialisation de votre mot de passe',
+      replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
         <html>
@@ -73,13 +107,13 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
           <body>
             <div class="container">
               <div class="header">
-                <h1>Mi Amor - Réinitialisation de mot de passe</h1>
+                <h1>Mi Amor</h1>
               </div>
               
               <div class="content">
                 <p>Bonjour,</p>
-                
-                <p>Vous avez demandé une réinitialisation de mot de passe. Cliquez sur le bouton ci-dessous pour continuer :</p>
+                <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte Mi Amor.</p>
+                <p>Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe :</p>
                 
                 <a href="${resetUrl}" class="button">Réinitialiser mon mot de passe</a>
                 
@@ -97,29 +131,24 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
               
               <div class="footer">
                 <p>Cet email a été envoyé parce qu'une demande de réinitialisation de mot de passe a été faite sur le compte associé à cette adresse email.</p>
-                <p>Si vous avez des questions, contactez-nous à support@miamor.com</p>
+                <p>Si vous avez des questions, répondez simplement à ce message.</p>
               </div>
             </div>
           </body>
         </html>
       `,
-      text: `
-Bonjour,
-
-Vous avez demandé une réinitialisation de mot de passe. Visitez ce lien pour continuer :
-
-${resetUrl}
-
-Ce lien expirera dans 1 heure.
-
-Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
-
-Cordialement,
-L'équipe Mi Amor
-      `
+      text: buildNewsletterText([
+        'Réinitialisation de votre mot de passe Mi Amor',
+        'Vous avez demandé une réinitialisation de mot de passe pour votre compte Mi Amor.',
+        `Créez un nouveau mot de passe ici : ${resetUrl}`,
+        'Ce lien expirera dans 1 heure.',
+        "Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.",
+        'Cordialement,',
+        'L\'équipe Mi Amor'
+      ])
     };
 
-    await transporter.sendMail(mailOptions);
+    await sendMailWithLogging(mailOptions);
     console.log(`✅ Email de réinitialisation envoyé à ${email}`);
     return true;
   } catch (error) {
@@ -134,9 +163,10 @@ L'équipe Mi Amor
 export async function sendConfirmationEmail(email, userName) {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@miamor.com',
+      from: getBrandFromAddress(),
       to: email,
-      subject: 'Votre mot de passe a été réinitialisé - Mi Amor',
+      subject: 'Votre mot de passe Mi Amor a été réinitialisé',
+      replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
         <html>
@@ -177,19 +207,17 @@ export async function sendConfirmationEmail(email, userName) {
           </body>
         </html>
       `,
-      text: `
-Bonjour ${userName},
-
-Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
-
-Si vous n'avez pas effectué cette action, veuillez contacter le support immédiatement.
-
-Cordialement,
-L'équipe Mi Amor
-      `
+      text: buildNewsletterText([
+        `Bonjour ${userName},`,
+        'Votre mot de passe Mi Amor a été réinitialisé avec succès.',
+        'Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.',
+        "Si vous n'avez pas effectué cette action, veuillez contacter le support immédiatement.",
+        'Cordialement,',
+        'L\'équipe Mi Amor'
+      ])
     };
 
-    await transporter.sendMail(mailOptions);
+    await sendMailWithLogging(mailOptions);
     console.log(`✅ Email de confirmation envoyé à ${email}`);
     return true;
   } catch (error) {
@@ -206,9 +234,10 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
     const confirmUrl = `${process.env.APP_URL || 'http://localhost:3000'}/newsletter/confirm/${confirmationToken}`;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@miamor.com',
+      from: getBrandFromAddress(),
       to: email,
-      subject: 'Confirmez votre inscription à la newsletter - Mi Amor',
+      subject: 'Confirmation de votre inscription à la newsletter Mi Amor',
+      replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
         <html>
@@ -234,15 +263,14 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; color: #0d6efd;">📧 Mi Amor Newsletter</h1>
+                <h1 style="margin: 0; color: #0d6efd;">Mi Amor Newsletter</h1>
               </div>
               
               <div class="content">
                 <h2>Confirmez votre inscription</h2>
+                <p>Vous avez demandé à recevoir la newsletter Mi Amor.</p>
                 
-                <p>Merci de votre intérêt pour notre newsletter !</p>
-                
-                <p>Pour finaliser votre inscription et commencer à recevoir nos articles, veuillez cliquer sur le bouton ci-dessous :</p>
+                <p>Cliquez sur le bouton ci-dessous pour valider votre inscription :</p>
                 
                 <a href="${confirmUrl}" class="button">Confirmer mon inscription</a>
                 
@@ -251,7 +279,7 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
                 
                 <p><strong>Ce lien est valide pendant 24 heures.</strong></p>
                 
-                <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email en toute sécurité.</p>
+                <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
               </div>
               
               <div class="footer">
@@ -262,24 +290,18 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
           </body>
         </html>
       `,
-      text: `
-Confirmez votre inscription à la newsletter Mi Amor
-
-Merci de votre intérêt pour notre newsletter !
-
-Pour finaliser votre inscription et commencer à recevoir nos articles, veuillez cliquer sur ce lien :
-${confirmUrl}
-
-Ce lien est valide pendant 24 heures.
-
-Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email en toute sécurité.
-
-Cordialement,
-L'équipe Emi-Pulse
-      `
+      text: buildNewsletterText([
+        'Confirmation de votre inscription à la newsletter Mi Amor',
+        'Vous avez demandé à recevoir la newsletter Mi Amor.',
+        `Validez votre inscription ici : ${confirmUrl}`,
+        'Ce lien est valide pendant 24 heures.',
+        "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.",
+        'Cordialement,',
+        'L\'équipe Mi Amor'
+      ])
     };
 
-    await transporter.sendMail(mailOptions);
+    await sendMailWithLogging(mailOptions);
     console.log(`✅ Email de confirmation newsletter envoyé à ${email}`);
     return true;
   } catch (error) {
@@ -296,9 +318,15 @@ export async function sendNewsletterWelcomeEmail(email) {
     const unsubscribeUrl = `${process.env.APP_URL || 'http://localhost:3000'}/newsletter/unsubscribe?email=${encodeURIComponent(email)}`;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@miamor.com',
+      from: getBrandFromAddress(),
       to: email,
-      subject: 'Bienvenue dans la newsletter Mi Amor ! 🎉',
+      subject: 'Bienvenue sur la newsletter Mi Amor',
+      replyTo: process.env.EMAIL_USER || 'noreply@miamor.com',
+      headers: {
+        'List-Unsubscribe': `<${unsubscribeUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        'Precedence': 'bulk'
+      },
       html: `
         <!DOCTYPE html>
         <html>
@@ -324,23 +352,23 @@ export async function sendNewsletterWelcomeEmail(email) {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0;">🎉 Bienvenue chez Mi Amor !</h1>
+                <h1 style="margin: 0;">Bienvenue chez Mi Amor</h1>
               </div>
               
               <div class="content">
-                <p>Félicitations ! Votre inscription à notre newsletter est maintenant confirmée.</p>
+                <p>Votre inscription à la newsletter est confirmée.</p>
                 
-                <p>Vous allez désormais recevoir régulièrement nos meilleurs articles sur :</p>
+                <p>Vous recevrez nos articles et actualités utiles sur :</p>
                 <ul>
-                  <li>✨ La beauté et le bien-être</li>
-                  <li>🥗 La nutrition et la santé</li>
-                  <li>🌟 Le développement personnel</li>
+                  <li>La beauté et le bien-être</li>
+                  <li>La nutrition et la santé</li>
+                  <li>Le développement personnel</li>
                 </ul>
                 
                 <p>Découvrez dès maintenant nos derniers articles :</p>
                 <a href="${process.env.APP_URL || 'http://localhost:3000'}" class="button">Visiter le blog</a>
                 
-                <p>Nous sommes ravis de vous compter parmi nos lecteurs !</p>
+                <p>Merci pour votre inscription.</p>
               </div>
               
               <div class="footer">
@@ -352,27 +380,18 @@ export async function sendNewsletterWelcomeEmail(email) {
           </body>
         </html>
       `,
-      text: `
-Bienvenue chez Emi Pulse !
-
-Félicitations ! Votre inscription à notre newsletter est maintenant confirmée.
-
-Vous allez désormais recevoir régulièrement nos meilleurs articles.
-
-
-Découvrez nos derniers articles sur : ${process.env.APP_URL || 'http://localhost:3000'}
-
-Nous sommes ravis de vous compter parmi nos lecteurs !
-
----
-Pour vous désabonner : ${unsubscribeUrl}
-
-Cordialement,
-L'équipe Mi Amor
-      `
+      text: buildNewsletterText([
+        'Bienvenue sur la newsletter Mi Amor',
+        'Votre inscription à la newsletter est confirmée.',
+        'Vous recevrez nos articles et actualités utiles sur la beauté, la nutrition et le développement personnel.',
+        `Découvrez nos derniers articles : ${process.env.APP_URL || 'http://localhost:3000'}`,
+        `Pour vous désabonner : ${unsubscribeUrl}`,
+        'Cordialement,',
+        'L\'équipe Mi Amor'
+      ])
     };
 
-    await transporter.sendMail(mailOptions);
+    await sendMailWithLogging(mailOptions);
     console.log(`✅ Email de bienvenue envoyé à ${email}`);
     return true;
   } catch (error) {

@@ -41,6 +41,7 @@ import sitemapRssRoutes from "./routes/sitemap-rss-router.js";
 // MIDDLEWARE
 // =========================
 import { getFlashErrors } from "./middleware/validate.js";
+import { getUploadsDir } from "./utils/uploadPaths.js";
 
 // =========================
 // INIT APP
@@ -80,6 +81,7 @@ app.set("view engine", "ejs");
 // =========================
 // STATIC
 // =========================
+app.use('/uploads', express.static(getUploadsDir()));
 app.use(express.static(path.join(__dirname, "public")));
 
 // =========================

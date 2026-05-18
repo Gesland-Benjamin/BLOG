@@ -5,6 +5,7 @@ import { deleteProcessedImages } from "../services/image.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { prepareVideoUrl } from "../utils/videoHelper.js";
+import { getUploadsDir } from "../utils/uploadPaths.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,7 +79,7 @@ export const createArticle = async (req, res) => {
     console.error("❌ createArticle error:", error);
 
     if (req.processedImage) {
-      const uploadsDir = path.join(__dirname, "../public/uploads");
+      const uploadsDir = getUploadsDir();
       await deleteProcessedImages(uploadsDir, req.processedImage.basename)
         .catch(console.error);
     }

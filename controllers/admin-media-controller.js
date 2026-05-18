@@ -3,11 +3,12 @@ import path from 'path';
 import Article from '../models/Article.model.js';
 import { fileURLToPath } from 'url';
 import { Op } from 'sequelize';
+import { getUploadsDir, isRelatedImageFile, getImageBaseName } from '../utils/uploadPaths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
+const UPLOADS_DIR = getUploadsDir();
 
 // =========================
 // LIST MEDIA
@@ -21,11 +22,7 @@ export const listMedia = async (req, res) => {
       attributes: ['id', 'title', 'image']
     });
 
-    const usedFilesSet = new Set(
-      usedArticles
-        .filter(a => a.image)
-        .map(a => path.basename(a.image))
-    );
+    const usedImages = usedArticles.filter(a => a.image);
 
     const mediaList = await Promise.all(
       files.map(async (filename) => {
@@ -33,10 +30,10 @@ export const listMedia = async (req, res) => {
           const filePath = path.join(UPLOADS_DIR, filename);
           const stats = await fs.stat(filePath);
 
-          const isUsed = usedFilesSet.has(filename);
+          const isUsed = usedImages.some(a => isRelatedImageFile(filename, a.image));
 
           const article = isUsed
-            ? usedArticles.find(a => path.basename(a.image) === filename)
+            ? usedArticles.find(a => isRelatedImageFile(filename, a.image))
             : null;
 
           return {
@@ -100,7 +97,7 @@ export const deleteMedia = async (req, res) => {
     const article = await Article.findOne({
       where: {
         image: {
-          [Op.like]: `%${filename}%`
+          [Op.like]: `%${getImageBaseName(filename)}%`
         }
       }
     });
@@ -147,17 +144,13 @@ export const deleteOrphanFiles = async (req, res) => {
       attributes: ['image']
     });
 
-    const usedFilesSet = new Set(
-      usedArticles
-        .filter(a => a.image)
-        .map(a => path.basename(a.image))
-    );
+    const usedImages = usedArticles.filter(a => a.image);
 
     let deletedCount = 0;
     let totalSizeFreed = 0;
 
     for (const filename of files) {
-      if (!usedFilesSet.has(filename)) {
+      if (!usedImages.some(a => isRelatedImageFile(filename, a.image))) {
         const filePath = path.join(UPLOADS_DIR, filename);
         const stats = await fs.stat(filePath);
 
