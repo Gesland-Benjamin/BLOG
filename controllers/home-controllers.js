@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import { Article, User, Categorie } from "../models/index.js";
+import { sendContactInquiryEmail } from "../services/email.js";
 
 // =========================
 // HOME
@@ -204,7 +205,68 @@ export const getRenseignementsPage = (req, res) => {
 // =========================
 // RENSEIGNEMENTS (POST)
 // =========================
-export const postRenseignements = (req, res) => {
-  req.session.message = "Message envoyé";
-  res.redirect("/renseignements");
+export const postRenseignements = async (req, res) => {
+  try {
+    const { nom = "", email = "", telephone = "", sujet = "", message = "" } = req.body;
+    const errors = [];
+
+    const cleanNom = nom.trim();
+    const cleanEmail = email.trim();
+    const cleanTelephone = telephone.trim();
+    const cleanSujet = sujet.trim();
+    const cleanMessage = message.trim();
+
+    if (!cleanNom) errors.push("Le nom est obligatoire.");
+    if (!cleanEmail) {
+      errors.push("L'email est obligatoire.");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      errors.push("L'email n'est pas valide.");
+    }
+    if (!cleanSujet) errors.push("L'objet est obligatoire.");
+    if (!cleanMessage) {
+      errors.push("Le message est obligatoire.");
+    } else if (cleanMessage.length > 1200) {
+      errors.push("Le message ne doit pas dépasser 1200 caractères.");
+    }
+
+    if (errors.length) {
+      return res.status(400).render("renseignements", {
+        title: "Contact",
+        user: req.user,
+        errors,
+        formData: {
+          nom: cleanNom,
+          email: cleanEmail,
+          telephone: cleanTelephone,
+          sujet: cleanSujet,
+          message: cleanMessage
+        }
+      });
+    }
+
+    await sendContactInquiryEmail({
+      nom: cleanNom,
+      email: cleanEmail,
+      telephone: cleanTelephone,
+      sujet: cleanSujet,
+      message: cleanMessage
+    });
+
+    req.session.message = "Message envoyé. Nous revenons vers vous rapidement.";
+    return res.redirect("/renseignements");
+  } catch (error) {
+    console.error("❌ postRenseignements error:", error);
+    return res.status(500).render("renseignements", {
+      title: "Contact",
+      user: req.user,
+      errors: ["Impossible d'envoyer votre message pour le moment. Veuillez réessayer."],
+      formData: {
+        nom: (req.body?.nom || "").trim(),
+        email: (req.body?.email || "").trim(),
+        telephone: (req.body?.telephone || "").trim(),
+        sujet: (req.body?.sujet || "").trim(),
+        message: (req.body?.message || "").trim()
+      }
+    });
+  }
 };

@@ -399,3 +399,70 @@ export async function sendNewsletterWelcomeEmail(email) {
     throw error;
   }
 }
+
+/**
+ * Envoyer un email de demande de renseignements (formulaire contact)
+ */
+export async function sendContactInquiryEmail({ nom, email, telephone, sujet, message }) {
+  try {
+    const destination = process.env.CONTACT_TO || process.env.EMAIL_USER || 'contact@emi-pulse.fr';
+    const safeNom = (nom || '').trim();
+    const safeEmail = (email || '').trim();
+    const safeTelephone = (telephone || '').trim() || 'Non renseigné';
+    const safeSujet = (sujet || '').trim();
+    const safeMessage = (message || '').trim();
+
+    const mailOptions = {
+      from: getBrandFromAddress(),
+      to: destination,
+      replyTo: safeEmail || (process.env.EMAIL_USER || 'contact@emi-pulse.fr'),
+      subject: `[Renseignements] ${safeSujet}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 680px; margin: 0 auto; padding: 20px; }
+              .header { background-color: #f8f9fa; padding: 16px 20px; border-radius: 6px; margin-bottom: 18px; }
+              .content { padding: 0 4px; }
+              .field { margin: 0 0 8px; }
+              .label { font-weight: bold; }
+              .message { margin-top: 14px; padding: 14px; border: 1px solid #e9ecef; border-radius: 6px; white-space: pre-wrap; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h2 style="margin: 0;">Nouvelle demande de renseignements</h2>
+              </div>
+              <div class="content">
+                <p class="field"><span class="label">Nom :</span> ${safeNom}</p>
+                <p class="field"><span class="label">Email :</span> ${safeEmail}</p>
+                <p class="field"><span class="label">Téléphone :</span> ${safeTelephone}</p>
+                <p class="field"><span class="label">Objet :</span> ${safeSujet}</p>
+                <div class="message">${safeMessage}</div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+      text: buildNewsletterText([
+        'Nouvelle demande de renseignements',
+        `Nom: ${safeNom}`,
+        `Email: ${safeEmail}`,
+        `Téléphone: ${safeTelephone}`,
+        `Objet: ${safeSujet}`,
+        `Message:\n${safeMessage}`
+      ])
+    };
+
+    await sendMailWithLogging(mailOptions);
+    console.log(`✅ Demande de renseignements envoyée vers ${destination}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'envoi de la demande de renseignements:', error);
+    throw error;
+  }
+}
