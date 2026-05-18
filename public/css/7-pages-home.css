@@ -261,6 +261,12 @@
   color: #2b1400;
   max-width: 16ch;
 }
+/* Ensure article titles wrap on small screens or when words are long */
+.article-card-title {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .article-card-author {
   display: inline-flex;
   align-items: center;

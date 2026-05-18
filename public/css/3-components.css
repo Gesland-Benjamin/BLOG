@@ -299,6 +299,13 @@
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
+/* Allow long words or links to wrap inside article cards */
+.archive-article-title,
+.archive-article-excerpt {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .archive-article-meta {
   font-size: 0.95rem;
   color: #a67c52;
