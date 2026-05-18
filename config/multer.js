@@ -1,4 +1,5 @@
 import multer from "multer";
+import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import { processImage, isValidImage } from "../services/image.js";
@@ -10,7 +11,12 @@ const __dirname = path.dirname(__filename);
 // Configuration du stockage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, getTempUploadsDir());
+    const tempDir = getTempUploadsDir();
+
+    // Assure que le dossier temporaire existe avant d'écrire le fichier uploadé
+    fs.mkdir(tempDir, { recursive: true })
+      .then(() => cb(null, tempDir))
+      .catch((error) => cb(error));
   },
   filename: (req, file, cb) => {
     // Générer un nom de fichier aléatoire
