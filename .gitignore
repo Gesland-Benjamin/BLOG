@@ -1,3 +1,5 @@
 .env
 node_modules
 .env.production.bak
+# Ignore user uploads (persisted on server, not in repo)
+public/uploads/
