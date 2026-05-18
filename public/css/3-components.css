@@ -306,6 +306,12 @@
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+
+/* Global guard: prevent any text container from causing horizontal scroll due to long unbroken words */
+article, .content-wrapper, .article-content, .archive-article-content, .article-card-text {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .archive-article-meta {
   font-size: 0.95rem;
   color: #a67c52;

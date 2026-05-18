@@ -267,6 +267,16 @@
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+
+/* Allow article content block to wrap long unbroken strings (prevents horizontal overflow) */
+.article-content,
+.article-content p,
+.article-card-text,
+.article-card-text p {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .article-card-author {
   display: inline-flex;
   align-items: center;
