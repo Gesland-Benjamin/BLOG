@@ -61,13 +61,13 @@ Champs ajoutés au modèle `NewsletterSubscriber` :
 ### 4. Emails envoyés
 
 #### Email de confirmation d'inscription
-- **Objet** : "Confirmez votre inscription à la newsletter - Mi Amor"
+- **Objet** : "Confirmez votre inscription à la newsletter - Emi-Pulse"
 - **Contenu** : Lien de confirmation avec token unique
 - **Validité** : 24 heures (à implémenter si nécessaire)
 - **Action** : Clic sur le bouton de confirmation
 
 #### Email de bienvenue
-- **Objet** : "Bienvenue dans la newsletter Mi Amor ! 🎉"
+- **Objet** : "Bienvenue dans la newsletter Emi-Pulse ! 🎉"
 - **Contenu** : 
   - Message de bienvenue
   - Présentation des catégories d'articles

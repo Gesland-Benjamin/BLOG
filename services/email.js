@@ -53,7 +53,7 @@ async function sendMailWithLogging(mailOptions) {
 }
 
 function getBrandFromAddress() {
-  return `Mi Amor <${process.env.EMAIL_USER || 'contact@emi-pulse.fr'}>`;
+  return `Emi-pulse <${process.env.EMAIL_USER || 'contact@emi-pulse.fr'}>`;
 }
 
 function buildNewsletterText(lines) {
@@ -107,12 +107,12 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
           <body>
             <div class="container">
               <div class="header">
-                <h1>Mi Amor</h1>
+                <h1>Emi-Pulse</h1>
               </div>
               
               <div class="content">
                 <p>Bonjour,</p>
-                <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte Mi Amor.</p>
+                <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte Emi-Pulse.</p>
                 <p>Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe :</p>
                 
                 <a href="${resetUrl}" class="button">Réinitialiser mon mot de passe</a>
@@ -126,7 +126,7 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
                   <strong>⚠️  Important :</strong> Ce lien expirera dans 1 heure. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.
                 </div>
                 
-                <p>Cordialement,<br>L'équipe Mi Amor</p>
+                <p>Cordialement,<br>L'équipe Emi-Pulse</p>
               </div>
               
               <div class="footer">
@@ -138,13 +138,13 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
         </html>
       `,
       text: buildNewsletterText([
-        'Réinitialisation de votre mot de passe Mi Amor',
-        'Vous avez demandé une réinitialisation de mot de passe pour votre compte Mi Amor.',
+        'Réinitialisation de votre mot de passe Emi-Pulse',
+        'Vous avez demandé une réinitialisation de mot de passe pour votre compte Emi-Pulse.',
         `Créez un nouveau mot de passe ici : ${resetUrl}`,
         'Ce lien expirera dans 1 heure.',
         "Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.",
         'Cordialement,',
-        'L\'équipe Mi Amor'
+        'L\'équipe Emi-Pulse'
       ])
     };
 
@@ -165,7 +165,7 @@ export async function sendConfirmationEmail(email, userName) {
     const mailOptions = {
       from: getBrandFromAddress(),
       to: email,
-      subject: 'Votre mot de passe Mi Amor a été réinitialisé',
+      subject: 'Votre mot de passe Emi-Pulse a été réinitialisé',
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
@@ -209,11 +209,11 @@ export async function sendConfirmationEmail(email, userName) {
       `,
       text: buildNewsletterText([
         `Bonjour ${userName},`,
-        'Votre mot de passe Mi Amor a été réinitialisé avec succès.',
+        'Votre mot de passe Emi-Pulse a été réinitialisé avec succès.',
         'Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.',
         "Si vous n'avez pas effectué cette action, veuillez contacter le support immédiatement.",
         'Cordialement,',
-        'L\'équipe Mi Amor'
+        'L\'équipe Emi-Pulse'
       ])
     };
 
@@ -236,7 +236,7 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
     const mailOptions = {
       from: getBrandFromAddress(),
       to: email,
-      subject: 'Confirmation de votre inscription à la newsletter Mi Amor',
+      subject: 'Confirmation de votre inscription à la newsletter Emi-pulse',
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
@@ -263,12 +263,12 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; color: #0d6efd;">Mi Amor Newsletter</h1>
+                <h1 style="margin: 0; color: #0d6efd;">Emi-pulse Newsletter</h1>
               </div>
               
               <div class="content">
                 <h2>Confirmez votre inscription</h2>
-                <p>Vous avez demandé à recevoir la newsletter Mi Amor.</p>
+                <p>Vous avez demandé à recevoir la newsletter Emi-pulse.</p>
                 
                 <p>Cliquez sur le bouton ci-dessous pour valider votre inscription :</p>
                 
@@ -283,7 +283,7 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
               </div>
               
               <div class="footer">
-                <p>© ${new Date().getFullYear()} Mi Amor - Tous droits réservés</p>
+                <p>© ${new Date().getFullYear()} Emi-pulse - Tous droits réservés</p>
                 <p>Cet email a été envoyé à ${email}</p>
               </div>
             </div>
@@ -291,13 +291,13 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
         </html>
       `,
       text: buildNewsletterText([
-        'Confirmation de votre inscription à la newsletter Mi Amor',
-        'Vous avez demandé à recevoir la newsletter Mi Amor.',
+        'Confirmation de votre inscription à la newsletter Emi-pulse',
+        'Vous avez demandé à recevoir la newsletter Emi-pulse.',
         `Validez votre inscription ici : ${confirmUrl}`,
         'Ce lien est valide pendant 24 heures.',
         "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.",
         'Cordialement,',
-        'L\'équipe Mi Amor'
+        'L\'équipe Emi-pulse'
       ])
     };
 
@@ -320,8 +320,8 @@ export async function sendNewsletterWelcomeEmail(email) {
     const mailOptions = {
       from: getBrandFromAddress(),
       to: email,
-      subject: 'Bienvenue sur la newsletter Mi Amor',
-      replyTo: process.env.EMAIL_USER || 'noreply@miamor.com',
+      subject: 'Bienvenue sur la newsletter Emi-pulse',
+      replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       headers: {
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -352,7 +352,7 @@ export async function sendNewsletterWelcomeEmail(email) {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0;">Bienvenue chez Mi Amor</h1>
+                <h1 style="margin: 0;">Bienvenue chez Emi-pulse</h1>
               </div>
               
               <div class="content">
@@ -372,7 +372,7 @@ export async function sendNewsletterWelcomeEmail(email) {
               </div>
               
               <div class="footer">
-                <p>© ${new Date().getFullYear()} Mi Amor - Tous droits réservés</p>
+                <p>© ${new Date().getFullYear()} Emi-pulse - Tous droits réservés</p>
                 <p>Vous recevez cet email car vous êtes inscrit à notre newsletter.</p>
                 <p><a href="${unsubscribeUrl}" style="color: #666;">Se désabonner</a></p>
               </div>
@@ -381,13 +381,13 @@ export async function sendNewsletterWelcomeEmail(email) {
         </html>
       `,
       text: buildNewsletterText([
-        'Bienvenue sur la newsletter Mi Amor',
+        'Bienvenue sur la newsletter Emi-pulse',
         'Votre inscription à la newsletter est confirmée.',
         'Vous recevrez nos articles et actualités utiles sur la beauté, la nutrition et le développement personnel.',
         `Découvrez nos derniers articles : ${process.env.APP_URL || 'http://localhost:3000'}`,
         `Pour vous désabonner : ${unsubscribeUrl}`,
         'Cordialement,',
-        'L\'équipe Mi Amor'
+        'L\'équipe Emi-pulse'
       ])
     };
 

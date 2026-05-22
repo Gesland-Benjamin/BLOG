@@ -51,7 +51,7 @@ async function run() {
   const mailOptions = {
     from: from,
     to: to,
-    subject: 'Test SMTP — Mi Amor',
+    subject: 'Test SMTP — Emi-Pulse',
     text: 'Test d\'envoi SMTP effectué depuis scripts/smtp-test.js',
   };
 
