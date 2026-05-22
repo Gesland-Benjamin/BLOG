@@ -5,7 +5,7 @@ import { deleteProcessedImages } from "../services/image.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { prepareVideoUrl } from "../utils/videoHelper.js";
-import { getUploadsDir } from "../utils/uploadPaths.js";
+import { getImageBaseName, getUploadsDir } from "../utils/uploadPaths.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -130,13 +130,27 @@ export const updateArticle = async (req, res) => {
     if (!article) return res.status(404).send("Article non trouvé");
 
     const { title, content, categorieId, video } = req.body;
+    const previousImage = article.image;
+    const hasNewImage = Boolean(req.processedImage);
+    const nextImage = hasNewImage
+      ? `/uploads/${req.processedImage.basename}_md.webp`
+      : article.image;
 
     await article.update({
       title,
       content,
       categorieId: Number(categorieId),
+      image: nextImage,
       video: video ? prepareVideoUrl(video.trim()) : null
     });
+
+    if (hasNewImage && previousImage) {
+      const uploadsDir = getUploadsDir();
+      const previousBaseName = getImageBaseName(previousImage);
+      if (previousBaseName) {
+        await deleteProcessedImages(uploadsDir, previousBaseName).catch(console.error);
+      }
+    }
 
     console.log("✅ ARTICLE UPDATED:", article.id);
 
@@ -144,6 +158,13 @@ export const updateArticle = async (req, res) => {
 
   } catch (error) {
     console.error("updateArticle error:", error);
+
+    if (req.processedImage) {
+      const uploadsDir = getUploadsDir();
+      await deleteProcessedImages(uploadsDir, req.processedImage.basename)
+        .catch(console.error);
+    }
+
     res.status(500).send("Erreur update article");
   }
 };
