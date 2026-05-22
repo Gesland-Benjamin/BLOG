@@ -319,7 +319,7 @@
   width: 50%;
   /* match the main card radius for a seamless edge */
   border-radius: 0 42px 42px 0;
-  background: transparent;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,13 +329,24 @@
 .article-card-image-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: #fff8e6;
+  background: #ffffff;
   border-radius: 0 42px 42px 0 !important;
   box-shadow: none !important;
   transition: none !important;
   display: block;
+}
+
+.article-card-image-wrapper img.card-bordered {
+  border: none !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  position: static;
+}
+
+.article-card-image-wrapper img.card-bordered::after {
+  content: none !important;
 }
 
 .article-card-image-wrapper img:hover {
@@ -495,7 +506,7 @@
     height: 220px;
     min-height: 220px;
     max-height: 220px;
-    background: #d4a468 !important;
+    background: #ffffff !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -506,14 +517,20 @@
     width: 100% !important;
     height: 100% !important;
     max-height: 220px;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
-    background: #fff8e6;
+    background: #ffffff;
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
     display: block;
+  }
+
+  .article-card-image-wrapper img.card-bordered {
+    border: none !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
   }
   .article-card-text {
     width: 100%;
