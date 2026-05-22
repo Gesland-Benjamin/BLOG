@@ -121,7 +121,9 @@
 .card-smeg .list-group-item img {
   width: 56px;
   height: 56px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #fff8e6;
   border-radius: 10px;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
@@ -327,8 +329,9 @@
 .article-card-image-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  background: #fff8e6;
   border-radius: 0 42px 42px 0 !important;
   box-shadow: none !important;
   transition: none !important;
@@ -371,7 +374,9 @@
 .sidebar-article-img-placeholder {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background: #fff8e6;
   border-radius: 8px;
   display: block;
 }
@@ -501,8 +506,9 @@
     width: 100% !important;
     height: 100% !important;
     max-height: 220px;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
+    background: #fff8e6;
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
