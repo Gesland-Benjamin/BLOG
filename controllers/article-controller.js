@@ -8,6 +8,11 @@ import { Op, literal } from "sequelize";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 import { generateOpenGraphImage } from "../services/imageHelper.js";
 import { prepareVideoUrl, getVideoType } from "../utils/videoHelper.js";
+import { formatDate, toDateObject } from "../utils/date.js";
+
+function getArticleCreatedAt(article) {
+  return article?.createdAt || article?.created_at || article?.date_publication || null;
+}
 
 /* =========================
    PAGE SIMPLE ARTICLES
@@ -56,7 +61,12 @@ export const getArticlesParCategorie = async (req, res) => {
             image: a.image,
             image_alt: a.image_alt || a.title,
             auteur: a.author?.name || "Inconnu",
-            date_publication: a.createdAt
+            date_publication: getArticleCreatedAt(a),
+            date_publication_formatted: formatDate(getArticleCreatedAt(a), 'fr-FR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
           }))
         });
       }
@@ -113,8 +123,13 @@ export const getArticleById = async (req, res) => {
       contenu: article.content,
       auteur: article.author?.name || "Inconnu",
       categorie: article.categorie?.name || null,
-      date_publication: article.createdAt ? article.createdAt.toISOString() : null,
-      date_publication_formatted: article.createdAt ? new Date(article.createdAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+      date_publication: getArticleCreatedAt(article),
+      date_publication_iso: toDateObject(getArticleCreatedAt(article))?.toISOString() || '',
+      date_publication_formatted: formatDate(getArticleCreatedAt(article), 'fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }),
       image: article.image,
       image_alt: article.image_alt || article.title,
       video: article.video ? prepareVideoUrl(article.video) : null,
@@ -176,11 +191,23 @@ export const getArticleById = async (req, res) => {
         nom: c.nom || "Lecteur",
         contenu: c.contenu,
         date: c.date,
+        date_publication: c.createdAt || c.created_at || c.date || null,
+        date_publication_formatted: formatDate(c.createdAt || c.created_at || c.date || null, 'fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
         replies: (c.replies || []).map(r => ({
           id: r.id,
           nom: r.nom || "Lecteur",
           contenu: r.contenu,
           date: r.date,
+          date_publication: r.createdAt || r.created_at || r.date || null,
+          date_publication_formatted: formatDate(r.createdAt || r.created_at || r.date || null, 'fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
           is_admin_reply: r.is_admin_reply,
           user: r.user
         }))
@@ -201,6 +228,12 @@ export const getArticleById = async (req, res) => {
         nom: c.nom || "Lecteur",
         contenu: c.contenu,
         date: c.date,
+        date_publication: c.createdAt || c.created_at || c.date || null,
+        date_publication_formatted: formatDate(c.createdAt || c.created_at || c.date || null, 'fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
         replies: []
       }));
     }

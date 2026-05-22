@@ -7,6 +7,7 @@ import {
 
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import { createPaginationData } from "../utils/pagination.js";
+import { formatDate } from "../utils/date.js";
 
 export const getDashboard = async (req, res) => {
   try {
@@ -64,6 +65,11 @@ export const getDashboard = async (req, res) => {
 
     console.log(`📰 Recent articles loaded: ${recentArticles.length}`);
 
+    const recentArticlesWithDates = recentArticles.map(article => ({
+      ...article.toJSON(),
+      created_at_formatted: formatDate(article.created_at, 'fr-FR')
+    }));
+
     // =========================
     // COMMENTS
     // =========================
@@ -93,6 +99,11 @@ export const getDashboard = async (req, res) => {
       });
 
     console.log(`📧 Subscribers loaded: ${recentSubscribers.length}/${subCount}`);
+
+    const recentSubscribersWithDates = recentSubscribers.map(subscriber => ({
+      ...subscriber.toJSON(),
+      date_inscription_formatted: formatDate(subscriber.date_inscription, 'fr-FR')
+    }));
 
     // =========================
     // TOP ARTICLES
@@ -169,10 +180,10 @@ export const getDashboard = async (req, res) => {
       },
 
       users,
-      recentArticles,
+      recentArticles: recentArticlesWithDates,
       pendingComments,
       topArticles,
-      recentSubscribers,
+      recentSubscribers: recentSubscribersWithDates,
       categories,
 
       usersPagination,

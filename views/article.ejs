@@ -13,7 +13,7 @@
             <% } %>
             <h1 class="page-title"><%= article.titre %></h1>
             <div class="article-meta">
-              Par <%= article.auteur %> · <%= article.date_publication.toLocaleDateString() %>
+              Par <%= article.auteur %> · <%= article.date_publication_formatted || '' %>
             </div>
             <div class="article-content">
               <%- article.contenuHtml %>
@@ -28,7 +28,7 @@
               <% commentaires.forEach(function(commentaire) { %>
                 <div class="comment-card">
                   <div class="comment-author"><%= commentaire.auteur %></div>
-                  <div class="comment-date"><%= commentaire.date_publication.toLocaleDateString() %></div>
+                  <div class="comment-date"><%= commentaire.date_publication_formatted || '' %></div>
                   <div class="comment-content"><%= commentaire.contenu %></div>
                   <div class="comment-actions"></div>
                 </div>
@@ -38,28 +38,53 @@
         <% } else if (typeof articlesParCategorie !== 'undefined' && Array.isArray(articlesParCategorie) && articlesParCategorie.length > 0) { %>
           <!-- Affichage de la liste des articles par catégorie -->
           <h1 class="page-title">Derniers articles par catégorie</h1>
-          <div class="archive-articles">
-            <% articlesParCategorie.forEach(function(item) { %>
-              <article class="archive-article-card">
-                <div class="archive-article-layout">
-                  <% if (item.image) { %>
-                    <div class="archive-article-image">
-                      <img src="<%= item.image %>" alt="<%= item.image_alt || item.titre %>" loading="lazy">
-                    </div>
-                  <% } %>
-                  <div class="archive-article-content <%= item.image ? '' : 'full-width' %>">
-                    <h2 class="archive-article-title">
-                      <a href="/article/<%= item.id %>"><%= item.titre %></a>
-                    </h2>
-                    <p class="archive-article-meta">
-                      <% if (item.categorie) { %><strong><%= item.categorie %></strong> | <% } %>
-                      <%= new Date(item.date_publication).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) %>
-                    </p>
-                    <p class="archive-article-excerpt"><%= (item.contenu || '').substring(0, 200) %>...</p>
-                    <a href="/article/<%= item.id %>" class="archive-article-btn">Lire la suite →</a>
+          
+
+          <div class="category-showcase-list">
+            <% articlesParCategorie.forEach(function(group) { %>
+              <section class="category-showcase">
+                <div class="category-showcase-header">
+                  <div>
+                    <h2 class="category-showcase-title"><%= group.categorie %></h2>
+                    <p class="category-showcase-subtitle"><%= group.articles.length %> article<%= group.articles.length > 1 ? 's' : '' %> récent<%= group.articles.length > 1 ? 's' : '' %></p>
                   </div>
                 </div>
-              </article>
+
+                <div class="archive-articles archive-articles--category">
+                  <% group.articles.forEach(function(article) { %>
+                    <article class="archive-article-card archive-article-card--featured">
+                      <% if (article.image) { %>
+                        <div class="archive-article-image archive-article-image--large">
+                          <img src="<%= article.image %>" alt="<%= article.image_alt || article.titre %>" loading="lazy">
+                        </div>
+                      <% } %>
+
+                      <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
+                        <div class="archive-article-pill-row">
+                          <span class="archive-article-pill"><%= group.categorie %></span>
+                          <span class="archive-article-pill archive-article-pill--soft">
+                            <%= article.date_publication_formatted || '' %>
+                          </span>
+                        </div>
+
+                        <h2 class="archive-article-title">
+                          <a href="/article/<%= article.id %>"><%= article.titre %></a>
+                        </h2>
+
+                        <p class="archive-article-meta">
+                          Par <strong><%= article.auteur %></strong>
+                        </p>
+
+                        <p class="archive-article-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
+
+                        <div class="archive-article-actions">
+                          <a href="/article/<%= article.id %>" class="archive-article-btn">Lire la suite →</a>
+                        </div>
+                      </div>
+                    </article>
+                  <% }) %>
+                </div>
+              </section>
             <% }) %>
           </div>
         <% } else { %>

@@ -246,6 +246,9 @@
   padding: 1.5rem 0;
   border-top: 1px solid rgba(154, 79, 24, 0.15);
   border-bottom: 1px solid rgba(154, 79, 24, 0.15);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .article-detail-body h1,

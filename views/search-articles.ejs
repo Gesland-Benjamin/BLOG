@@ -55,7 +55,7 @@
                     </h2>
                     <p class="archive-article-meta">
                       <% if (article.categorie) { %><strong><%= article.categorie %></strong> | <% } %>
-                      <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                      <%= article.date_publication_formatted || '' %>
                     </p>
                     <p class="archive-article-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
                     <a href="/article/<%= article.id %>" class="archive-article-btn">Lire la suite →</a>

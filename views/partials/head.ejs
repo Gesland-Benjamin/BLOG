@@ -15,7 +15,9 @@
         <%- ogImageTags %>
       <% } %>
       <% if (article.date_publication) { %>
-        <meta name="article:published_time" content="<%= new Date(article.date_publication).toISOString() %>" />
+        <% if (article.date_publication_iso) { %>
+          <meta name="article:published_time" content="<%= article.date_publication_iso %>" />
+        <% } %>
       <% } %>
       <% if (article.auteur) { %>
         <meta name="article:author" content="<%= article.auteur %>" />

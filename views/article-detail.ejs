@@ -19,7 +19,7 @@
             </div>
           <% } %>
           <div class="article-detail-content">
-            <p class="article-detail-date"><%= article.date_publication_formatted || (article.date_publication ? new Date(article.date_publication).toLocaleDateString('fr-FR') : '') %></p>
+            <p class="article-detail-date"><%= article.date_publication_formatted || '' %></p>
             <h1 class="article-detail-title" style="text-align: left;"><%= article.titre %></h1>
             <p class="article-detail-meta">Par <strong><%= article.auteur %></strong><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
             <div class="article-detail-body">

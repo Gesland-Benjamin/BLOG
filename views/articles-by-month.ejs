@@ -33,11 +33,7 @@
                         
                         <p class="archive-article-meta">
                           <strong><%= article.categorie || 'Non catégorisé' %></strong> | 
-                          <%= new Date(article.date_publication).toLocaleDateString('fr-FR', { 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                          }) %>
+                          <%= article.date_publication_formatted || '' %>
                         </p>
                         
                         <p class="archive-article-excerpt"><%= article.extrait %>...</p>

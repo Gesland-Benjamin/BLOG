@@ -53,7 +53,7 @@ async function sendMailWithLogging(mailOptions) {
 }
 
 function getBrandFromAddress() {
-  return `Emi-pulse <${process.env.EMAIL_USER || 'contact@emi-pulse.fr'}>`;
+  return `Emi-Pulse <${process.env.EMAIL_USER || 'contact@emi-pulse.fr'}>`;
 }
 
 function buildNewsletterText(lines) {
@@ -236,7 +236,7 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
     const mailOptions = {
       from: getBrandFromAddress(),
       to: email,
-      subject: 'Confirmation de votre inscription à la newsletter Emi-pulse',
+      subject: 'Confirmation de votre inscription à la newsletter Emi-Pulse',
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       html: `
         <!DOCTYPE html>
@@ -263,12 +263,12 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; color: #0d6efd;">Emi-pulse Newsletter</h1>
+                <h1 style="margin: 0; color: #0d6efd;">Emi-Pulse Newsletter</h1>
               </div>
               
               <div class="content">
                 <h2>Confirmez votre inscription</h2>
-                <p>Vous avez demandé à recevoir la newsletter Emi-pulse.</p>
+                <p>Vous avez demandé à recevoir la newsletter Emi-Pulse.</p>
                 
                 <p>Cliquez sur le bouton ci-dessous pour valider votre inscription :</p>
                 
@@ -283,7 +283,7 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
               </div>
               
               <div class="footer">
-                <p>© ${new Date().getFullYear()} Emi-pulse - Tous droits réservés</p>
+                <p>© ${new Date().getFullYear()} Emi-Pulse - Tous droits réservés</p>
                 <p>Cet email a été envoyé à ${email}</p>
               </div>
             </div>
@@ -291,13 +291,13 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
         </html>
       `,
       text: buildNewsletterText([
-        'Confirmation de votre inscription à la newsletter Emi-pulse',
-        'Vous avez demandé à recevoir la newsletter Emi-pulse.',
+        'Confirmation de votre inscription à la newsletter Emi-Pulse',
+        'Vous avez demandé à recevoir la newsletter Emi-Pulse.',
         `Validez votre inscription ici : ${confirmUrl}`,
         'Ce lien est valide pendant 24 heures.',
         "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.",
         'Cordialement,',
-        'L\'équipe Emi-pulse'
+        'L\'équipe Emi-Pulse'
       ])
     };
 
@@ -320,7 +320,7 @@ export async function sendNewsletterWelcomeEmail(email) {
     const mailOptions = {
       from: getBrandFromAddress(),
       to: email,
-      subject: 'Bienvenue sur la newsletter Emi-pulse',
+      subject: 'Bienvenue sur la newsletter Emi-Pulse',
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       headers: {
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
@@ -381,7 +381,7 @@ export async function sendNewsletterWelcomeEmail(email) {
         </html>
       `,
       text: buildNewsletterText([
-        'Bienvenue sur la newsletter Emi-pulse',
+        'Bienvenue sur la newsletter Emi-Pulse',
         'Votre inscription à la newsletter est confirmée.',
         'Vous recevrez nos articles et actualités utiles sur la beauté, la nutrition et le développement personnel.',
         `Découvrez nos derniers articles : ${process.env.APP_URL || 'http://localhost:3000'}`,
