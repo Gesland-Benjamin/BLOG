@@ -734,6 +734,30 @@ header .btn:active,
   z-index: 9999;
 }
 
+/* Empêcher les liens longs de sortir du menu sur mobile */
+.mobile-duo-actions .dropdown-menu,
+.header-actions-bottom .dropdown-menu,
+.mobile-actions-row .dropdown-menu {
+  width: min(92vw, 320px);
+  max-width: 92vw;
+  box-sizing: border-box;
+}
+
+.mobile-duo-actions .dropdown-item,
+.header-actions-bottom .dropdown-item,
+.mobile-actions-row .dropdown-item {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.mobile-duo-actions .dropdown-menu li,
+.header-actions-bottom .dropdown-menu li,
+.mobile-actions-row .dropdown-menu li {
+  min-width: 0;
+}
+
 /* Rangée logo + réseaux en mobile : masquée par défaut (desktop) */
 .mobile-logo-row {
   display: none;
