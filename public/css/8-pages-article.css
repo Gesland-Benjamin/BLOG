@@ -49,6 +49,17 @@
   margin: 0 auto;
 }
 
+@media (min-width: 992px) {
+  /* augmenter légèrement la zone centrale sur desktop */
+  .article-container {
+    max-width: 85%;
+  }
+  /* élargir la card détail article pour un rendu plus aéré */
+  .article-detail-card {
+    max-width: 1100px;
+  }
+}
+
 .video-container {
   position: relative;
   padding-bottom: 45%; /* ratio plus grand */
@@ -674,14 +685,14 @@
   align-items: center;
   gap: 0.4rem;
   font-weight: 800;
-  color: #7a3e00;
+  color: #0b0b0b;
   font-size: 0.98rem;
   line-height: 1.2;
 }
 
 .comment-body {
   margin: 0;
-  color: #3a2a1a;
+  color: #0b0b0b;
   font-size: 0.95rem;
   line-height: 1.58;
   word-break: break-word;
@@ -1010,19 +1021,19 @@
 
 .comment-card-header .comment-author {
   font-weight: 700;
-  color: #9a4f18;
+  color: #0b0b0b;
   font-size: 1.08rem;
   margin-bottom: 0;
 }
 
 .comment-card-header .comment-date {
-  color: #b97a2a;
+  color: #0b0b0b;
   font-size: 0.98rem;
   margin-bottom: 0;
 }
 
 .comment-card .comment-content {
-  color: #3a2a1a;
+  color: #0b0b0b;
   font-size: 1.13rem;
   line-height: 1.7;
   margin-bottom: 0.2rem;
