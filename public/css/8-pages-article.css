@@ -45,19 +45,8 @@
 
 .article-container {
   width: 100%;
-  max-width: 75%;
+  max-width: 85%;
   margin: 0 auto;
-}
-
-@media (min-width: 992px) {
-  /* augmenter légèrement la zone centrale sur desktop */
-  .article-container {
-    max-width: 85%;
-  }
-  /* élargir la card détail article pour un rendu plus aéré */
-  .article-detail-card {
-    max-width: 1100px;
-  }
 }
 
 .video-container {
@@ -84,7 +73,7 @@
    ============================================ */
 .article-detail-card {
   margin: 2rem auto 3rem auto;
-  max-width: 900px;
+  max-width: 1050px;
   position: relative;
   border-radius: 42px;
   border: 2.5px solid #9a4f18;
@@ -209,7 +198,7 @@
 .article-detail-content {
   display: flex;
   flex-direction: column;
-  padding: 3rem;
+  padding: 2.5rem;
   gap: 1.5rem;
 }
 
@@ -553,7 +542,7 @@
   margin: 3rem auto 0 auto;
   padding: 1.25rem;
   position: relative;
-  width: min(100%, 900px);
+  width: min(100%, 1050px);
   border-radius: 28px;
   border: 1px solid rgba(154, 79, 24, 0.22);
   overflow: hidden;
