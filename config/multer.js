@@ -154,4 +154,47 @@ export function uploadMultipleWithProcessing(fieldName = 'images', maxFiles = 5,
   };
 }
 
+/**
+ * Middleware pour traiter deux champs d'images distincts : 'image' et 'image_inline'
+ * Ajoute `req.processedImage` et `req.processedInlineImage` si présents
+ */
+export function uploadTwoWithProcessing(presetMain = 'article', presetInline = 'article') {
+  return async (req, res, next) => {
+    upload.fields([{ name: 'image', maxCount: 1 }, { name: 'image_inline', maxCount: 1 }])(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      try {
+        const outputDir = getUploadsDir();
+
+        // Traiter image principale si présente
+        if (req.files && req.files.image && req.files.image.length > 0) {
+          const file = req.files.image[0];
+          const isValid = await isValidImage(file.path);
+          if (!isValid) throw new Error('Le fichier principal uploadé n\'est pas une image valide');
+          const basename = path.parse(file.filename).name;
+          const imageResult = await processImage(file.path, outputDir, basename, presetMain);
+          req.processedImage = { original: file, processed: imageResult, basename };
+        }
+
+        // Traiter image inline si présente
+        if (req.files && req.files.image_inline && req.files.image_inline.length > 0) {
+          const file2 = req.files.image_inline[0];
+          const isValid2 = await isValidImage(file2.path);
+          if (!isValid2) throw new Error('Le fichier inline uploadé n\'est pas une image valide');
+          const basename2 = path.parse(file2.filename).name;
+          const imageResult2 = await processImage(file2.path, outputDir, basename2, presetInline);
+          req.processedInlineImage = { original: file2, processed: imageResult2, basename: basename2 };
+        }
+
+        next();
+      } catch (error) {
+        console.error('Erreur lors du traitement des images:', error);
+        res.status(500).json({ error: error.message });
+      }
+    });
+  };
+}
+
 export default upload;

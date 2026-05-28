@@ -23,8 +23,18 @@
             <h1 class="article-detail-title" style="text-align: left;"><%= article.titre %></h1>
             <p class="article-detail-meta">Par <strong><%= article.auteur %></strong><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
             <div class="article-detail-body">
-              <%= article.contenu %>
+              <%- article.contenuHtml %>
             </div>
+
+            <% if (article.image_inline && !article.inlineImagePlacedInContent) { %>
+              <div class="article-inline-image" style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                <img src="<%= article.image_inline %>" 
+                     alt="<%= article.image_alt || article.titre %>" 
+                     loading="lazy"
+                     srcset="<%= article.image_inline %> 600w, <%= article.image_inline.replace('_md', '_lg') %> 1200w"
+                     style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);">
+              </div>
+            <% } %>
 
             <% if (article.video) { %>
               <div style="margin-top: 1.2rem;"></div>

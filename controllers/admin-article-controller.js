@@ -62,12 +62,17 @@ export const createArticle = async (req, res) => {
       ? `/uploads/${req.processedImage.basename}_md.webp`
       : null;
 
+    const image_inline = req.processedInlineImage
+      ? `/uploads/${req.processedInlineImage.basename}_md.webp`
+      : null;
+
     const article = await Article.create({
       title: title.trim(),
       content: content.trim(),
       categorieId: categoryIdNum,
       userId: req.user.id,
       image,
+      image_inline,
       video: video ? prepareVideoUrl(video.trim()) : null
     });
 
@@ -82,6 +87,11 @@ export const createArticle = async (req, res) => {
       const uploadsDir = getUploadsDir();
       await deleteProcessedImages(uploadsDir, req.processedImage.basename)
         .catch(console.error);
+    }
+
+    if (req.processedInlineImage) {
+      const uploadsDir = getUploadsDir();
+      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(console.error);
     }
 
     return res.status(500).send("Erreur création article");
@@ -136,11 +146,18 @@ export const updateArticle = async (req, res) => {
       ? `/uploads/${req.processedImage.basename}_md.webp`
       : article.image;
 
+    const previousInline = article.image_inline;
+    const hasNewInline = Boolean(req.processedInlineImage);
+    const nextInline = hasNewInline
+      ? `/uploads/${req.processedInlineImage.basename}_md.webp`
+      : article.image_inline;
+
     await article.update({
       title,
       content,
       categorieId: Number(categorieId),
       image: nextImage,
+      image_inline: nextInline,
       video: video ? prepareVideoUrl(video.trim()) : null
     });
 
@@ -149,6 +166,14 @@ export const updateArticle = async (req, res) => {
       const previousBaseName = getImageBaseName(previousImage);
       if (previousBaseName) {
         await deleteProcessedImages(uploadsDir, previousBaseName).catch(console.error);
+      }
+    }
+
+    if (hasNewInline && previousInline) {
+      const uploadsDir = getUploadsDir();
+      const previousBaseNameInline = getImageBaseName(previousInline);
+      if (previousBaseNameInline) {
+        await deleteProcessedImages(uploadsDir, previousBaseNameInline).catch(console.error);
       }
     }
 
@@ -165,6 +190,11 @@ export const updateArticle = async (req, res) => {
         .catch(console.error);
     }
 
+    if (req.processedInlineImage) {
+      const uploadsDir = getUploadsDir();
+      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(console.error);
+    }
+
     res.status(500).send("Erreur update article");
   }
 };
@@ -176,6 +206,21 @@ export const deleteArticle = async (req, res) => {
   try {
     const article = await Article.findByPk(req.params.id);
     if (!article) return res.status(404).send("Article non trouvé");
+
+    // Supprimer les images générées avant de supprimer l'article
+    const uploadsDir = getUploadsDir();
+    if (article.image) {
+      const imageBaseName = getImageBaseName(article.image);
+      if (imageBaseName) {
+        await deleteProcessedImages(uploadsDir, imageBaseName).catch(console.error);
+      }
+    }
+    if (article.image_inline) {
+      const imageInlineBaseName = getImageBaseName(article.image_inline);
+      if (imageInlineBaseName) {
+        await deleteProcessedImages(uploadsDir, imageInlineBaseName).catch(console.error);
+      }
+    }
 
     await article.destroy();
 

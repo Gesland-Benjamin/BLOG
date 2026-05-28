@@ -9,7 +9,9 @@
           <!-- Affichage d'un article individuel -->
           <div class="article-card">
             <% if (article.image) { %>
-              <img src="<%= article.image %>" alt="<%= article.image_alt || article.titre %>" class="article-image">
+              <div class="article-card-image">
+                <img src="<%= article.image %>" alt="<%= article.image_alt || article.titre %>">
+              </div>
             <% } %>
             <h1 class="page-title"><%= article.titre %></h1>
             <div class="article-meta">

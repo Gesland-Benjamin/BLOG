@@ -253,14 +253,6 @@ startServer().catch((error) => {
 });
 
 // =========================
-// HASH TEST (REMOVE IN PROD)
-// =========================
-(async () => {
-  const hash = await argon2.hash("Alexandre145");
-  console.log("Sample hash:", hash);
-})();
-
-// =========================
 // GRACEFUL SHUTDOWN
 // =========================
 ["SIGTERM", "SIGINT"].forEach((sig) => {

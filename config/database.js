@@ -35,31 +35,6 @@ const maskValue = (value) => {
 const envPath = path.resolve(__dirname, "../.env");
 const envProductionPath = path.resolve(__dirname, "../.env.production");
 
-console.log("[DB DEBUG]", {
-  cwd: process.cwd(),
-  envPath,
-  envFileExists: fs.existsSync(envPath),
-  envProductionPath,
-  envProductionExists: fs.existsSync(envProductionPath),
-  before: {
-    NODE_ENV: envBeforeDotenv.NODE_ENV || "<unset>",
-    DB_NAME: envBeforeDotenv.DB_NAME ? maskValue(envBeforeDotenv.DB_NAME) : "<unset>",
-    DB_USER: envBeforeDotenv.DB_USER ? maskValue(envBeforeDotenv.DB_USER) : "<unset>",
-    DB_HOST: envBeforeDotenv.DB_HOST || "<unset>"
-  },
-  after: {
-    NODE_ENV: process.env.NODE_ENV || "<unset>",
-    DB_NAME: process.env.DB_NAME ? maskValue(process.env.DB_NAME) : "<unset>",
-    DB_USER: process.env.DB_USER ? maskValue(process.env.DB_USER) : "<unset>",
-    DB_HOST: process.env.DB_HOST || "<unset>",
-    DB_DIALECT: process.env.DB_DIALECT || "<unset>"
-  }
-});
-
-if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST) {
-  console.error("❌ Variables d’environnement DB manquantes !");
-  process.exit(1);
-}
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,

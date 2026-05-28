@@ -117,10 +117,48 @@ export const getArticleById = async (req, res) => {
       hasLiked = false;
     }
 
+    const escapeHtml = (value = "") => String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+    const renderParagraphs = (text) => {
+      return text
+        .split(/\n\s*\n/)
+        .map((block) => block.trim())
+        .filter(Boolean)
+        .map((block) => {
+          if (block.startsWith('<div class="article-inline-image"')) {
+            return block;
+          }
+          return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+        })
+        .join('');
+    };
+
+    const buildContentHtml = (content, inlineImageUrl, imageAlt) => {
+      const escaped = escapeHtml(content || "");
+      const imageHtml = inlineImageUrl
+        ? `\n\n<div class="article-inline-image" style="margin:2rem 0 1.5rem;"><img src="${inlineImageUrl}" alt="${escapeHtml(imageAlt)}" loading="lazy" srcset="${inlineImageUrl} 600w, ${inlineImageUrl.replace('_md', '_lg')} 1200w" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 16px rgba(0, 0, 0, 0.08);"></div>\n\n`
+        : "";
+
+      if (inlineImageUrl && escaped.includes('[[IMAGE_INLINE]]')) {
+        return renderParagraphs(escaped.replace('[[IMAGE_INLINE]]', imageHtml));
+      }
+
+      return renderParagraphs(escaped);
+    };
+
+    const contentHasInlinePlaceholder = article.content?.includes('[[IMAGE_INLINE]]');
+
     const articleData = {
       id: article.id,
       titre: article.title,
       contenu: article.content,
+      contenuHtml: buildContentHtml(article.content, article.image_inline, article.image_alt || article.title),
+      inlineImagePlacedInContent: contentHasInlinePlaceholder,
       auteur: article.author?.name || "Inconnu",
       categorie: article.categorie?.name || null,
       date_publication: getArticleCreatedAt(article),
@@ -131,6 +169,7 @@ export const getArticleById = async (req, res) => {
         day: 'numeric'
       }),
       image: article.image,
+      image_inline: article.image_inline || null,
       image_alt: article.image_alt || article.title,
       video: article.video ? prepareVideoUrl(article.video) : null,
       videoType: article.video ? getVideoType(article.video) : null,

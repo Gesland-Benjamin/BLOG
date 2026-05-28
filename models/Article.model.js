@@ -30,6 +30,12 @@ const Article = sequelize.define(
       allowNull: true
     },
 
+    image_inline: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: "image_inline"
+    },
+
     likes: {
       type: DataTypes.INTEGER,
       defaultValue: 0

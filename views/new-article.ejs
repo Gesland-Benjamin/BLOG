@@ -46,7 +46,10 @@
                 name="content"
                 rows="6"
                 required><%= isEditing ? article.content : (formData.content || '') %></textarea>
-              <small class="admin-form-hint">Min 50 caractères</small>
+              <small class="admin-form-hint">
+                Min 50 caractères. Pour placer l'image inline dans le texte,
+                insérez le marqueur <code>[[IMAGE_INLINE]]</code> à l'endroit souhaité.
+              </small>
             </div>
 
             <!-- CATEGORY -->
@@ -77,6 +80,25 @@
                 <div class="admin-image-preview">
                   <small>Image actuelle :</small>
                   <img src="<%= article.image %>" alt="<%= article.title %>">
+                </div>
+              <% } %>
+            </div>
+
+            <!-- IMAGE INLINE (OPTIONNEL) -->
+            <div class="admin-form-group">
+              <label for="image_inline">Ajouter une image sous le texte ou inline</label>
+              <input type="file" id="image_inline" name="image_inline" accept="image/*">
+
+              <small class="admin-form-hint">
+                Cette image s'affichera à l'endroit du marqueur <code>[[IMAGE_INLINE]]</code>
+                dans le contenu. Si le marqueur n'est pas présent, elle s'affichera
+                automatiquement sous le texte.
+              </small>
+
+              <% if (isEditing && article.image_inline) { %>
+                <div class="admin-image-preview">
+                  <small>Image secondaire actuelle :</small>
+                  <img src="<%= article.image_inline %>" alt="<%= article.title %>">
                 </div>
               <% } %>
             </div>
