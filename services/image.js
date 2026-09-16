@@ -80,7 +80,7 @@ export async function processImage(inputPath, outputDir, basename, preset = 'art
 
       await sharp(inputPath)
         .resize(size.width, size.height, {
-          fit: 'cover',
+          fit: 'inside',
           position: 'center',
           withoutEnlargement: true
         })

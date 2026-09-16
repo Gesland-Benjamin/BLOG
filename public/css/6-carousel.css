@@ -149,9 +149,9 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
 
 .main-carousel-image-wrapper img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
   transform: none !important;
   transition: none !important;
   border-radius: 0 42px 42px 0 !important;
@@ -241,9 +241,9 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   .main-carousel-image-wrapper {
     position: static !important;
     width: 100% !important;
-    height: 220px !important;
-    min-height: 220px;
-    max-height: 220px;
+    height: auto !important;
+    min-height: 0;
+    max-height: none;
     margin-bottom: 0;
     border-radius: 32px 32px 0 0 !important;
     background: #d4a468;
@@ -252,9 +252,9 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   }
   .main-carousel-image-wrapper img {
     width: 100% !important;
-    height: 100% !important;
-    max-height: 220px;
-    object-fit: cover;
+    height: auto !important;
+    max-height: none;
+    object-fit: contain;
     object-position: center;
     border-radius: 32px 32px 0 0 !important;
     margin: 0 !important;
