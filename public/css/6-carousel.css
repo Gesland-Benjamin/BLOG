@@ -177,7 +177,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   justify-content: center;
   align-items: flex-start;
   gap: 1rem;
-  z-index: 10;
+  z-index: 1;
   width: 50%;
   position: relative;
   left: 0;
@@ -296,7 +296,7 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
     justify-content: center !important;
     align-items: flex-start !important;
     gap: 1rem !important;
-    z-index: 10 !important;
+    z-index: 1 !important;
   }
   .main-carousel-image-wrapper {
     width: 50% !important;

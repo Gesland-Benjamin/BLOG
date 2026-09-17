@@ -242,6 +242,10 @@ header-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
+  /* Toute la navigation reste au-dessus du contenu, pas seulement le menu. */
+  position: relative;
+  z-index: 20;
+  isolation: isolate;
 }
 
 /* ----- HEADER GLOBAL ----- */
