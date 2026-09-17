@@ -19,19 +19,6 @@
   }
 }
 /* ============================================
-   SEARCH HEADER FLEX (titre + formulaire côte à côte)
-   ============================================ */
-
-.search-header-flex .search-form-card {
-  
-  
-  width: 50%;
-  gap: 2rem;
-  display: flex;
-  align-items: space-between;
-}
-
-/* ============================================
   SECTION RESPONSIVE – MOBILE & TABLETTE
   ============================================ */
 /* ============================================
@@ -1078,97 +1065,6 @@
 
 
 
-
-/* ============================================
-   FORMULAIRE DE RECHERCHE ARTICLE (SMEG PRO)
-   ============================================ */
-.search-form-card {
-  width: auto;
-  margin: 2.5rem auto 2.2rem auto;
-  border-radius: 42px;
-  background: radial-gradient(circle at 60% 40%, #fff4e4 60%, #f9ddb5 100%);
-  box-shadow: 0 8px 32px 0 rgba(80, 60, 40, 0.13), 0 1.5px 0 #fff inset;
-  padding: 2.2rem 2.5rem 2.2rem 2.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1.5rem;
-}
-
-.search-form-group button,
-.search-form-submit-wrapper button,
-.search-form button[type="submit"] {
-  background: linear-gradient(90deg, #f9ddb5 0%, #e19a4f 100%);
-  color: #6b3500;
-  border: none;
-  border-radius: 18px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding: 0.7em 2.1em;
-  box-shadow: 0 2px 8px rgba(225, 154, 79, 0.1);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-  outline: none;
-  width: 100%;
-}
-.search-form-group button:hover,
-.search-form-submit-wrapper button:hover,
-.search-form button[type="submit"]:hover {
-  background: linear-gradient(90deg, #e19a4f 0%, #f9ddb5 100%);
-  color: #fff;
-}
-
-.search-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.search-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 1.2rem;
-  align-items: end;
-}
-
-.search-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.search-form-group label {
-  font-weight: 700;
-  color: #9a4f18;
-  margin-bottom: 0.2rem;
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-}
-
-.search-form-group input,
-.search-form-group select {
-  border-radius: 18px;
-  border: 1.5px solid #e19a4f;
-  padding: 0.8rem 1.1rem;
-  font-size: 1.05rem;
-  background: #fff;
-  color: #6b3500;
-  transition: border 0.2s, box-shadow 0.2s;
-  outline: none;
-}
-
-.search-form-group input:focus,
-.search-form-group select:focus {
-  border-color: #e19a4f;
-  box-shadow: 0 0 0 2px #f9ddb5;
-}
-
-.search-form-submit-wrapper {
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-}
 
 .search-submit {
   border: none;

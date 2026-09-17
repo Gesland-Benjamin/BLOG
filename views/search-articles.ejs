@@ -3,32 +3,37 @@
   <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
-    <main class="content-wrapper">
+    <main class="content-wrapper article-search-page">
 
       <div class="search-header-flex">
         
-        <div class="search-form-card">
+        <section class="search-form-card" aria-labelledby="article-search-title">
+          <div class="search-form-heading">
+            <span class="search-form-eyebrow">Le blog Emi’Pulse</span>
+            <h1 id="article-search-title">Une envie de lecture ?</h1>
+            <p>Un mot-clé, une catégorie… trouvez l’article qui vous parle.</p>
+          </div>
           <form method="GET" action="/search" class="search-form">
             <div class="search-form-grid">
               <div class="search-form-group">
-                <label for="q">Recherche par titre</label>
-                <input type="search" name="q" id="q" placeholder="Titre de l'article..." value="<%= filters.q %>">
+                <label for="q">Que recherchez-vous ?</label>
+                <input type="search" name="q" id="q" placeholder="Un titre, un mot-clé…" value="<%= filters.q %>">
               </div>
               <div class="search-form-group">
                 <label for="categorie">Catégorie</label>
                 <select name="categorie" id="categorie">
-                  <option value="">Toutes</option>
+                  <option value="">Toutes les catégories</option>
                   <% categories.forEach(cat => { %>
                     <option value="<%= cat.id %>" <%= filters.categorie == cat.id ? 'selected' : '' %>><%= cat.name %></option>
                   <% }) %>
                 </select>
               </div>
-              <div class="search-form-group" >
-                <button type="submit" class="btn-general" >Rechercher</button>
+              <div class="search-form-group search-form-action">
+                <button type="submit" class="search-form-button"><i class="bi bi-search" aria-hidden="true"></i> Rechercher</button>
               </div>
             </div>
           </form>
-        </div>
+        </section>
       </div>
 
         <% if (filters.q || filters.categorie || filters.auteur) { %>
