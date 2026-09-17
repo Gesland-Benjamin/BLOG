@@ -102,13 +102,11 @@ body, .carousel-article-card, .carousel-text, .main-carousel-text {
   );
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
   overflow: hidden;
-  transition: transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+  /* Contenir les diapositives sous le header, même pendant une transition. */
+  z-index: 0;
+  isolation: isolate;
 }
 
-#mixedCarousel:hover {
-  transform: translateY(-6px);
-  filter: brightness(1.03);
-}
 
 #mixedCarousel .carousel-inner {
   overflow: hidden;
