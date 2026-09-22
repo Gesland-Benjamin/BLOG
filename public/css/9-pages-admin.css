@@ -2011,3 +2011,234 @@ select {
   border: 1px solid #c9b99c;
   border-radius: 6px;
 }
+
+
+/* Formulaire d’article : styles limités à cette page. */
+.article-compose .admin-container-narrow {
+  max-width: 1040px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+.article-compose .admin-form-card,
+.article-compose .admin-form-card:hover {
+  max-width: none;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  gap: 2rem;
+  border: 1px solid #c59260;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fffaf0, #fff3df);
+  box-shadow: 0 16px 45px rgba(74, 38, 0, 0.12), inset 0 0 0 5px rgba(255, 255, 255, 0.5);
+  transform: none;
+  filter: none;
+  transition: none;
+}
+.article-compose-heading {
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid #e6cfad;
+}
+.article-compose-eyebrow {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #e6c398;
+  border-radius: 999px;
+  background: #ffedcf;
+  color: #75410e;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.article-compose-heading h1 {
+  margin: 0 0 0.6rem;
+  color: #4a2600;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+}
+.article-compose-heading p,
+.article-compose-section-heading p {
+  margin: 0;
+  color: #795c3f;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.article-compose .admin-form { gap: 1.5rem; }
+.article-compose-section {
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid #e5d0b1;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  display: grid;
+  gap: 1.5rem;
+}
+.article-compose .article-compose-section-heading h2 {
+  margin: 0 0 0.35rem;
+  color: #6b3500;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-align: left;
+  letter-spacing: normal;
+}
+.article-compose-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+}
+.article-compose .admin-form-group { min-width: 0; gap: 0.6rem; }
+.article-compose .admin-form-group label {
+  margin: 0;
+  color: #5f3514;
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.article-compose-optional {
+  display: inline-block;
+  margin-left: 0.25rem;
+  color: #795c3f;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.article-compose .admin-form-group :is(input, textarea, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #cba982;
+  border-radius: 10px;
+  background: #fffdfa;
+  color: #4a2600;
+  font-size: 1rem;
+  box-shadow: none;
+}
+.article-compose .admin-form-group :is(input, textarea)::placeholder { color: #856a50; opacity: 1; }
+.article-compose .admin-form-group :is(input, textarea, select):focus {
+  border-color: #93511d;
+  outline: 3px solid rgba(185, 113, 44, 0.22);
+  outline-offset: 2px;
+  background: #fff;
+}
+.article-compose .admin-form-group textarea {
+  min-height: 300px;
+  line-height: 1.8;
+  resize: vertical;
+}
+.article-compose .admin-form-hint {
+  margin: 0;
+  color: #795c3f;
+  font-size: 0.8rem;
+  font-style: normal;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.article-compose code { color: #75410e; }
+.article-compose .article-format-toolbar:not([hidden]) {
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.55rem;
+  border: 1px solid #e5d0b1;
+  border-radius: 10px;
+  background: #fff1d9;
+}
+.article-compose .article-format-toolbar button {
+  min-height: 42px;
+  padding: 0.5rem 1rem;
+  border-color: #cfaa7c;
+  border-radius: 7px;
+  background: #fffdfa;
+  color: #63360e;
+}
+.article-compose .article-format-toolbar button:hover { background: #f8dfb8; }
+.article-compose .article-editor-preview { margin-top: 0.25rem; }
+.article-compose .article-editor-preview summary {
+  padding: 0.75rem 0;
+  color: #75410e;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.article-compose #article-content-preview {
+  background: #fffdfa;
+  border-color: #e5d0b1;
+  border-radius: 10px;
+  line-height: 1.8;
+  color: #4a2600;
+}
+.article-compose .admin-form-group input[type="file"] {
+  padding: 0.6rem;
+  border-style: dashed;
+  font-size: 0.8rem;
+  background: #fff8eb;
+}
+.article-compose input[type="file"]::file-selector-button {
+  margin-right: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cfaa7c;
+  border-radius: 6px;
+  background: #ffedcf;
+  color: #63360e;
+  font: inherit;
+  cursor: pointer;
+}
+.article-compose .admin-image-preview {
+  margin-top: 0;
+  padding: 0.75rem;
+  border: 1px solid #e5d0b1;
+  border-radius: 12px;
+  background: #fff8eb;
+  box-shadow: none;
+}
+.article-compose .admin-image-preview img { max-width: 100%; max-height: 180px; object-fit: contain; }
+.article-compose .admin-form-actions {
+  margin: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e6cfad;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+.article-compose .admin-form-actions :is(.admin-btn, .btn-smeg) {
+  flex: 0 1 auto;
+  min-height: 48px;
+  min-width: 120px;
+  width: auto;
+  margin: 0;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid #8c4e1c;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.article-compose .admin-form-actions .admin-btn.primary {
+  background: linear-gradient(135deg, #874811, #6b3500);
+  color: #fffaf0;
+  box-shadow: 0 4px 10px rgba(107, 53, 0, 0.15);
+}
+.article-compose .admin-form-actions .btn-smeg.secondary {
+  background: #fffaf0;
+  color: #6b3500;
+  border-color: #cba982;
+  box-shadow: none;
+}
+.article-compose :is(button, a, summary):focus-visible {
+  outline: 3px solid #a36629;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .article-compose .admin-container-narrow { padding: 0 0.75rem; margin: 1.25rem auto; }
+  .article-compose .admin-form-card { padding: 1.25rem; border-radius: 20px; }
+  .article-compose-grid { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .article-compose-section { padding: 1rem; gap: 1.25rem; }
+  .article-compose .admin-form-group textarea { min-height: 260px; }
+  .article-compose .admin-form-actions { flex-direction: column; }
+  .article-compose .admin-form-actions :is(.admin-btn, .btn-smeg) { width: 100%; }
+}

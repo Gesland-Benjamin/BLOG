@@ -4,11 +4,15 @@
   <body>
     <%- include('partials/header', { withContainer: true }) %>
 
-    <main class="admin-wrapper">
+    <main class="admin-wrapper article-compose">
       <div class="admin-container-narrow">
         <div class="admin-form-card">
 
-          <h2><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h2>
+          <div class="article-compose-heading">
+            <span class="article-compose-eyebrow">Espace rédaction</span>
+            <h1><%= isEditing ? 'Modifier l\'article' : 'Nouvel article' %></h1>
+            <p><%= isEditing ? 'Peaufinez votre texte et les images qui l’accompagnent.' : 'Une idée, une histoire, un conseil… À vous de partager.' %></p>
+          </div>
 
           <% if (errors && errors.length > 0) { %>
             <div class="admin-alert error" role="alert">
@@ -17,7 +21,7 @@
                   <li><%= error %></li>
                 <% }) %>
               </ul>
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer le message"></button>
             </div>
           <% } %>
 
@@ -25,8 +29,14 @@
                 action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>"
                 enctype="multipart/form-data"
                 class="admin-form">
-<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
+            <section class="article-compose-section" aria-labelledby="article-basics">
+              <div class="article-compose-section-heading">
+                <h2 id="article-basics">L’essentiel</h2>
+                <p>Donnez un titre à votre article et choisissez sa catégorie.</p>
+              </div>
+              <div class="article-compose-grid">
             <!-- TITLE -->
             <div class="admin-form-group">
               <label for="title">Titre</label>
@@ -36,32 +46,7 @@
                 name="title"
                 value="<%= isEditing ? article.title : (formData.title || '') %>"
                 required>
-              <small class="admin-form-hint">Min 5 caractères</small>
-            </div>
-
-            <!-- CONTENT -->
-            <div class="admin-form-group">
-              <label for="content">Contenu</label>
-              <div class="article-format-toolbar" role="group" aria-label="Mise en forme du texte" hidden>
-                <button type="button" data-format="**" aria-controls="content" title="Gras (Ctrl ou Cmd + B)"><strong>Gras</strong></button>
-                <button type="button" data-format="_" aria-controls="content" title="Italique (Ctrl ou Cmd + I)"><em>Italique</em></button>
-              </div>
-              <textarea
-                id="content"
-                name="content"
-                rows="6"
-                aria-describedby="content-help"
-                required><%= isEditing ? article.content : (formData.content || '') %></textarea>
-              <small class="admin-form-hint" id="content-help">
-                Sélectionnez un passage puis cliquez sur Gras ou Italique. Vous pouvez combiner les deux.
-                Les marqueurs <code>**gras**</code> et <code>_italique_</code> seront remplacés à la publication.
-                Min 50 caractères. Pour placer l'image inline dans le texte,
-                insérez le marqueur <code>[[IMAGE_INLINE]]</code> à l'endroit souhaité.
-              </small>
-              <details class="article-editor-preview" hidden>
-                <summary>Aperçu de la mise en forme</summary>
-                <div id="article-content-preview"></div>
-              </details>
+              <small class="admin-form-hint">Au moins 5 caractères pour présenter votre sujet.</small>
             </div>
 
             <!-- CATEGORY -->
@@ -78,9 +63,50 @@
               </select>
             </div>
 
+              </div>
+            </section>
+
+            <section class="article-compose-section" aria-labelledby="article-writing">
+              <div class="article-compose-section-heading">
+                <h2 id="article-writing">Votre texte</h2>
+                <p>Prenez le temps de raconter. La mise en forme est à portée de main.</p>
+              </div>
+            <!-- CONTENT -->
+            <div class="admin-form-group">
+              <label for="content">Contenu</label>
+              <div class="article-format-toolbar" role="group" aria-label="Mise en forme du texte" hidden>
+                <button type="button" data-format="**" aria-controls="content" title="Gras (Ctrl ou Cmd + B)"><strong>Gras</strong></button>
+                <button type="button" data-format="_" aria-controls="content" title="Italique (Ctrl ou Cmd + I)"><em>Italique</em></button>
+              </div>
+              <textarea
+                id="content"
+                name="content"
+                rows="12"
+                aria-describedby="content-help"
+                required><%= isEditing ? article.content : (formData.content || '') %></textarea>
+              <small class="admin-form-hint" id="content-help">
+                Sélectionnez un passage puis cliquez sur Gras ou Italique. Vous pouvez combiner les deux.
+                Les marqueurs <code>**gras**</code> et <code>_italique_</code> seront remplacés à la publication.
+                Min 50 caractères. Pour placer l'image inline dans le texte,
+                insérez le marqueur <code>[[IMAGE_INLINE]]</code> à l'endroit souhaité.
+              </small>
+              <details class="article-editor-preview" hidden>
+                <summary>Aperçu de la mise en forme</summary>
+                <div id="article-content-preview"></div>
+              </details>
+            </div>
+
+            </section>
+
+            <section class="article-compose-section" aria-labelledby="article-media">
+              <div class="article-compose-section-heading">
+                <h2 id="article-media">Images & vidéo</h2>
+                <p>Ajoutez une touche visuelle à votre histoire. Ces éléments sont facultatifs.</p>
+              </div>
+              <div class="article-compose-grid">
             <!-- IMAGE -->
             <div class="admin-form-group">
-              <label for="image">Ajouter une image</label>
+              <label for="image">Image principale</label>
               <input type="file" id="image" name="image" accept="image/*">
 
               <small class="admin-form-hint">
@@ -98,7 +124,7 @@
 
             <!-- IMAGE INLINE (OPTIONNEL) -->
             <div class="admin-form-group">
-              <label for="image_inline">Ajouter une image sous le texte ou inline</label>
+              <label for="image_inline">Image dans l’article <span class="article-compose-optional">Facultatif</span></label>
               <input type="file" id="image_inline" name="image_inline" accept="image/*">
 
               <small class="admin-form-hint">
@@ -115,9 +141,11 @@
               <% } %>
             </div>
 
+              </div>
+              <div class="article-compose-grid">
             <!-- IMAGE ALT -->
             <div class="admin-form-group">
-              <label for="image_alt">Description image (SEO)</label>
+              <label for="image_alt">Description de l’image</label>
               <input
                 type="text"
                 id="image_alt"
@@ -126,13 +154,13 @@
                 placeholder="Ex: Photo beauté visage naturel">
 
               <small class="admin-form-hint">
-                Important pour SEO et accessibilité
+                Décrivez ce que montre l’image pour les lecteurs et l’accessibilité.
               </small>
             </div>
 
             <!-- VIDEO -->
             <div class="admin-form-group">
-              <label for="video">URL vidéo (optionnel)</label>
+              <label for="video">Vidéo <span class="article-compose-optional">Facultatif</span></label>
               <input
                 type="url"
                 id="video"
@@ -142,10 +170,13 @@
               <small class="admin-form-hint">L'URL sera automatiquement convertie en format embed (YouTube/Vimeo).</small>
             </div>
 
+              </div>
+            </section>
+
             <!-- ACTIONS -->
             <div class="admin-form-actions">
               <button type="submit" class="admin-btn primary">
-                <%= isEditing ? 'Mettre à jour' : 'Créer' %>
+                <%= isEditing ? 'Enregistrer les modifications' : 'Créer l’article' %>
               </button>
 
               <a href="/article" class="btn-smeg secondary">
