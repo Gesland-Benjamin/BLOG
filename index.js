@@ -73,8 +73,9 @@ if (process.env.NODE_APP_INSTANCE && process.env.NODE_APP_INSTANCE !== '0') {
 // =========================
 // TRUST PROXY
 // =========================
-// Configurer uniquement les adresses/CIDR des proxies réellement utilisés.
-if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY.split(',').map(s => s.trim()));
+// Proxy local par défaut (Nginx -> localhost), sans faire confiance aux clients distants.
+// TRUST_PROXY reste prioritaire pour une infrastructure utilisant d'autres adresses/CIDR.
+app.set('trust proxy', (process.env.TRUST_PROXY || 'loopback').split(',').map(s => s.trim()));
 app.disable('x-powered-by');
 app.use(securityHeaders);
 app.use(globalRateLimit);

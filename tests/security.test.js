@@ -80,7 +80,8 @@ test('CSRF : Origin null same-origin exige toujours un jeton valide', () => {
     const { res, passed } = run(csrfProtection, req);
     assert.equal(passed, false);
     assert.equal(res.statusCode, 403);
-    assert.equal(res.body, 'Formulaire expiré. Rechargez la page et réessayez.');
+    assert.equal(res.view, 'auth');
+    assert.match(res.data.errors[0], /session a expiré/);
   }
 });
 test('CSRF : origines non autorisées refusées même avec un jeton valide', () => {
@@ -277,4 +278,115 @@ test('Uploads : CSRF avant décodage, originaux nettoyés, variantes conservées
   const success = response(), req = makeReq('valid');
   handler(req, success, () => { req.uploadCommitted = true; success.emit('finish'); }); await settle();
   assert.equal(originals.length, 3); assert.deepEqual(derivatives, ['random']);
+});
+
+
+test('CSRF expiré : connexion réaffichée sans mot de passe et nouveau jeton utilisable', () => {
+  const req = request({ body: { email: 'admin@example.test', password: 'secret-sentinel', _csrf: 'old-token' } });
+  const res = response();
+  csrfToken(req, res, () => {});
+  csrfProtection(req, res, () => assert.fail('POST expiré accepté'));
+  assert.equal(res.statusCode, 403);
+  assert.equal(res.view, 'auth');
+  assert.equal(res.data.formData.email, 'admin@example.test');
+  assert.ok(!JSON.stringify(res.data).includes('secret-sentinel'));
+  assert.deepEqual(res.data.categories, []);
+  req.body._csrf = res.locals.csrfToken;
+  assert.ok(run(csrfProtection, req).passed);
+});
+
+test('Likes : erreurs CSRF en JSON et aucun appel du contrôleur', () => {
+  for (const [headers, code] of [
+    [{ origin: 'null', 'sec-fetch-site': 'same-origin' }, 'CSRF_TOKEN'],
+    [{ origin: 'https://attacker.invalid' }, 'CSRF_ORIGIN']
+  ]) {
+    const req = request({ path: '/article/1/like', session: { csrfToken: 'valid' },
+      headers: { ...headers, accept: 'application/json', 'content-type': 'application/json', 'x-csrf-token': 'invalid' } });
+    const { res, passed } = run(csrfProtection, req);
+    assert.equal(passed, false);
+    assert.equal(res.statusCode, 403);
+    assert.equal(res.body.code, code);
+    assert.equal(typeof res.body.message, 'string');
+  }
+  const req = request({ path: '/article/1/like', session: { csrfToken: 'valid' },
+    headers: { origin: 'null', 'sec-fetch-site': 'same-origin', accept: 'application/json', 'x-csrf-token': 'valid' } });
+  assert.ok(run(csrfProtection, req).passed);
+});
+
+
+test('Likes : le navigateur affiche les refus et ne remercie pas après une erreur', async () => {
+  const source = fs.readFileSync('views/article-detail.ejs', 'utf8');
+  const start = source.indexOf("      document.addEventListener('DOMContentLoaded', () => {");
+  const script = source.slice(start, source.indexOf('</script>', start)).replace('<%= csrfToken %>', 'local-token');
+  for (const [status, data, expected] of [
+    [403, { code: 'CSRF_TOKEN', message: 'Formulaire expiré.' }, 'Formulaire expiré.'],
+    [429, { error: 'Veuillez patienter.' }, 'Veuillez patienter.'],
+    [400, { message: 'Identifiant invalide' }, 'Identifiant invalide'],
+    [500, null, 'Impossible d’enregistrer votre like pour le moment. Réessayez plus tard.'],
+    [400, { message: 'Vous avez déjà liké cet article' }, null],
+    [200, { likes: 12 }, null]
+  ]) {
+    let click, alertMessage;
+    const label = { textContent: "J'aime" }, count = {}, classes = new Set();
+    const btn = { disabled: false, dataset: { articleId: '1' },
+      querySelector: () => label, addEventListener: (name, handler) => { click = handler; },
+      classList: { add: name => classes.add(name), remove: name => classes.delete(name) } };
+    vm.runInNewContext(script, {
+      document: { addEventListener: (name, handler) => handler(), getElementById: id => id === 'like-btn' ? btn : count },
+      fetch: async (url, options) => {
+        assert.equal(options.headers.Accept, 'application/json');
+        assert.equal(options.headers['x-csrf-token'], 'local-token');
+        return { status, ok: status === 200, json: async () => { if (data === null) throw new Error('HTML'); return data; } };
+      },
+      alert: message => { alertMessage = message; }, console: { error() {} }
+    });
+    await click();
+    if (expected) {
+      assert.equal(alertMessage, expected);
+      assert.equal(btn.disabled, false);
+      assert.equal(label.textContent, "J'aime");
+      assert.equal(classes.has('liked'), false);
+    } else {
+      assert.equal(alertMessage, undefined);
+      assert.equal(btn.disabled, true);
+      if (status === 200) assert.equal(count.textContent, "12 j'aimes");
+      else assert.equal(label.textContent, 'Merci');
+    }
+  }
+});
+
+
+test('Proxy HTTPS : défaut local, clients distants refusés, configuration explicite prioritaire', async () => {
+  const { default: expressUtils } = await import('express/lib/utils.js');
+  const { default: requestPrototype } = await import('express/lib/request.js');
+  const source = fs.readFileSync('index.js', 'utf8');
+  const start = source.indexOf('// TRUST PROXY');
+  const end = source.indexOf("app.disable('x-powered-by')", start);
+  assert.ok(start >= 0 && end > start);
+  function trustFor(env) {
+    let trust;
+    // Évaluer uniquement le réglage ; aucun démarrage de l'application ou import DB.
+    vm.runInNewContext(source.slice(start, end), {
+      process: { env }, app: { set(key, value) {
+        assert.equal(key, 'trust proxy');
+        trust = expressUtils.compileTrust(value);
+      } }
+    });
+    return trust;
+  }
+  const local = trustFor({});
+  for (const ip of ['127.0.0.1', '::1', '::ffff:127.0.0.1']) assert.ok(local(ip));
+  for (const ip of ['192.0.2.10', '10.0.0.1', '203.0.113.5']) assert.equal(local(ip), false);
+  const explicit = trustFor({ TRUST_PROXY: '192.0.2.10, 192.0.2.11' });
+  assert.ok(explicit('192.0.2.10'));
+  assert.ok(explicit('192.0.2.11'));
+  assert.equal(explicit('127.0.0.1'), false);
+  for (const [ip, secure] of [['127.0.0.1', true], ['203.0.113.5', false]]) {
+    const req = Object.create(requestPrototype);
+    req.connection = { remoteAddress: ip };
+    req.socket = req.connection;
+    req.headers = { 'x-forwarded-proto': 'https' };
+    req.app = { get: () => local };
+    assert.equal(req.secure, secure);
+  }
 });

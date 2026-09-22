@@ -40,7 +40,7 @@ export function csrfProtection(req, res, next) {
   const fetchSite = req.get('sec-fetch-site');
   const sameOriginNull = origin === 'null' && fetchSite === 'same-origin';
   if (fetchSite === 'cross-site' || (origin && origin !== appUrl() && !sameOriginNull)) {
-    return res.status(403).send('Origine non autorisée.');
+    return csrfFailure(req, res, 'CSRF_ORIGIN', 'Origine non autorisée.');
   }
   // Seules ces routes authentifiées parsèrent ensuite le multipart et vérifient
   // le jeton AVANT de décoder/traiter les fichiers. Aucun autre multipart accepté.
@@ -48,6 +48,21 @@ export function csrfProtection(req, res, next) {
     if (['POST', 'PUT'].includes(req.method) && /^\/admin\/articles(?:\/\d+)?$/.test(req.path)) return next();
     return res.status(415).send('Format non autorisé.');
   }
-  if (!validCsrf(req)) return res.status(403).send('Formulaire expiré. Rechargez la page et réessayez.');
+  if (!validCsrf(req)) return csrfFailure(req, res, 'CSRF_TOKEN', 'Formulaire expiré. Rechargez la page et réessayez.');
   next();
+}
+
+function csrfFailure(req, res, code, message) {
+  if (req.get('accept')?.includes('application/json') || req.is('application/json')) {
+    return res.status(403).json({ code, message });
+  }
+  if (code === 'CSRF_TOKEN' && req.method === 'POST' && /^\/auth\/?$/.test(req.path)) {
+    // Ne jamais rejouer le POST ni renvoyer le mot de passe dans le HTML.
+    return res.status(403).render('auth', {
+      title: 'Authentification', message: null, user: req.user || null,
+      categories: [], errors: ['Votre session a expiré. Saisissez à nouveau votre mot de passe. Si le problème persiste, vérifiez que les cookies sont autorisés.'],
+      formData: { email: typeof req.body?.email === 'string' ? req.body.email : '' }
+    });
+  }
+  return res.status(403).send(message);
 }

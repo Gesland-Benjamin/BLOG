@@ -245,23 +245,27 @@
               method: 'POST',
               headers: { 
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'x-csrf-token': '<%= csrfToken %>'
               }
             });
 
-            if (response.status === 400) {
-              const err = await response.json().catch(() => ({ message: 'Vous avez déjà liké cet article' }));
+            const data = await response.json().catch(() => ({}));
+            if (response.status === 400 && data.message === 'Vous avez déjà liké cet article') {
               btn.classList.add('liked');
               if (label) label.textContent = 'Merci';
               return;
             }
 
             if (!response.ok) {
-              const err = await response.json().catch(() => ({ message: 'Erreur serveur' }));
-              throw new Error(err.message || 'Like failed');
+              const fallback = response.status === 403
+                ? 'Votre session a expiré. Rechargez la page avant de réessayer.'
+                : response.status === 429
+                  ? 'Trop de tentatives. Veuillez patienter avant de réessayer.'
+                  : 'Impossible d’enregistrer votre like pour le moment. Réessayez plus tard.';
+              throw new Error(data.message || data.error || fallback);
             }
 
-            const data = await response.json();
             const total = data.likes ?? 0;
             countEl.textContent = `${total} j'aime${total > 1 ? 's' : ''}`;
             btn.classList.remove('btn-outline-secondary');
