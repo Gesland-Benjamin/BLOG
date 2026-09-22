@@ -37,7 +37,9 @@ export function validCsrf(req) {
 export function csrfProtection(req, res, next) {
   if (safeMethods.has(req.method)) return next();
   const origin = req.get('origin');
-  if (req.get('sec-fetch-site') === 'cross-site' || (origin && origin !== appUrl())) {
+  const fetchSite = req.get('sec-fetch-site');
+  const sameOriginNull = origin === 'null' && fetchSite === 'same-origin';
+  if (fetchSite === 'cross-site' || (origin && origin !== appUrl() && !sameOriginNull)) {
     return res.status(403).send('Origine non autorisée.');
   }
   // Seules ces routes authentifiées parsèrent ensuite le multipart et vérifient

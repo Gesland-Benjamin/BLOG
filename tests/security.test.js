@@ -64,6 +64,43 @@ test('CSRF : session, corps, header, origine et routes multipart', () => {
   req.path = '/admin/articles/12'; req.method = 'PUT'; assert.ok(run(csrfProtection, req).passed);
   req.session.csrfToken = 'another-session'; assert.equal(validCsrf(req), false);
 });
+test('CSRF : Origin null same-origin accepté avec un jeton valide', () => {
+  for (const tokenInHeader of [false, true]) {
+    const req = request({ session: { csrfToken: 'valid-token' },
+      headers: { origin: 'null', 'sec-fetch-site': 'same-origin' } });
+    if (tokenInHeader) req.headers['x-csrf-token'] = 'valid-token';
+    else req.body._csrf = 'valid-token';
+    assert.ok(run(csrfProtection, req).passed);
+  }
+});
+test('CSRF : Origin null same-origin exige toujours un jeton valide', () => {
+  for (const token of [undefined, 'invalid-token']) {
+    const req = request({ session: { csrfToken: 'valid-token' }, body: { _csrf: token },
+      headers: { origin: 'null', 'sec-fetch-site': 'same-origin' } });
+    const { res, passed } = run(csrfProtection, req);
+    assert.equal(passed, false);
+    assert.equal(res.statusCode, 403);
+    assert.equal(res.body, 'Formulaire expiré. Rechargez la page et réessayez.');
+  }
+});
+test('CSRF : origines non autorisées refusées même avec un jeton valide', () => {
+  const headersList = [
+    { origin: 'null' },
+    ...['same-site', 'none', 'cross-site'].map(site => ({ origin: 'null', 'sec-fetch-site': site })),
+    { origin: 'https://attacker.invalid' },
+    { origin: 'https://attacker.invalid', 'sec-fetch-site': 'same-origin' },
+    { origin: 'http://attacker.invalid', 'sec-fetch-site': 'same-origin' },
+    { 'sec-fetch-site': 'cross-site' },
+    { origin: security.appUrl(), 'sec-fetch-site': 'cross-site' }
+  ];
+  for (const headers of headersList) {
+    const req = request({ headers, session: { csrfToken: 'valid-token' }, body: { _csrf: 'valid-token' } });
+    const { res, passed } = run(csrfProtection, req);
+    assert.equal(passed, false, JSON.stringify(headers));
+    assert.equal(res.statusCode, 403);
+    assert.equal(res.body, 'Origine non autorisée.');
+  }
+});
 test('En-têtes : CSP sans handlers inline, nonce unique et no-store dynamique', () => {
   const first=response(), second=response(); securityHeaders(request(),first,()=>{}); securityHeaders(request(),second,()=>{});
   assert.notEqual(first.locals.cspNonce, second.locals.cspNonce);
