@@ -1,3 +1,5 @@
+import { articlePlainText } from '../public/js/article-format.js';
+import { safeLog } from '../utils/security.js';
 import Article from "../models/Article.model.js";
 import Categorie from "../models/Categorie.model.js";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
@@ -8,8 +10,8 @@ export const searchArticles = async (req, res) => {
     const pageSize = 9;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
 
-    const search = (req.query.q || "").trim();
-    const categorie = req.query.categorie || "";
+    const search = (typeof req.query.q === "string" ? req.query.q : "").trim().slice(0, 200);
+    const categorie = typeof req.query.categorie === "string" && /^\d{1,10}$/.test(req.query.categorie) ? req.query.categorie : "";
 
     const where = {};
 
@@ -58,7 +60,7 @@ export const searchArticles = async (req, res) => {
     const articles = rows.map((a) => ({
       id: a.id,
       titre: a.title,                 // ✅ FIX
-      contenu: a.content,             // ✅ FIX
+      contenu: articlePlainText(a.content),             // ✅ FIX
       categorie: a.categorie?.name || null,
       date_publication: a.createdAt,  // OK via Sequelize
       image: a.image
@@ -97,7 +99,7 @@ export const searchArticles = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Erreur searchArticles:", error);
+    safeLog(error);
     return res.status(500).send("Erreur lors de la recherche d'articles");
   }
 };

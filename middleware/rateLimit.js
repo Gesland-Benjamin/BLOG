@@ -1,96 +1,50 @@
-// middleware/rateLimit.js
-
-const rateLimits = new Map();
-
-// Nettoyer les anciennes entrées toutes les 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, data] of rateLimits.entries()) {
-    if (now - data.resetTime > 0) {
-      rateLimits.delete(key);
-      console.log(`[RATE LIMIT CLEANUP] Cleared key: ${key}`);
-    }
+import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
+// Un seul processus applicatif (ecosystem.config.cjs). Avant passage en cluster,
+// remplacer cette mémoire bornée par un store partagé atomique.
+function ipKey(req) {
+  const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+  // Regrouper les IPv6 par /56, comme les limiteurs standards.
+  if (isIP(ip) === 6) {
+    const host = new URL(`http://[${ip}]/`).hostname.slice(1, -1);
+    const [a, b = ''] = host.split('::');
+    const left = a ? a.split(':') : [], right = b ? b.split(':') : [];
+    const parts = host.includes('::') ? [...left, ...Array(8 - left.length - right.length).fill('0'), ...right] : left;
+    return parts.slice(0, 3).map(x => x.padStart(4, '0')).join(':') + ':' + (parseInt(parts[3], 16) & 0xff00).toString(16);
   }
-}, 5 * 60 * 1000);
-
-/**
- * Rate limiter configurable avec logs
- */
-export function rateLimit(options = {}) {
-  const {
-    windowMs = 15 * 60 * 1000,
-    max = 100,
-    message = 'Trop de requêtes, veuillez réessayer plus tard.',
-    keyGenerator = (req) => req.ip || req.connection.remoteAddress
-  } = options;
-
+  return ip;
+}
+export function rateLimit({ windowMs = 60000, max = 30, keyGenerator = ipKey, maxKeys = 10000 } = {}) {
+  const records = new Map();
+  let nextCleanup = 0;
   return (req, res, next) => {
-    const key = keyGenerator(req);
     const now = Date.now();
-    let record = rateLimits.get(key);
-
-    console.log(`[RATE LIMIT] Attempt for key: ${key}, URL: ${req.originalUrl}, User-Agent: ${req.headers['user-agent']}`);
-
-    if (!record) {
-      record = { count: 1, resetTime: now + windowMs };
-      rateLimits.set(key, record);
-      console.log(`[RATE LIMIT] First request, count set to 1, window expires at ${new Date(record.resetTime).toISOString()}`);
-      return next();
+    if (now >= nextCleanup) {
+      for (const [key, record] of records) if (record.until <= now) records.delete(key);
+      nextCleanup = now + Math.min(windowMs, 60000);
     }
-
-    // Réinitialiser si la fenêtre est expirée
-    if (now > record.resetTime) {
-      record.count = 1;
-      record.resetTime = now + windowMs;
-      console.log(`[RATE LIMIT] Window reset, count = 1, new resetTime = ${new Date(record.resetTime).toISOString()}`);
-      return next();
+    const key = createHash('sha256').update(String(keyGenerator(req))).digest('hex');
+    let record = records.get(key);
+    if (!record || record.until <= now) {
+      if (!record && records.size >= maxKeys) return res.status(429).send('Veuillez réessayer plus tard.');
+      record = { count: 0, until: now + windowMs }; records.set(key, record);
     }
-
-    // Incrémenter le compteur
-    record.count++;
-
-    // Vérifier la limite
-    if (record.count > max) {
-      console.warn(`[RATE LIMIT] Limit exceeded for key: ${key}, count: ${record.count}, max: ${max}`);
-      return res.status(429).json({
-        error: message,
-        retryAfter: Math.ceil((record.resetTime - now) / 1000)
-      });
+    if (++record.count > max) {
+      const retryAfter = Math.max(1, Math.ceil((record.until - now) / 1000));
+      res.set('Retry-After', String(retryAfter));
+      return res.status(429).json({ error: 'Trop de requêtes. Veuillez patienter.', retryAfter });
     }
-
-    console.log(`[RATE LIMIT] Allowed, count: ${record.count}/${max}`);
     next();
   };
 }
-
-// Rate limiters spécifiques
-export const strictRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: 'Trop de tentatives. Veuillez patienter avant de réessayer.'
-});
-
-export const formRateLimit = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  message: 'Trop de soumissions. Veuillez patienter une minute.'
-});
-
-export const likeRateLimit = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  message: 'Trop de likes en peu de temps. Veuillez patienter.'
-});
-
-export const commentRateLimit = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  max: 3,
-  message: 'Trop de commentaires. Veuillez patienter quelques minutes.'
-});
-
-export const loginRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.',
-  keyGenerator: (req) => req.body?.email || req.ip || req.connection.remoteAddress
-});
+export const globalRateLimit = rateLimit({ windowMs: 60000, max: 180 });
+export const strictRateLimit = rateLimit({ windowMs: 15 * 60000, max: 20 });
+export const formRateLimit = rateLimit({ windowMs: 60000, max: 5 });
+export const contactRateLimit = rateLimit({ windowMs: 15 * 60000, max: 5 });
+export const likeRateLimit = rateLimit({ windowMs: 60000, max: 20 });
+export const commentRateLimit = rateLimit({ windowMs: 5 * 60000, max: 3 });
+export const searchRateLimit = rateLimit({ windowMs: 60000, max: 30 });
+const loginIp = rateLimit({ windowMs: 15 * 60000, max: 30 });
+const loginAccount = rateLimit({ windowMs: 15 * 60000, max: 10, keyGenerator: req => typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : ipKey(req) });
+export const loginRateLimit = [loginIp, loginAccount];
+export const recoveryRateLimit = [formRateLimit, rateLimit({ windowMs: 60 * 60000, max: 3, keyGenerator: req => typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : ipKey(req) })];

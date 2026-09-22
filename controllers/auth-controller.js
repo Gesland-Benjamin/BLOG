@@ -1,3 +1,5 @@
+import { verifyAdminMfa } from '../utils/adminMfa.js';
+import { fingerprint, safeLog } from '../utils/security.js';
 import argon2 from "argon2";
 import { User } from "../models/index.js";
 import { registerSchema } from "../validators/schemas.js";
@@ -39,7 +41,7 @@ export const getRegisterPage = (req, res) => {
 // ==============================
 export const register = async (req, res) => {
   console.log("🚀 POST /auth/register");
-  console.log("BODY:", req.body);
+
 
   try {
     const { error, value } = registerSchema.validate(req.body, {
@@ -50,9 +52,9 @@ export const register = async (req, res) => {
     if (error) {
       return res.status(400).render("register", {
         title: "Créer un compte",
-        errors: error.details.map(e => e.message),
+        errors: ["Vérifiez les champs et les critères du mot de passe."],
         user: req.session.user || null,
-        formData: req.body
+        formData: { name: req.body.name, email: req.body.email }
       });
     }
 
@@ -68,7 +70,7 @@ export const register = async (req, res) => {
         title: "Créer un compte",
         errors: ["Email déjà utilisé"],
         user: req.session.user || null,
-        formData: req.body
+        formData: { name: req.body.name, email: req.body.email }
       });
     }
 
@@ -77,7 +79,7 @@ export const register = async (req, res) => {
         title: "Créer un compte",
         errors: ["Mot de passe manquant"],
         user: req.session.user || null,
-        formData: req.body
+        formData: { name: req.body.name, email: req.body.email }
       });
     }
 
@@ -85,13 +87,13 @@ export const register = async (req, res) => {
     try {
       hashed = await argon2.hash(password);
     } catch (err) {
-      console.error("ARGON2 ERROR:", err);
+      safeLog(err);
 
       return res.status(500).render("register", {
         title: "Créer un compte",
         errors: ["Erreur hash mot de passe"],
         user: req.session.user || null,
-        formData: req.body
+        formData: { name: req.body.name, email: req.body.email }
       });
     }
 
@@ -108,13 +110,13 @@ export const register = async (req, res) => {
     return res.redirect("/auth");
 
   } catch (error) {
-    console.error("💥 REGISTER ERROR:", error);
+    safeLog(error);
 
     return res.status(500).render("register", {
       title: "Créer un compte",
       errors: ["Erreur serveur"],
       user: req.session.user || null,
-      formData: req.body
+      formData: { name: req.body.name, email: req.body.email }
     });
   }
 };
@@ -156,11 +158,11 @@ export const login = async (req, res) => {
     try {
       valid = await argon2.verify(user.password, password);
     } catch (err) {
-      console.error("ARGON2 VERIFY ERROR:", err);
+      safeLog(err);
       valid = false;
     }
 
-    if (!valid) {
+    if (!valid || !verifyAdminMfa(user, req.body.otp)) {
       return res.status(401).render("auth", {
         title: "Authentification",
         errors: ["Identifiants invalides"],
@@ -173,7 +175,7 @@ export const login = async (req, res) => {
 
     req.session.regenerate((err) => {
       if (err) {
-        console.error("SESSION ERROR:", err);
+        safeLog(err);
         return res.status(500).render("auth", {
           title: "Authentification",
           errors: ["Erreur session"],
@@ -182,6 +184,8 @@ export const login = async (req, res) => {
         });
       }
 
+      req.session.authVersion = fingerprint(`${user.password}\0${user.role}`);
+      req.session.lastActive = Date.now();
       req.session.user = {
         id: user.id,
         name: user.name,
@@ -191,7 +195,7 @@ export const login = async (req, res) => {
 
       req.session.save((err) => {
         if (err) {
-          console.error("SESSION SAVE ERROR:", err);
+          safeLog(err);
           return res.status(500).render("auth", {
             title: "Authentification",
             errors: ["Erreur session"],
@@ -205,7 +209,7 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("💥 LOGIN ERROR:", error);
+    safeLog(error);
 
     return res.status(500).render("auth", {
       title: "Authentification",

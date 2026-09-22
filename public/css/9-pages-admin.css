@@ -1974,3 +1974,40 @@ select {
     text-overflow: ellipsis;
   }
 }
+.article-format-toolbar:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-format-toolbar button {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #7a3e00;
+  border-radius: 6px;
+  background: #fff8eb;
+  color: #6b3500;
+  cursor: pointer;
+}
+
+.article-format-toolbar button:focus-visible {
+  outline: 2px solid #7a3e00;
+  outline-offset: 3px;
+}
+
+.article-editor-preview {
+  margin-top: 0.75rem;
+}
+
+.article-editor-preview summary {
+  cursor: pointer;
+}
+
+#article-content-preview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border: 1px solid #c9b99c;
+  border-radius: 6px;
+}

@@ -1,3 +1,4 @@
+import { strictRateLimit } from '../middleware/rateLimit.js';
 import { Router } from "express";
 import { isAdmin } from "../middleware/auth.js";
 import {
@@ -13,9 +14,9 @@ router.get("/newsletter", isAdmin, listSubscribers);
 
 router.get("/newsletter/export", isAdmin, exportSubscribersCSV);
 
-router.post("/newsletter/:id/resend", isAdmin, resendConfirmation);
+router.post("/newsletter/:id/resend", isAdmin, strictRateLimit, resendConfirmation);
 
 // ✅ FIX ICI
-router.delete("/newsletter/:id", isAdmin, deleteSubscriber);
+router.delete("/newsletter/:id", isAdmin, strictRateLimit, deleteSubscriber);
 
 export default router;

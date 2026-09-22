@@ -31,7 +31,7 @@ export function isAdmin(req, res, next) {
     return res.redirect('/auth');
   }
 
-  if (req.session.user.role?.toLowerCase() === 'admin') {
+  if (req.user?.role?.toLowerCase() === 'admin') {
    
     return next();
   }
@@ -57,7 +57,8 @@ export function isAuthorOrAdmin(req, res, next) {
 
   const userId = req.session.user.id;
   const userRole = req.session.user.role;
-  const resourceOwnerId = req.params.userId || req.body.userId;
+  // L'identité de la ressource doit provenir d'une lecture serveur, jamais du corps client.
+  const resourceOwnerId = res.locals.resource?.userId;
 
   if (userRole?.toLowerCase() === 'admin') {
     

@@ -16,7 +16,7 @@ const envBeforeDotenv = {
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
-  override: true
+  override: false
 });
 
 const DB_NAME = process.env.DB_NAME;

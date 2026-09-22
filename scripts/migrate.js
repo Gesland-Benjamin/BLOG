@@ -15,6 +15,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function runMigrations() {
+  if (process.env.NODE_ENV === 'production' || process.env.ALLOW_LOCAL_MIGRATIONS !== 'yes' || !['localhost', '127.0.0.1', '::1'].includes(process.env.DB_HOST || 'localhost')) {
+    throw new Error('Migrations automatiques refusées. Revue manuelle obligatoire ; aucune migration nécessaire pour le correctif sécurité.');
+  }
   try {
     console.log('\n🚀 Démarrage des migrations...\n');
     

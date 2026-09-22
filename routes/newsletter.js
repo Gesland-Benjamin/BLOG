@@ -2,7 +2,7 @@ import { Router } from "express";
 import { showNewsletterForm, subscribeNewsletter, confirmSubscription, showUnsubscribeForm, unsubscribe } from "../controllers/newsletter-controller.js";
 import { validateRequest } from "../middleware/validate.js";
 import { newsletterSchema } from "../validators/schemas.js";
-import { formRateLimit } from "../middleware/rateLimit.js";
+import { formRateLimit, recoveryRateLimit } from "../middleware/rateLimit.js";
 
 const router = Router();
 
@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", showNewsletterForm);
 
 // Traite l'inscription - avec rate limiting
-router.post("/subscribe", formRateLimit, validateRequest(newsletterSchema), subscribeNewsletter);
+router.post("/subscribe", recoveryRateLimit, validateRequest(newsletterSchema, { view: "newsletter" }), subscribeNewsletter);
 
 // Confirmer l'inscription via le token
 router.get("/confirm/:token", confirmSubscription);
@@ -19,6 +19,6 @@ router.get("/confirm/:token", confirmSubscription);
 router.get("/unsubscribe", showUnsubscribeForm);
 
 // Traiter la désinscription
-router.post("/unsubscribe", formRateLimit, unsubscribe);
+router.post("/unsubscribe", recoveryRateLimit, unsubscribe);
 
 export default router;

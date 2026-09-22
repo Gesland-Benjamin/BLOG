@@ -1,200 +1,71 @@
-import multer from "multer";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-import { processImage, isValidImage } from "../services/image.js";
-import { getTempUploadsDir, getUploadsDir } from "../utils/uploadPaths.js";
+import multer from 'multer';
+import fs from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { processImage, isValidImage, deleteProcessedImages } from '../services/image.js';
+import { getTempUploadsDir, getUploadsDir } from '../utils/uploadPaths.js';
+import { validCsrf } from '../middleware/requestSecurity.js';
+import { safeLog } from '../utils/security.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Configuration du stockage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const tempDir = getTempUploadsDir();
-
-    // Assure que le dossier temporaire existe avant d'écrire le fichier uploadé
-    fs.mkdir(tempDir, { recursive: true })
-      .then(() => cb(null, tempDir))
-      .catch((error) => cb(error));
-  },
-  filename: (req, file, cb) => {
-    // Générer un nom de fichier aléatoire
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix);
-  }
-});
-
-// Filtre pour valider les fichiers
-const fileFilter = (req, file, cb) => {
-  // Types MIME autorisés (images uniquement)
-  const allowedMimes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-  
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Seules les images (JPEG, PNG, GIF, WebP) sont autorisées"), false);
-  }
-};
-
-// Configuration de multer avec traitement d'image automatique
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5 MB
-  }
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
+      fs.mkdir(getTempUploadsDir(), { recursive: true, mode: 0o700 }).then(() => cb(null, getTempUploadsDir()), cb);
+    },
+    filename(req, file, cb) { cb(null, randomUUID()); }
+  }),
+  fileFilter(req, file, cb) {
+    if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) return cb(new Error('Format refusé'));
+    cb(null, true);
+  },
+  limits: { fileSize: 5 * 1024 * 1024, files: 2, fields: 20, fieldSize: 60000, parts: 24 }
 });
-
-/**
- * Middleware pour traiter l'image uploadée
- * Compresse et redimensionne l'image selon un preset
- * @param {string} preset - Type de preset (article, thumbnail, avatar)
- * @returns {Function} Middleware multer avec traitement
- */
-export function uploadWithProcessing(preset = 'article') {
-  return async (req, res, next) => {
-    // Utiliser le middleware multer
-    upload.single('image')(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-
-      if (!req.file) {
-        // Pas d'erreur, juste pas de fichier
-        return next();
-      }
-
+let activeUploads = 0;
+function withProcessing(parser, presets) {
+  return (req, res, next) => {
+    if (activeUploads >= 2) return res.status(503).send('Traitement en cours, veuillez réessayer.');
+    activeUploads++;
+    let released = false;
+    const release = () => { if (!released) { released = true; activeUploads--; } };
+    res.once('close', release);
+    parser(req, res, async error => {
+      const files = req.file ? [req.file] : Array.isArray(req.files) ? req.files : Object.values(req.files || {}).flat();
+      const processed = [];
+      let done = false;
+      let handedOff = false;
+      const cleanup = async () => {
+        if (done) return; done = true;
+        if (!req.uploadCommitted) await Promise.all(processed.map(p => deleteProcessedImages(getUploadsDir(), p.basename)));
+      };
+      res.once('finish', () => { void cleanup().catch(safeLog); });
       try {
-        // Valider que c'est une image
-        const isValid = await isValidImage(req.file.path);
-        if (!isValid) {
-          throw new Error('Le fichier uploadé n\'est pas une image valide');
-        }
-
-        // Traiter l'image
-        const basename = path.parse(req.file.filename).name;
-        const outputDir = getUploadsDir();
-        
-        const imageResult = await processImage(
-          req.file.path,
-          outputDir,
-          basename,
-          preset
-        );
-
-        // Stocker les infos dans la requête
-        req.processedImage = {
-          original: req.file,
-          processed: imageResult,
-          basename: basename
-        };
-
-        next();
-      } catch (error) {
-        console.error('Erreur lors du traitement de l\'image:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-  };
-}
-
-/**
- * Middleware pour traiter plusieurs images
- * @param {string} fieldName - Nom du champ form
- * @param {number} maxFiles - Nombre max de fichiers
- * @param {string} preset - Type de preset
- * @returns {Function} Middleware
- */
-export function uploadMultipleWithProcessing(fieldName = 'images', maxFiles = 5, preset = 'article') {
-  return async (req, res, next) => {
-    upload.array(fieldName, maxFiles)(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-
-      if (!req.files || req.files.length === 0) {
-        return next();
-      }
-
-      try {
+        if (error) throw error;
+        if (!validCsrf(req)) return res.status(403).send('Formulaire expiré. Rechargez la page.');
+        if (res.destroyed) return;
         req.processedImages = [];
-
-        for (const file of req.files) {
-          // Valider que c'est une image
-          const isValid = await isValidImage(file.path);
-          if (!isValid) {
-            throw new Error(`Le fichier ${file.filename} n\'est pas une image valide`);
-          }
-
-          // Traiter l'image
-          const basename = path.parse(file.filename).name;
-          const outputDir = getUploadsDir();
-          
-          const imageResult = await processImage(
-            file.path,
-            outputDir,
-            basename,
-            preset
-          );
-
-          req.processedImages.push({
-            original: file,
-            processed: imageResult,
-            basename: basename
-          });
+        for (const file of files) {
+          if (!await isValidImage(file.path)) throw new Error('Invalid image');
+          const record = { basename: file.filename };
+          processed.push(record); // Nettoyer aussi les variantes partiellement créées.
+          record.processed = await processImage(file.path, getUploadsDir(), file.filename, presets[file.fieldname] || 'article');
+          req.processedImages.push(record);
+          if (file.fieldname === 'image') req.processedImage = record;
+          if (file.fieldname === 'image_inline') req.processedInlineImage = record;
         }
-
+        if (res.destroyed) return;
+        handedOff = true;
         next();
-      } catch (error) {
-        console.error('Erreur lors du traitement des images:', error);
-        res.status(500).json({ error: error.message });
+      } catch (err) {
+        safeLog(err);
+        if (!res.headersSent && !res.destroyed) res.status(400).send('Image refusée. Formats JPEG, PNG, GIF ou WebP, 5 Mo maximum et dimensions raisonnables.');
+      } finally {
+        await Promise.all(files.map(file => fs.unlink(file.path).catch(safeLog)));
+        release();
+        if (!handedOff) await cleanup();
       }
     });
   };
 }
-
-/**
- * Middleware pour traiter deux champs d'images distincts : 'image' et 'image_inline'
- * Ajoute `req.processedImage` et `req.processedInlineImage` si présents
- */
-export function uploadTwoWithProcessing(presetMain = 'article', presetInline = 'article') {
-  return async (req, res, next) => {
-    upload.fields([{ name: 'image', maxCount: 1 }, { name: 'image_inline', maxCount: 1 }])(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-
-      try {
-        const outputDir = getUploadsDir();
-
-        // Traiter image principale si présente
-        if (req.files && req.files.image && req.files.image.length > 0) {
-          const file = req.files.image[0];
-          const isValid = await isValidImage(file.path);
-          if (!isValid) throw new Error('Le fichier principal uploadé n\'est pas une image valide');
-          const basename = path.parse(file.filename).name;
-          const imageResult = await processImage(file.path, outputDir, basename, presetMain);
-          req.processedImage = { original: file, processed: imageResult, basename };
-        }
-
-        // Traiter image inline si présente
-        if (req.files && req.files.image_inline && req.files.image_inline.length > 0) {
-          const file2 = req.files.image_inline[0];
-          const isValid2 = await isValidImage(file2.path);
-          if (!isValid2) throw new Error('Le fichier inline uploadé n\'est pas une image valide');
-          const basename2 = path.parse(file2.filename).name;
-          const imageResult2 = await processImage(file2.path, outputDir, basename2, presetInline);
-          req.processedInlineImage = { original: file2, processed: imageResult2, basename: basename2 };
-        }
-
-        next();
-      } catch (error) {
-        console.error('Erreur lors du traitement des images:', error);
-        res.status(500).json({ error: error.message });
-      }
-    });
-  };
-}
-
+export const uploadWithProcessing = (preset = 'article') => withProcessing(upload.single('image'), { image: preset });
+export const uploadMultipleWithProcessing = (fieldName = 'images', maxFiles = 2, preset = 'article') => withProcessing(upload.array(fieldName, Math.min(maxFiles, 2)), { [fieldName]: preset });
+export const uploadTwoWithProcessing = (main = 'article', inline = 'article') => withProcessing(upload.fields([{ name: 'image', maxCount: 1 }, { name: 'image_inline', maxCount: 1 }]), { image: main, image_inline: inline });
 export default upload;

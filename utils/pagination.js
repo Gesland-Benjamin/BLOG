@@ -2,8 +2,8 @@
 // PARAMS PAGINATION (OFFSET / LIMIT)
 // =========================
 export const getPaginationParams = (page = 1, pageSize = 10) => {
-  const pageNum = Math.max(1, parseInt(page) || 1);
-  const limit = Math.max(1, parseInt(pageSize) || 10);
+  const pageNum = Math.min(10000, Math.max(1, parseInt(page) || 1));
+  const limit = Math.min(100, Math.max(1, parseInt(pageSize) || 10));
   const offset = (pageNum - 1) * limit;
 
   return {
@@ -24,8 +24,8 @@ export const createPaginationData = (
   baseUrl = '',
   pageParam = 'page'
 ) => {
-  const pageNum = Math.max(1, parseInt(page) || 1);
-  const limit = Math.max(1, parseInt(pageSize) || 10);
+  const pageNum = Math.min(10000, Math.max(1, parseInt(page) || 1));
+  const limit = Math.min(100, Math.max(1, parseInt(pageSize) || 10));
   const totalPages = Math.ceil(total / limit);
 
   const currentPage = Math.min(pageNum, totalPages || 1);

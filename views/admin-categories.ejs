@@ -46,7 +46,9 @@
                       </td>
                       <td class="text-end">
                         <a href="/admin/categories/<%= category.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
-                        <button class="admin-btn-sm danger" onclick="deleteCategory('<%= category.id %>', '<%= category.name || category.nom %>')">Supprimer</button>
+                        <form method="POST" action="/admin/categories/<%= category.id %>?_method=DELETE">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<button class="admin-btn-sm danger" data-confirm="Supprimer cette catégorie ?">Supprimer</button></form>
                       </td>
                     </tr>
                   <% }) %>
@@ -61,35 +63,6 @@
       </div>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-    <script>
-      function deleteCategory(categoryId, categoryName) {
-        console.log('Suppression demandée pour:', categoryId, categoryName);
-        if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?`)) {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = `/admin/categories/${categoryId}?_method=DELETE`;
-          form.onsubmit = function(e) {
-            console.log('Formulaire suppression envoyé:', form.action);
-          };
-          document.body.appendChild(form);
-          console.log('Formulaire créé, prêt à être soumis:', form.action);
-          form.submit();
-        } else {
-          alert('Suppression annulée');
-        }
-      }
-      // Debug réseau
-      window.addEventListener('load', function() {
-        document.querySelectorAll('.admin-btn-sm.danger').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            setTimeout(function() {
-              fetch(window.location.href, { method: 'HEAD' })
-                .then(resp => console.log('Debug HEAD:', resp.status, resp.statusText))
-                .catch(err => console.error('Erreur réseau:', err));
-            }, 500);
-          });
-        });
-      });
-    </script>
+
   </body>
 </html>

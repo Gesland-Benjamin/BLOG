@@ -198,9 +198,9 @@
                   </li>
                   <% if (typeof user !== 'undefined' && user) { %>
                     <li>
-                      <a class="dropdown-item" href="/auth/logout">
+                      <form method="POST" action="/auth/logout" class="logout-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" class="dropdown-item" >
                         <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-                      </a>
+                      </button></form>
                     </li>
                   <% } else { %>
                     <li>
@@ -275,9 +275,9 @@
                   </li>
                   <% if (typeof user !== 'undefined' && user) { %>
                     <li>
-                      <a class="dropdown-item" href="/auth/logout">
+                      <form method="POST" action="/auth/logout" class="logout-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" class="dropdown-item" >
                         <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-                      </a>
+                      </button></form>
                     </li>
                   <% } else { %>
                     <li>
@@ -313,9 +313,9 @@
       <div class="header-right">
         <div class="right-buttons-stack">
           <% if (typeof user !== 'undefined' && user) { %>
-            <a class="btn-chrome-deconnexion" href="/auth/logout">
+            <form method="POST" action="/auth/logout" class="logout-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" class="btn-chrome-deconnexion" >
               <i class="bi bi-box-arrow-right header-icon-spacer"></i>Déconnexion
-            </a>
+            </button></form>
           <% } else { %>
             <a class="btn-chrome-connexion" href="/auth">
               <i class="bi bi-person-circle header-icon-spacer"></i>Connexion / Inscription

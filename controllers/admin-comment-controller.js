@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import Commentaire from "../models/Commentaire.model.js";
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
@@ -82,7 +83,7 @@ export const listCommentsAdmin = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ listCommentsAdmin:", error);
+    safeLog(error);
     return res.status(500).send("Erreur commentaire admin");
   }
 };
@@ -105,7 +106,7 @@ export const approveComment = async (req, res) => {
 
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("❌ approveComment:", error);
+    safeLog(error);
     res.status(500).send("Erreur approve");
   }
 };
@@ -127,7 +128,7 @@ export const rejectComment = async (req, res) => {
 
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("❌ rejectComment:", error);
+    safeLog(error);
     res.status(500).send("Erreur reject");
   }
 };
@@ -150,7 +151,7 @@ export const markSpamComment = async (req, res) => {
 
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("❌ markSpamComment:", error);
+    safeLog(error);
     res.status(500).send("Erreur spam");
   }
 };
@@ -170,7 +171,7 @@ export const deleteComment = async (req, res) => {
 
     res.redirect("/admin/commentaires");
   } catch (error) {
-    console.error("❌ deleteComment:", error);
+    safeLog(error);
     res.status(500).send("Erreur delete");
   }
 };
@@ -202,7 +203,7 @@ export const replyToComment = async (req, res) => {
     res.redirect("/admin/commentaires");
 
   } catch (error) {
-    console.error("❌ replyToComment:", error);
+    safeLog(error);
     res.status(500).send("Erreur reply");
   }
 };

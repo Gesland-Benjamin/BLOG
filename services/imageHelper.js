@@ -1,3 +1,4 @@
+import { escapeHtml } from '../utils/security.js';
 import path from 'path';
 
 /**
@@ -90,30 +91,30 @@ export function generateLazyImage(options) {
   const blurredPlaceholder = getBlurredPlaceholder();
 
   let imgTag = `<img 
-    src="${src}"
-    alt="${alt}"
+    src="${escapeHtml(src)}"
+    alt="${escapeHtml(alt)}"
     loading="${loading}"
-    class="${className}"
+    class="${escapeHtml(className)}"
   `;
 
   if (srcset) {
-    imgTag += `\n    srcset="${srcset}"`;
+    imgTag += `\n    srcset="${escapeHtml(srcset)}"`;
   }
 
   if (sizes) {
-    imgTag += `\n    sizes="${sizes}"`;
+    imgTag += `\n    sizes="${escapeHtml(sizes)}"`;
   }
 
   if (title) {
-    imgTag += `\n    title="${title}"`;
+    imgTag += `\n    title="${escapeHtml(title)}"`;
   }
 
   if (width) {
-    imgTag += `\n    width="${width}"`;
+    imgTag += `\n    width="${escapeHtml(width)}"`;
   }
 
   if (height) {
-    imgTag += `\n    height="${height}"`;
+    imgTag += `\n    height="${escapeHtml(height)}"`;
   }
 
   // Ajouter le placeholder blurred pour progressive loading
@@ -162,29 +163,29 @@ export function generatePictureTag(options) {
   
   // Source WebP
   if (srcWebp) {
-    pictureTag += `  <source srcset="${srcWebp}"${srcset ? ` srcset="${srcset}"` : ''} type="image/webp"${sizes ? ` sizes="${sizes}"` : ''}>\n`;
+    pictureTag += `  <source srcset="${escapeHtml(srcWebp)}"${srcset ? ` srcset="${escapeHtml(srcset)}"` : ''} type="image/webp"${sizes ? ` sizes="${escapeHtml(sizes)}"` : ''}>\n`;
   }
   
   // Source JPEG fallback
-  pictureTag += `  <source srcset="${src}" type="image/jpeg"${sizes ? ` sizes="${sizes}"` : ''}>\n`;
+  pictureTag += `  <source srcset="${escapeHtml(src)}" type="image/jpeg"${sizes ? ` sizes="${escapeHtml(sizes)}"` : ''}>\n`;
   
   // Fallback img
   pictureTag += `  <img 
-    src="${src}"
-    alt="${alt}"
+    src="${escapeHtml(src)}"
+    alt="${escapeHtml(alt)}"
     loading="${loading}"
-    class="${className}"`;
+    class="${escapeHtml(className)}"`;
 
   if (title) {
-    pictureTag += `\n    title="${title}"`;
+    pictureTag += `\n    title="${escapeHtml(title)}"`;
   }
 
   if (width) {
-    pictureTag += `\n    width="${width}"`;
+    pictureTag += `\n    width="${escapeHtml(width)}"`;
   }
 
   if (height) {
-    pictureTag += `\n    height="${height}"`;
+    pictureTag += `\n    height="${escapeHtml(height)}"`;
   }
 
   pictureTag += `\n    style="background-image: url('${blurredPlaceholder}'); background-size: cover; background-position: center;"`;
@@ -279,18 +280,18 @@ export function generateOpenGraphImage(options) {
     return '';
   }
 
-  let tags = `<meta property="og:image" content="${imageUrl}">\n`;
+  let tags = `<meta property="og:image" content="${escapeHtml(imageUrl)}">\n`;
   
   if (imageAlt) {
-    tags += `<meta property="og:image:alt" content="${imageAlt}">\n`;
+    tags += `<meta property="og:image:alt" content="${escapeHtml(imageAlt)}">\n`;
   }
 
   if (width) {
-    tags += `<meta property="og:image:width" content="${width}">\n`;
+    tags += `<meta property="og:image:width" content="${escapeHtml(width)}">\n`;
   }
 
   if (height) {
-    tags += `<meta property="og:image:height" content="${height}">\n`;
+    tags += `<meta property="og:image:height" content="${escapeHtml(height)}">\n`;
   }
 
   // Type d'image

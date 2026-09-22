@@ -1,7 +1,10 @@
+import { safeLog } from '../utils/security.js';
+import { csvCell } from '../utils/security.js';
 import NewsletterSubscriber from "../models/NewsletterSubscriber.model.js";
 import User from "../models/User.model.js";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
 import { Op } from "sequelize";
+import { sendSubscriberConfirmation } from './newsletter-controller.js';
 
 /**
  * LISTE SUBSCRIBERS
@@ -65,7 +68,7 @@ export const listSubscribers = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ listSubscribers:", error);
+    safeLog(error);
     res.status(500).render("500", {
       title: "Erreur serveur",
       error: error.message
@@ -92,7 +95,7 @@ export const exportSubscribersCSV = async (req, res) => {
     let csv = "Email,Nom,Confirmé,Date inscription\n";
 
     subscribers.forEach(sub => {
-      csv += `"${sub.email}","${sub.user?.name || ""}","${sub.confirmed ? "Oui" : "Non"}","${sub.date_inscription}"\n`;
+      csv += [sub.email, sub.user?.name || '', sub.confirmed ? 'Oui' : 'Non', sub.date_inscription].map(csvCell).join(',') + '\r\n';
     });
 
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
@@ -101,7 +104,7 @@ export const exportSubscribersCSV = async (req, res) => {
     res.send(csv);
 
   } catch (error) {
-    console.error("❌ exportSubscribersCSV:", error);
+    safeLog(error);
     res.status(500).render("500", {
       title: "Erreur export CSV",
       error: error.message
@@ -132,7 +135,7 @@ export const deleteSubscriber = async (req, res) => {
     res.redirect("/admin/newsletter");
 
   } catch (error) {
-    console.error("❌ deleteSubscriber:", error);
+    safeLog(error);
 
     res.status(500).render("500", {
       title: "Erreur suppression",
@@ -154,13 +157,13 @@ export const resendConfirmation = async (req, res) => {
       });
     }
 
-    // TODO: brancher service email réel
-    console.log(`📧 Confirmation renvoyée à : ${subscriber.email}`);
+    await sendSubscriberConfirmation(subscriber);
+    req.session.message = subscriber.confirmed ? "Abonnement déjà confirmé." : "Email de confirmation envoyé.";
 
     res.redirect("/admin/newsletter");
 
   } catch (error) {
-    console.error("❌ resendConfirmation:", error);
+    safeLog(error);
     res.status(500).render("500", {
       title: "Erreur renvoi confirmation",
       error: error.message

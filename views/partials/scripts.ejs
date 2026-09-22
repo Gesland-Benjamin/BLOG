@@ -1,9 +1,10 @@
+<script src="/js/security-actions.js?v=1" defer></script>
 <!-- Bootstrap gère seul les menus, accordéons et alertes. -->
 <script src="/jss/bootstrap.bundle.min.js"></script>
 <script src="/js/dropdown.js?v=2"></script>
 
 <!-- Carrousel: défilement gauche -> droite -->
-<script>
+<script nonce="<%= cspNonce %>">
 (function() {
   function initCarousel() {
     var carouselEl = document.getElementById('mixedCarousel');

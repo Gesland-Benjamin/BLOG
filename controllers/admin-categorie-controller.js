@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import Categorie from '../models/Categorie.model.js';
 import Article from '../models/Article.model.js';
 import { Op } from 'sequelize';
@@ -11,7 +12,6 @@ import { invalidateCategoriesCache } from '../index.js';
 export const listCategories = async (req, res) => {
   try {
     console.log("📦 [LIST] GET /admin/categories");
-    console.log("📄 Query:", req.query);
 
     const pageSize = 20;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
@@ -59,7 +59,7 @@ export const listCategories = async (req, res) => {
     delete req.session.message;
 
   } catch (error) {
-    console.error("❌ LIST CATEGORIES ERROR:", error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };
@@ -100,7 +100,7 @@ export const showEditCategoryForm = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ EDIT FORM ERROR:", error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };
@@ -111,7 +111,6 @@ export const showEditCategoryForm = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     console.log("🚀 [CREATE CATEGORY] POST /admin/categories");
-    console.log("📦 BODY REÇU:", req.body);
 
     const { name, description } = req.body;
 
@@ -164,7 +163,7 @@ export const createCategory = async (req, res) => {
     return res.redirect('/admin/categories');
 
   } catch (error) {
-    console.error("❌ CREATE CATEGORY ERROR:", error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };
@@ -175,7 +174,6 @@ export const createCategory = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     console.log("✏️ [UPDATE CATEGORY] ID:", req.params.id);
-    console.log("📦 BODY:", req.body);
 
     const { name, description } = req.body;
 
@@ -235,7 +233,7 @@ export const updateCategory = async (req, res) => {
     res.redirect('/admin/categories');
 
   } catch (error) {
-    console.error("❌ UPDATE CATEGORY ERROR:", error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };
@@ -284,7 +282,7 @@ export const deleteCategory = async (req, res) => {
     res.redirect('/admin/categories');
 
   } catch (error) {
-    console.error("❌ DELETE CATEGORY ERROR:", error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };

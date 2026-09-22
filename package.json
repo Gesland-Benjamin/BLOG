@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "test:security": "node --experimental-vm-modules --test tests/security.test.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "db:create": "node ./migrations/01.create-tables.js",

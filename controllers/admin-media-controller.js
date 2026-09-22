@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import fs from 'fs/promises';
 import path from 'path';
 import Article from '../models/Article.model.js';
@@ -19,10 +20,10 @@ export const listMedia = async (req, res) => {
 
     // 🔥 IMPORTANT: récupérer aussi id + title (sinon bug plus bas)
     const usedArticles = await Article.findAll({
-      attributes: ['id', 'title', 'image']
+      attributes: ['id', 'title', 'image', 'image_inline']
     });
 
-    const usedImages = usedArticles.filter(a => a.image);
+    const usedImages = usedArticles.filter(a => a.image || a.image_inline);
 
     const mediaList = await Promise.all(
       files.map(async (filename) => {
@@ -30,10 +31,10 @@ export const listMedia = async (req, res) => {
           const filePath = path.join(UPLOADS_DIR, filename);
           const stats = await fs.stat(filePath);
 
-          const isUsed = usedImages.some(a => isRelatedImageFile(filename, a.image));
+          const isUsed = usedImages.some(a => (isRelatedImageFile(filename, a.image) || isRelatedImageFile(filename, a.image_inline)));
 
           const article = isUsed
-            ? usedArticles.find(a => isRelatedImageFile(filename, a.image))
+            ? usedArticles.find(a => (isRelatedImageFile(filename, a.image) || isRelatedImageFile(filename, a.image_inline)))
             : null;
 
           return {
@@ -48,7 +49,7 @@ export const listMedia = async (req, res) => {
           };
 
         } catch (error) {
-          console.error(`Erreur lecture fichier ${filename}:`, error);
+          safeLog(error);
           return null;
         }
       })
@@ -66,7 +67,7 @@ export const listMedia = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erreur récupération médias:', error);
+    safeLog(error);
     res.status(500).render('500');
   }
 };
@@ -79,7 +80,7 @@ export const deleteMedia = async (req, res) => {
     const { filename } = req.params;
 
     // 🔒 Sécurité anti path traversal
-    if (filename.includes('..') || filename.includes('/')) {
+    if (!/^[a-zA-Z0-9_-]+\.(?:webp|png|jpe?g|gif)$/i.test(filename)) {
       req.session.message = { type: 'error', text: 'Nom de fichier invalide' };
       return res.redirect('/admin/medias');
     }
@@ -96,9 +97,7 @@ export const deleteMedia = async (req, res) => {
     // 🔥 Vérifier si utilisé en BDD
     const article = await Article.findOne({
       where: {
-        image: {
-          [Op.like]: `%${getImageBaseName(filename)}%`
-        }
+        [Op.or]: [{ image: { [Op.like]: `%${getImageBaseName(filename)}%` } }, { image_inline: { [Op.like]: `%${getImageBaseName(filename)}%` } }]
       }
     });
 
@@ -120,7 +119,7 @@ export const deleteMedia = async (req, res) => {
     res.redirect('/admin/medias');
 
   } catch (error) {
-    console.error('Erreur suppression fichier:', error);
+    safeLog(error);
 
     req.session.message = {
       type: 'error',
@@ -141,16 +140,16 @@ export const deleteOrphanFiles = async (req, res) => {
     const files = await fs.readdir(UPLOADS_DIR);
 
     const usedArticles = await Article.findAll({
-      attributes: ['image']
+      attributes: ['image', 'image_inline']
     });
 
-    const usedImages = usedArticles.filter(a => a.image);
+    const usedImages = usedArticles.filter(a => a.image || a.image_inline);
 
     let deletedCount = 0;
     let totalSizeFreed = 0;
 
     for (const filename of files) {
-      if (!usedImages.some(a => isRelatedImageFile(filename, a.image))) {
+      if (!usedImages.some(a => (isRelatedImageFile(filename, a.image) || isRelatedImageFile(filename, a.image_inline)))) {
         const filePath = path.join(UPLOADS_DIR, filename);
         const stats = await fs.stat(filePath);
 
@@ -169,7 +168,7 @@ export const deleteOrphanFiles = async (req, res) => {
     res.redirect('/admin/medias');
 
   } catch (error) {
-    console.error('Erreur nettoyage fichiers orphelins:', error);
+    safeLog(error);
 
     req.session.message = {
       type: 'error',

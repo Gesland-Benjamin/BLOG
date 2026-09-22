@@ -6,6 +6,9 @@ import { up } from './migrations/07.add-article-image-alt.js';
 dotenv.config();
 
 async function runMigration() {
+  if (process.env.NODE_ENV === 'production' || process.env.ALLOW_LOCAL_MIGRATIONS !== 'yes' || !['localhost', '127.0.0.1', '::1'].includes(process.env.DB_HOST || 'localhost')) {
+    throw new Error('Migration automatique refusée : environnement local explicitement autorisé requis.');
+  }
   try {
     // Assurer que la table de migrations existe
     await ensureMigrationsTable();

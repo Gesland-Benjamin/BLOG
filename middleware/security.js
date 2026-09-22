@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 /**
  * Middleware de sécurité pour production
  * Gère HTTPS, redirection HTTP, HSTS, CORS, rate limiting, compression
@@ -128,7 +129,7 @@ export function addSecurityHeaders(req, res, next) {
   } else {
     // Cachable content en production
     res.set({
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      'Cache-Control': 'private, no-store',
     });
   }
   
@@ -168,7 +169,7 @@ export function requestLogger(req, res, next) {
     const log = {
       timestamp: new Date().toISOString(),
       method: req.method,
-      path: req.path,
+      route: req.route?.path || '[unmatched]',
       status: res.statusCode,
       duration: `${duration}ms`,
       ip: req.ip,
@@ -195,21 +196,14 @@ export function globalErrorHandler(err, req, res, next) {
   const status = err.status || err.statusCode || 500;
   const message = err.message || 'Erreur serveur interne';
   
-  console.error({
-    timestamp: new Date().toISOString(),
-    status,
-    message,
-    path: req.path,
-    method: req.method,
-    stack: err.stack,
-  });
+  safeLog(err);
   
   // Ne pas exposer les détails d'erreur en production
   const isDevelopment = process.env.NODE_ENV === 'development';
   
   res.status(status).json({
     success: false,
-    message,
+    message: isDevelopment ? message : 'Erreur serveur',
     ...(isDevelopment && { stack: err.stack }),
   });
 }

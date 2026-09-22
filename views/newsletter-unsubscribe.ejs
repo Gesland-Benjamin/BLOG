@@ -36,18 +36,22 @@
             <% } %>
             
             <p class="newsletter-description">
-              Nous sommes désolés de vous voir partir. Entrez votre adresse email pour vous désabonner de notre newsletter.
+              Nous sommes désolés de vous voir partir. Confirmez avec votre lien personnel, ou recevez un lien de désinscription par email.
             </p>
             
             <form method="POST" action="/newsletter/unsubscribe" class="newsletter-form">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <% if (token) { %>
+              <input type="hidden" name="token" value="<%= token %>">
+              <% } else { %>
               <div class="newsletter-form-group">
                 <label for="email">Adresse email</label>
                 <input type="email" id="email" name="email" 
                        value="<%= email || '' %>" required autocomplete="email"
                        placeholder="votre@email.com">
               </div>
-              <button type="submit" class="newsletter-submit" style="background:#e74c3c;">Me désabonner</button>
+              <% } %>
+              <button type="submit" class="newsletter-submit" style="background:#e74c3c;"><%= token ? 'Confirmer ma désinscription' : 'Recevoir le lien' %></button>
             </form>
             
             <div class="auth-footer">

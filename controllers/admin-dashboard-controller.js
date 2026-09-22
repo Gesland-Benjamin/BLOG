@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import {
   User,
   Article,
@@ -193,7 +194,7 @@ export const getDashboard = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Dashboard error:", error);
+    safeLog(error);
 
     return res.status(500).render("500", {
       message: "Erreur dashboard",

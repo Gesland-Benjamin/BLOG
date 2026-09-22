@@ -7,6 +7,9 @@ import {
 } from "../controllers/home-controllers.js";
 import { getRegisterPage, register } from "../controllers/auth-controller.js";
 
+import { formRateLimit, contactRateLimit } from '../middleware/rateLimit.js';
+import { validateRequest } from '../middleware/validate.js';
+import { registerSchema, contactSchema } from '../validators/schemas.js';
 const router = Router();
 
 router.get("/", getHomePage);
@@ -18,7 +21,7 @@ router.get("/mentions-legales", (req, res) => {
 });
 
 router.get("/register", getRegisterPage);
-router.post("/register", register);
-router.post("/renseignements", postRenseignements);
+router.post("/register", formRateLimit, validateRequest(registerSchema, { view: "register" }), register);
+router.post("/renseignements", contactRateLimit, validateRequest(contactSchema, { view: "renseignements" }), postRenseignements);
 
 export default router;

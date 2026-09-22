@@ -109,7 +109,7 @@
 
                       <form method="POST" action="/admin/articles/<%= a.id %>?_method=DELETE" style="display:inline-block; margin:0;">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet article ?')">
+                        <button type="submit" class="admin-btn-sm danger" data-confirm="Supprimer cet article ?">
                           Supprimer
                         </button>
                       </form>

@@ -1,3 +1,4 @@
+import { safeLog, appUrl } from '../utils/security.js';
 import Article from "../models/Article.model.js";
 import Categorie from "../models/Categorie.model.js";
 
@@ -6,7 +7,7 @@ import Categorie from "../models/Categorie.model.js";
  */
 export async function generateSitemap(req, res) {
   try {
-    const baseUrl = process.env.SITE_URL || "http://localhost:3000";
+    const baseUrl = appUrl();
 
     const articles = await Article.findAll({
       attributes: ["id", "title", "createdAt"],
@@ -76,7 +77,7 @@ export async function generateSitemap(req, res) {
     res.type("application/xml");
     res.send(xml);
   } catch (error) {
-    console.error("Sitemap error:", error);
+    safeLog(error);
     res.status(500).send("Erreur sitemap");
   }
 }
@@ -86,7 +87,7 @@ export async function generateSitemap(req, res) {
  */
 export async function generateRssFeed(req, res) {
   try {
-    const baseUrl = process.env.SITE_URL || "http://localhost:3000";
+    const baseUrl = appUrl();
     const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
 
     const articles = await Article.findAll({
@@ -130,7 +131,7 @@ export async function generateRssFeed(req, res) {
     res.type("application/rss+xml");
     res.send(xml);
   } catch (error) {
-    console.error("RSS error:", error);
+    safeLog(error);
     res.status(500).send("Erreur RSS");
   }
 }
@@ -140,7 +141,7 @@ export async function generateRssFeed(req, res) {
  */
 export async function generateAtomFeed(req, res) {
   try {
-    const baseUrl = process.env.SITE_URL || "http://localhost:3000";
+    const baseUrl = appUrl();
     const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
 
     const articles = await Article.findAll({
@@ -182,7 +183,7 @@ export async function generateAtomFeed(req, res) {
     res.type("application/atom+xml");
     res.send(xml);
   } catch (error) {
-    console.error("Atom error:", error);
+    safeLog(error);
     res.status(500).send("Erreur Atom");
   }
 }

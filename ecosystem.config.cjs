@@ -41,10 +41,10 @@ module.exports = {
       // ===== Configuration de staging =====
       name: 'blog-staging',
       script: './index.js',
-      instances: 2, // 2 instances avec load balancing
-      exec_mode: 'cluster',
+      instances: 1, // Rate limiting mémoire : un seul processus.
+      exec_mode: 'fork',
       env: {
-        NODE_ENV: 'staging',
+        NODE_ENV: 'production',
         PORT: 3001,
       },
       
@@ -71,8 +71,8 @@ module.exports = {
       // ===== Configuration de production =====
       name: 'blog-production',
       script: './index.js',
-      instances: 'max', // Utiliser tous les CPU cores disponibles
-      exec_mode: 'cluster',
+      instances: 1, // Rate limiting mémoire : un seul processus.
+      exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
@@ -99,7 +99,7 @@ module.exports = {
       cron_restart: '0 2 * * *', // 2h du matin (charge minimale)
       
       // Monitoring avec PM2 Pro (optionnel)
-      instance_var: 'INSTANCE_ID',
+      instance_var: 'NODE_APP_INSTANCE',
       merge_logs: true, // Fusionner les logs de toutes les instances
       
       // Ignore certain signals
@@ -123,12 +123,11 @@ module.exports = {
       path: '/var/www/blog',
       
       // Commandes à exécuter avant et après le déploiement
-      'pre-deploy-local': 'echo "Déploiement en production..."',
-      'post-deploy': 'cd /var/www/blog && npm install && npm run migrate && pm2 reload ecosystem.config.js --env production',
-      'pre-deploy': 'npm run test', // Tester avant déploiement
+      'post-deploy': 'node scripts/deploy.js production',
+      'pre-deploy-local': 'npm run test:security',
       
-      'exec-mode': 'cluster',
-      instances: 'max',
+      'exec-mode': 'fork',
+      instances: 1, // Rate limiting mémoire : un seul processus.
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
@@ -142,9 +141,9 @@ module.exports = {
       repo: 'git@github.com:Gesland-Benjamin/BLOG.git',
       path: '/var/www/blog-staging',
       
-      'post-deploy': 'cd /var/www/blog-staging && npm install && npm run migrate && pm2 reload ecosystem.config.js --env staging',
+      'post-deploy': 'node scripts/deploy.js staging',
       env: {
-        NODE_ENV: 'staging',
+        NODE_ENV: 'production',
         PORT: 3001,
       },
     },

@@ -1,10 +1,13 @@
 import Joi from "joi";
+import { prepareVideoUrl } from "../utils/videoHelper.js";
 
 /* =========================
    LOGIN
 ========================= */
 export const loginSchema = Joi.object({
+  otp: Joi.string().pattern(/^\d{6}$/).allow('').optional(),
   email: Joi.string()
+    .trim().lowercase().max(150)
     .email()
     .required()
     .messages({
@@ -14,6 +17,7 @@ export const loginSchema = Joi.object({
     }),
 
   password: Joi.string()
+    .max(255)
     .required()
     .messages({
       "string.empty": "Le mot de passe est requis",
@@ -38,6 +42,7 @@ export const registerSchema = Joi.object({
     }),
 
   email: Joi.string()
+    .trim().lowercase().max(150)
     .email()
     .max(150)
     .required()
@@ -74,6 +79,7 @@ export const registerSchema = Joi.object({
 ========================= */
 export const forgotPasswordSchema = Joi.object({
   email: Joi.string()
+    .trim().lowercase().max(150)
     .email()
     .required()
 });
@@ -110,6 +116,7 @@ export const articleSchema = Joi.object({
     }),
 
   content: Joi.string()
+    .max(50000)
     .min(50)
     .required()
     .messages({
@@ -128,7 +135,8 @@ export const articleSchema = Joi.object({
     }),
 
   video: Joi.string()
-    .uri()
+    .uri({ scheme: ["https"] })
+    .custom((value, helpers) => prepareVideoUrl(value) ? value : helpers.error("any.invalid"))
     .allow("")
     .optional()
 });
@@ -166,7 +174,15 @@ export const commentSchema = Joi.object({
 ========================= */
 export const newsletterSchema = Joi.object({
   email: Joi.string()
+    .trim().lowercase().max(150)
     .email()
     .max(150)
     .required()
+});
+export const contactSchema = Joi.object({
+  nom: Joi.string().trim().min(1).max(150).required(),
+  email: Joi.string().trim().lowercase().email().max(150).required(),
+  telephone: Joi.string().trim().max(40).allow('').default(''),
+  sujet: Joi.string().trim().min(1).max(150).required(),
+  message: Joi.string().trim().min(1).max(1200).required()
 });

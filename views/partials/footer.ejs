@@ -4,6 +4,7 @@
     <div class="footer-newsletter">
       <h5>S'inscrire à la Newsletter</h5>
       <form action="/newsletter/subscribe" method="POST" class="newsletter-form">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <input 
           type="email" 
           name="email" 

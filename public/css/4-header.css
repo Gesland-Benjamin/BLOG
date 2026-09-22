@@ -955,3 +955,7 @@ header .btn:active,
   align-items: center;
   }
 }
+
+/* Déconnexion POST : conserver les dimensions du bouton dans les menus. */
+.logout-form { margin: 0; }
+.logout-form button { cursor: pointer; }

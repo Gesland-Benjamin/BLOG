@@ -24,7 +24,7 @@ import {
 
 import {
   loginRateLimit,
-  formRateLimit
+  formRateLimit, recoveryRateLimit
 } from "../middleware/rateLimit.js";
 
 const router = Router();
@@ -37,8 +37,8 @@ router.get("/register", getRegisterPage);
 router.get("/forgot", showForgotPasswordForm);
 router.post(
   "/forgot",
-  formRateLimit,
-  validateRequest(forgotPasswordSchema),
+  recoveryRateLimit,
+  validateRequest(forgotPasswordSchema, { view: 'forgot-password' }),
   sendPasswordReset
 );
 
@@ -47,7 +47,7 @@ router.get("/reset/:token", showResetPasswordForm);
 router.post(
   "/reset/:token",
   formRateLimit,
-  validateRequest(resetPasswordSchema),
+  validateRequest(resetPasswordSchema, { view: 'reset-password' }),
   resetPassword
 );
 
@@ -55,7 +55,7 @@ router.post(
 router.post(
   "/register",
   formRateLimit,
-  validateRequest(registerSchema),
+  validateRequest(registerSchema, { view: 'register' }),
   register
 );
 
@@ -63,12 +63,12 @@ router.post(
 router.post(
   "/",
   loginRateLimit,
-  validateRequest(loginSchema),
+  validateRequest(loginSchema, { view: 'auth' }),
   login
 );
 
 // ====================== LOGOUT ======================
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("❌ Erreur destruction session:", err);

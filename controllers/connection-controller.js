@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import argon2 from "argon2";
 import User from "../models/User.model.js";
 
@@ -27,7 +28,7 @@ export const login = async (req, res) => {
     try {
       valid = await argon2.verify(user.password, password);
     } catch (err) {
-      console.error("Argon2 error:", err);
+      safeLog(err);
       valid = false;
     }
 
@@ -40,7 +41,7 @@ export const login = async (req, res) => {
 
     req.session.regenerate((err) => {
       if (err) {
-        console.error("Session error:", err);
+        safeLog(err);
         return res.status(500).render("auth", {
           message: "Erreur interne.",
           formData: { email }
@@ -64,7 +65,7 @@ export const login = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Login error:", err);
+    safeLog(err);
 
     return res.status(500).render("auth", {
       message: "Erreur lors de la connexion.",

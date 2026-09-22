@@ -25,6 +25,7 @@
                 action="<%= isEditing ? `/admin/articles/${article.id}?_method=PUT` : '/admin/articles' %>"
                 enctype="multipart/form-data"
                 class="admin-form">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
             <!-- TITLE -->
             <div class="admin-form-group">
@@ -41,15 +42,26 @@
             <!-- CONTENT -->
             <div class="admin-form-group">
               <label for="content">Contenu</label>
+              <div class="article-format-toolbar" role="group" aria-label="Mise en forme du texte" hidden>
+                <button type="button" data-format="**" aria-controls="content" title="Gras (Ctrl ou Cmd + B)"><strong>Gras</strong></button>
+                <button type="button" data-format="_" aria-controls="content" title="Italique (Ctrl ou Cmd + I)"><em>Italique</em></button>
+              </div>
               <textarea
                 id="content"
                 name="content"
                 rows="6"
+                aria-describedby="content-help"
                 required><%= isEditing ? article.content : (formData.content || '') %></textarea>
-              <small class="admin-form-hint">
+              <small class="admin-form-hint" id="content-help">
+                Sélectionnez un passage puis cliquez sur Gras ou Italique. Vous pouvez combiner les deux.
+                Les marqueurs <code>**gras**</code> et <code>_italique_</code> seront remplacés à la publication.
                 Min 50 caractères. Pour placer l'image inline dans le texte,
                 insérez le marqueur <code>[[IMAGE_INLINE]]</code> à l'endroit souhaité.
               </small>
+              <details class="article-editor-preview" hidden>
+                <summary>Aperçu de la mise en forme</summary>
+                <div id="article-content-preview"></div>
+              </details>
             </div>
 
             <!-- CATEGORY -->
@@ -149,5 +161,6 @@
 
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
+    <script type="module" src="/js/article-editor.js"></script>
   </body>
 </html>

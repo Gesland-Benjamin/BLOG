@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import { Op } from "sequelize";
 import { Article, User, Categorie } from "../models/index.js";
 import { sendContactInquiryEmail } from "../services/email.js";
@@ -120,7 +121,7 @@ export const getHomePage = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("HOME ERROR:", error);
+    safeLog(error);
     return res.status(500).render("index", {
       title: "Accueil",
       user: req.user,
@@ -185,7 +186,7 @@ export const getArticlesByMonth = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("MONTH ERROR:", error);
+    safeLog(error);
     res.status(500).render("500");
   }
 };
@@ -255,7 +256,7 @@ export const postRenseignements = async (req, res) => {
     req.session.message = "Message envoyé. Nous revenons vers vous rapidement.";
     return res.redirect("/renseignements");
   } catch (error) {
-    console.error("❌ postRenseignements error:", error);
+    safeLog(error);
     return res.status(500).render("renseignements", {
       title: "Contact",
       user: req.user,

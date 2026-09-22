@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
@@ -78,7 +79,7 @@ export async function processImage(inputPath, outputDir, basename, preset = 'art
       const filename = `${basename}_${size.suffix}.${config.format}`;
       const outputPath = path.join(outputDir, filename);
 
-      await sharp(inputPath)
+      await sharp(inputPath, { limitInputPixels: 20000000 })
         .resize(size.width, size.height, {
           fit: 'inside',
           position: 'center',
@@ -112,7 +113,7 @@ export async function processImage(inputPath, outputDir, basename, preset = 'art
 
     return results;
   } catch (error) {
-    console.error('Erreur lors du traitement de l\'image:', error);
+    safeLog(error);
     throw new Error(`Impossible de traiter l'image: ${error.message}`);
   }
 }
@@ -142,7 +143,7 @@ export async function compressImage(inputPath, outputPath, options = {}) {
     const originalStats = await fs.stat(inputPath);
     const originalSize = originalStats.size;
 
-    let pipeline = sharp(inputPath);
+    let pipeline = sharp(inputPath, { limitInputPixels: 20000000 });
 
     // Redimensionner si nécessaire
     if (width || height) {
@@ -180,7 +181,7 @@ export async function compressImage(inputPath, outputPath, options = {}) {
       quality: quality
     };
   } catch (error) {
-    console.error('Erreur lors de la compression:', error);
+    safeLog(error);
     throw new Error(`Impossible de compresser l'image: ${error.message}`);
   }
 }
@@ -205,7 +206,7 @@ export async function getImageMetadata(imagePath) {
       density: metadata.density
     };
   } catch (error) {
-    console.error('Erreur lors de la lecture des métadonnées:', error);
+    safeLog(error);
     throw new Error(`Impossible de lire les métadonnées: ${error.message}`);
   }
 }
@@ -217,12 +218,13 @@ export async function getImageMetadata(imagePath) {
  * @returns {Promise<Array>} Fichiers supprimés
  */
 export async function deleteProcessedImages(imageDir, basename) {
+  if (typeof basename !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(basename)) throw new Error('Nom image invalide');
   try {
     const files = await fs.readdir(imageDir);
     const deleted = [];
 
     for (const file of files) {
-      if (file.startsWith(basename)) {
+      if (['xs', 'sm', 'md', 'lg'].some(size => file === `${basename}_${size}.webp`)) {
         const filePath = path.join(imageDir, file);
         await fs.unlink(filePath);
         deleted.push(file);
@@ -231,7 +233,7 @@ export async function deleteProcessedImages(imageDir, basename) {
 
     return deleted;
   } catch (error) {
-    console.error('Erreur lors de la suppression des images:', error);
+    safeLog(error);
     throw new Error(`Impossible de supprimer les images: ${error.message}`);
   }
 }
@@ -257,7 +259,7 @@ export async function generatePlaceholder(width, height, color = '#ddd', text = 
       .webp({ quality: 90 })
       .toBuffer();
   } catch (error) {
-    console.error('Erreur lors de la création du placeholder:', error);
+    safeLog(error);
     throw new Error(`Impossible de créer le placeholder: ${error.message}`);
   }
 }
@@ -269,8 +271,8 @@ export async function generatePlaceholder(width, height, color = '#ddd', text = 
  */
 export async function isValidImage(filePath) {
   try {
-    const metadata = await sharp(filePath).metadata();
-    return metadata && ['jpeg', 'png', 'webp', 'gif', 'svg'].includes(metadata.format);
+    const metadata = await sharp(filePath, { limitInputPixels: 20000000 }).metadata();
+    return metadata && ['jpeg', 'png', 'webp', 'gif'].includes(metadata.format) && metadata.width <= 10000 && metadata.height <= 10000 && metadata.width * metadata.height <= 20000000 && (metadata.pages || 1) === 1;
   } catch (error) {
     return false;
   }

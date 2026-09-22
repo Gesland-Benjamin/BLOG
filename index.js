@@ -6,11 +6,11 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-import { randomBytes } from "crypto";
-import argon2 from "argon2";
+
+
 import SequelizeStoreFactory from "connect-session-sequelize";
 
-import sequelize, { testConnection } from "./config/database.js";
+import sequelize from "./config/database.js";
 
 // =========================
 // MODELS + ASSOCIATIONS
@@ -41,7 +41,12 @@ import sitemapRssRoutes from "./routes/sitemap-rss-router.js";
 // MIDDLEWARE
 // =========================
 import { getFlashErrors } from "./middleware/validate.js";
-import { getUploadsDir } from "./utils/uploadPaths.js";
+import { getUploadsDir, assertPrivateTempDir } from "./utils/uploadPaths.js";
+import { sessionSecret, appUrl, safeLog } from './utils/security.js';
+import { methodOverride, securityHeaders, csrfToken, csrfProtection } from './middleware/requestSecurity.js';
+import { globalRateLimit } from './middleware/rateLimit.js';
+import { loadSessionUser } from './middleware/sessionUser.js';
+import User from './models/User.model.js';
 
 // =========================
 // INIT APP
@@ -58,18 +63,27 @@ const isProduction = process.env.NODE_ENV === "production";
 // =========================
 // DB TEST
 // =========================
-testConnection();
+const secret = sessionSecret();
+appUrl();
+assertPrivateTempDir();
+if (process.env.NODE_APP_INSTANCE && process.env.NODE_APP_INSTANCE !== '0') {
+  throw new Error('Un seul worker autorisé avec le rate limiter mémoire.');
+}
 
 // =========================
 // TRUST PROXY
 // =========================
-if (isProduction) app.set("trust proxy", 1);
+// Configurer uniquement les adresses/CIDR des proxies réellement utilisés.
+if (process.env.TRUST_PROXY) app.set('trust proxy', process.env.TRUST_PROXY.split(',').map(s => s.trim()));
+app.disable('x-powered-by');
+app.use(securityHeaders);
+app.use(globalRateLimit);
 
 // =========================
 // PARSERS
 // =========================
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: false, limit: "100kb", parameterLimit: 100 }));
+app.use(express.json({ limit: "100kb" }));
 app.use(cookieParser());
 
 // =========================
@@ -81,7 +95,11 @@ app.set("view engine", "ejs");
 // =========================
 // STATIC
 // =========================
-app.use('/uploads', express.static(getUploadsDir()));
+// Ne jamais servir les anciens originaux temporaires, même s'ils sont encore sur disque.
+app.use('/uploads', (req, res, next) => {
+  if (!/^\/[a-zA-Z0-9_-]+\.(?:webp|png|jpe?g|gif)$/i.test(req.path)) return res.sendStatus(404);
+  next();
+}, express.static(getUploadsDir(), { dotfiles: 'deny', index: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // =========================
@@ -97,11 +115,10 @@ const sessionStore = new SequelizeStore({
 app.use(
   session({
     name: "sid",
-    secret: process.env.SESSION_SECRET || "very_long_random_secret_key_2024",
+    secret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    proxy: isProduction,
     cookie: {
       secure: isProduction,
       httpOnly: true,
@@ -111,25 +128,11 @@ app.use(
   })
 );
 
-// =========================
-// CSRF SIMPLE
-// =========================
-app.use((req, res, next) => {
-  if (!req.session.csrfToken) {
-    req.session.csrfToken = randomBytes(32).toString("hex");
-  }
-  res.locals.csrfToken = req.session.csrfToken;
-  next();
-});
-
-// =========================
-// USER GLOBAL
-// =========================
-app.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  req.user = req.session?.user || null;
-  next();
-});
+// Relire le compte avant CSRF : une session périmée est régénérée sans réutiliser son jeton.
+app.use(loadSessionUser(User));
+app.use(csrfToken);
+app.use(methodOverride);
+app.use(csrfProtection);
 
 // =========================
 // FLASH
@@ -137,25 +140,6 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.message = req.session.message || null;
   delete req.session.message;
-  next();
-});
-
-// =========================
-// LOGGER
-// =========================
-app.use((req, res, next) => {
-  console.log(
-    `[REQ] ${req.method} ${req.originalUrl} | user:${req.user?.id || "guest"} | ip:${req.ip}`
-  );
-  next();
-});
-
-// =========================
-// METHOD OVERRIDE
-// =========================
-app.use((req, res, next) => {
-  const method = req.query?._method || req.body?._method;
-  if (method) req.method = method.toUpperCase();
   next();
 });
 
@@ -188,7 +172,7 @@ app.use(async (req, res, next) => {
 
     res.locals.categories = cachedCategories;
   } catch (err) {
-    console.error("[CATEGORIES ERROR]", err.message);
+    safeLog(err);
     res.locals.categories = [];
   }
 
@@ -227,9 +211,9 @@ app.use((req, res) => {
 // ERROR HANDLER
 // =========================
 app.use((err, req, res, next) => {
-  console.error("[500]", err);
+  safeLog(err);
 
-  res.status(500).render("500", {
+  res.status(Number.isInteger(err.status) && err.status >= 400 && err.status < 600 ? err.status : 500).render("500", {
     error: isProduction ? null : err.message
   });
 });
@@ -240,7 +224,8 @@ app.use((err, req, res, next) => {
 let server;
 
 async function startServer() {
-  await sessionStore.sync();
+  // Lecture uniquement : le schéma existant doit déjà avoir sa table sessions.
+  await sequelize.authenticate();
 
   server = app.listen(PORT, () => {
     console.log(`🚀 http://localhost:${PORT}`);
@@ -248,7 +233,7 @@ async function startServer() {
 }
 
 startServer().catch((error) => {
-  console.error("❌ Échec du démarrage du serveur:", error);
+  safeLog(error);
   process.exit(1);
 });
 
@@ -257,6 +242,6 @@ startServer().catch((error) => {
 // =========================
 ["SIGTERM", "SIGINT"].forEach((sig) => {
   process.on(sig, () => {
-    server.close(() => process.exit(0));
+    server?.close(() => process.exit(0));
   });
 });

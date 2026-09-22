@@ -1,3 +1,4 @@
+import { escapeHtml, appUrl, safeLog } from '../utils/security.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -19,37 +20,23 @@ const transporter = nodemailer.createTransport(
         host: process.env.EMAIL_HOST,
         port: Number(process.env.EMAIL_PORT) || 587,
         secure: Number(process.env.EMAIL_PORT) === 465,
+        requireTLS: true,
         auth: user && pass ? { user, pass } : undefined,
-        logger: process.env.EMAIL_DEBUG === 'true',
-        debug: process.env.EMAIL_DEBUG === 'true',
+        logger: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
+        debug: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
       }
     : {
         service: process.env.EMAIL_SERVICE || 'gmail',
+        requireTLS: true,
         auth: user && pass ? { user, pass } : undefined,
-        logger: process.env.EMAIL_DEBUG === 'true',
-        debug: process.env.EMAIL_DEBUG === 'true',
+        logger: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
+        debug: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
       }
 );
 
-// Helper centralisé pour l'envoi, avec logs détaillés pour debug en production
+// Aucun destinataire, lien sensible ou contenu de message journalisé.
 async function sendMailWithLogging(mailOptions) {
-  try {
-    console.log('📨 Envoi mail — from:', mailOptions.from, 'to:', mailOptions.to, 'subject:', mailOptions.subject);
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Envoi OK — response:', info && info.response ? info.response : info);
-    return info;
-  } catch (error) {
-    console.error('❌ Erreur sendMail:', error && error.message ? error.message : error);
-    if (error && error.response) console.error('response:', error.response);
-    if (error && error.responseCode) console.error('responseCode:', error.responseCode);
-    if (error && error.code) console.error('code:', error.code);
-    console.error('mailOptions envelope:', {
-      from: mailOptions.from,
-      to: mailOptions.to,
-      subject: mailOptions.subject,
-    });
-    throw error;
-  }
+  return transporter.sendMail(mailOptions);
 }
 
 function getBrandFromAddress() {
@@ -58,17 +45,6 @@ function getBrandFromAddress() {
 
 function buildNewsletterText(lines) {
   return lines.filter(Boolean).join('\n\n');
-}
-
-// Vérifier la connexion
-if (user && pass) {
-  transporter.verify((error) => {
-    if (error) {
-      console.warn('⚠️  Email service non disponible:', error.message);
-    } else {
-      console.log('✅ Email service configuré et prêt');
-    }
-  });
 }
 
 /**
@@ -149,10 +125,10 @@ export async function sendResetEmail(email, resetToken, resetUrl) {
     };
 
     await sendMailWithLogging(mailOptions);
-    console.log(`✅ Email de réinitialisation envoyé à ${email}`);
+
     return true;
   } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi d\'email:', error);
+    safeLog(error);
     throw error;
   }
 }
@@ -199,7 +175,7 @@ export async function sendConfirmationEmail(email, userName) {
                 
                 <p>Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
                 
-                <a href="${process.env.APP_URL || 'http://localhost:3000'}/auth" class="button">Se connecter</a>
+                <a href="${appUrl()}/auth" class="button">Se connecter</a>
                 
                 <p>Si vous n'avez pas effectué cette action, veuillez contacter le support immédiatement.</p>
               </div>
@@ -218,10 +194,10 @@ export async function sendConfirmationEmail(email, userName) {
     };
 
     await sendMailWithLogging(mailOptions);
-    console.log(`✅ Email de confirmation envoyé à ${email}`);
+
     return true;
   } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi d\'email:', error);
+    safeLog(error);
     throw error;
   }
 }
@@ -231,7 +207,7 @@ export async function sendConfirmationEmail(email, userName) {
  */
 export async function sendNewsletterConfirmationEmail(email, confirmationToken) {
   try {
-    const confirmUrl = `${process.env.APP_URL || 'http://localhost:3000'}/newsletter/confirm/${confirmationToken}`;
+    const confirmUrl = `${appUrl()}/newsletter/confirm/${confirmationToken}`;
     
     const mailOptions = {
       from: getBrandFromAddress(),
@@ -302,10 +278,10 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
     };
 
     await sendMailWithLogging(mailOptions);
-    console.log(`✅ Email de confirmation newsletter envoyé à ${email}`);
+
     return true;
   } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi d\'email de confirmation:', error);
+    safeLog(error);
     throw error;
   }
 }
@@ -313,9 +289,9 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
 /**
  * Envoyer un email de bienvenue après confirmation
  */
-export async function sendNewsletterWelcomeEmail(email) {
+export async function sendNewsletterWelcomeEmail(email, unsubscribeUrl) {
   try {
-    const unsubscribeUrl = `${process.env.APP_URL || 'http://localhost:3000'}/newsletter/unsubscribe?email=${encodeURIComponent(email)}`;
+    if (!unsubscribeUrl) throw new Error('Lien de désinscription requis');
     
     const mailOptions = {
       from: getBrandFromAddress(),
@@ -366,7 +342,7 @@ export async function sendNewsletterWelcomeEmail(email) {
                 </ul>
                 
                 <p>Découvrez dès maintenant nos derniers articles :</p>
-                <a href="${process.env.APP_URL || 'http://localhost:3000'}" class="button">Visiter le blog</a>
+                <a href="${appUrl()}" class="button">Visiter le blog</a>
                 
                 <p>Merci pour votre inscription.</p>
               </div>
@@ -384,7 +360,7 @@ export async function sendNewsletterWelcomeEmail(email) {
         'Bienvenue sur la newsletter Emi-Pulse',
         'Votre inscription à la newsletter est confirmée.',
         'Vous recevrez nos articles et actualités utiles sur la beauté, la nutrition et le développement personnel.',
-        `Découvrez nos derniers articles : ${process.env.APP_URL || 'http://localhost:3000'}`,
+        `Découvrez nos derniers articles : ${appUrl()}`,
         `Pour vous désabonner : ${unsubscribeUrl}`,
         'Cordialement,',
         'L\'équipe Emi-pulse'
@@ -392,10 +368,10 @@ export async function sendNewsletterWelcomeEmail(email) {
     };
 
     await sendMailWithLogging(mailOptions);
-    console.log(`✅ Email de bienvenue envoyé à ${email}`);
+
     return true;
   } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi d\'email de bienvenue:', error);
+    safeLog(error);
     throw error;
   }
 }
@@ -438,11 +414,11 @@ export async function sendContactInquiryEmail({ nom, email, telephone, sujet, me
                 <h2 style="margin: 0;">Nouvelle demande de renseignements</h2>
               </div>
               <div class="content">
-                <p class="field"><span class="label">Nom :</span> ${safeNom}</p>
-                <p class="field"><span class="label">Email :</span> ${safeEmail}</p>
-                <p class="field"><span class="label">Téléphone :</span> ${safeTelephone}</p>
-                <p class="field"><span class="label">Objet :</span> ${safeSujet}</p>
-                <div class="message">${safeMessage}</div>
+                <p class="field"><span class="label">Nom :</span> ${escapeHtml(safeNom)}</p>
+                <p class="field"><span class="label">Email :</span> ${escapeHtml(safeEmail)}</p>
+                <p class="field"><span class="label">Téléphone :</span> ${escapeHtml(safeTelephone)}</p>
+                <p class="field"><span class="label">Objet :</span> ${escapeHtml(safeSujet)}</p>
+                <div class="message">${escapeHtml(safeMessage)}</div>
               </div>
             </div>
           </body>
@@ -459,10 +435,18 @@ export async function sendContactInquiryEmail({ nom, email, telephone, sujet, me
     };
 
     await sendMailWithLogging(mailOptions);
-    console.log(`✅ Demande de renseignements envoyée vers ${destination}`);
+
     return true;
   } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi de la demande de renseignements:', error);
+    safeLog(error);
     throw error;
   }
+}
+
+export function sendUnsubscribeEmail(email, url) {
+  return sendMailWithLogging({ from: getBrandFromAddress(), to: email,
+    subject: 'Votre lien de désinscription Emi’Pulse',
+    text: `Pour confirmer votre désinscription : ${url}`,
+    html: `<p>Pour confirmer votre désinscription :</p><p><a href="${escapeHtml(url)}">Me désabonner</a></p>`
+  });
 }

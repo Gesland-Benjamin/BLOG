@@ -1,3 +1,7 @@
+import { safeLog, appUrl } from '../utils/security.js';
+import sequelize from '../config/database.js';
+import { escapeHtml as encodeAttribute } from '../utils/security.js';
+import { formatArticleText, articlePlainText } from '../public/js/article-format.js';
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
@@ -24,7 +28,7 @@ export const getArticlePage = async (req, res) => {
       user: req.user
     });
   } catch (error) {
-    console.error("getArticlePage error:", error);
+    safeLog(error);
     return res.status(500).send("Erreur page articles");
   }
 };
@@ -57,7 +61,7 @@ export const getArticlesParCategorie = async (req, res) => {
           articles: articles.map(a => ({
             id: a.id,
             titre: a.title,
-            contenu: a.content,
+            contenu: articlePlainText(a.content),
             image: a.image,
             image_alt: a.image_alt || a.title,
             auteur: a.author?.name || "Inconnu",
@@ -78,7 +82,7 @@ export const getArticlesParCategorie = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("getArticlesParCategorie error:", error);
+    safeLog(error);
     return res.status(500).send("Erreur chargement articles");
   }
 };
@@ -113,7 +117,7 @@ export const getArticleById = async (req, res) => {
         }
       }
     } catch (err) {
-      console.error("Erreur vérif like:", err);
+      safeLog(err);
       hasLiked = false;
     }
 
@@ -130,25 +134,24 @@ export const getArticleById = async (req, res) => {
         .map((block) => block.trim())
         .filter(Boolean)
         .map((block) => {
-          if (block.startsWith('<div class="article-inline-image"')) {
-            return block;
-          }
-          return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+          return `<p>${formatArticleText(block).replace(/\n/g, '<br>')}</p>`;
         })
         .join('');
     };
 
     const buildContentHtml = (content, inlineImageUrl, imageAlt) => {
-      const escaped = escapeHtml(content || "");
+      const text = content || "";
       const imageHtml = inlineImageUrl
-        ? `\n\n<div class="article-inline-image" style="margin:2rem 0 1.5rem;"><img src="${inlineImageUrl}" alt="${escapeHtml(imageAlt)}" loading="lazy" srcset="${inlineImageUrl} 600w, ${inlineImageUrl.replace('_md', '_lg')} 1200w" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 16px rgba(0, 0, 0, 0.08);"></div>\n\n`
+        ? `\n\n<div class="article-inline-image" style="margin:2rem 0 1.5rem;"><img src="${encodeAttribute(inlineImageUrl)}" alt="${escapeHtml(imageAlt)}" loading="lazy" srcset="${encodeAttribute(inlineImageUrl)} 600w, ${encodeAttribute(inlineImageUrl.replace('_md', '_lg'))} 1200w" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 16px rgba(0, 0, 0, 0.08);"></div>\n\n`
         : "";
 
-      if (inlineImageUrl && escaped.includes('[[IMAGE_INLINE]]')) {
-        return renderParagraphs(escaped.replace('[[IMAGE_INLINE]]', imageHtml));
+      if (inlineImageUrl && text.includes('[[IMAGE_INLINE]]')) {
+        const position = text.indexOf('[[IMAGE_INLINE]]');
+        return renderParagraphs(text.slice(0, position)) + imageHtml +
+          renderParagraphs(text.slice(position + '[[IMAGE_INLINE]]'.length));
       }
 
-      return renderParagraphs(escaped);
+      return renderParagraphs(text);
     };
 
     const contentHasInlinePlaceholder = article.content?.includes('[[IMAGE_INLINE]]');
@@ -175,8 +178,8 @@ export const getArticleById = async (req, res) => {
       videoType: article.video ? getVideoType(article.video) : null,
       likes: article.likes || 0,
       liked: hasLiked,
-      description: (article.content || "").substring(0, 160),
-      url: `${process.env.SITE_URL || "http://localhost:3000"}/article/${article.id}`
+      description: articlePlainText(article.content || "").substring(0, 160),
+      url: `${appUrl()}/article/${article.id}`
     };
 
     /* =========================
@@ -253,7 +256,7 @@ export const getArticleById = async (req, res) => {
       }));
 
     } catch (err) {
-      console.error("⚠️ fallback commentaires:", err.message);
+      safeLog(err);
 
       const rawComments = await Commentaire.findAll({
         where,
@@ -304,7 +307,7 @@ export const getArticleById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("getArticleById error:", error);
+    safeLog(error);
     return res.status(500).send("Erreur article");
   }
 };
@@ -331,14 +334,14 @@ export const postComment = async (req, res) => {
       content: contenu,
       name: req.user?.name || nom,
       userId: req.user?.id || null,
-      statut: req.user ? "approved" : "pending",
+      statut: req.user?.role === "admin" ? "approved" : "pending",
       is_spam: spam
     });
 
     return res.redirect(`/article/${articleId}?comment_submitted=1`);
 
   } catch (error) {
-    console.error("postComment error:", error);
+    safeLog(error);
     return res.status(500).send("Erreur commentaire");
   }
 };
@@ -346,47 +349,23 @@ export const postComment = async (req, res) => {
 /* =========================
    LIKE ARTICLE
 ========================= */
-export const likeArticle = async (req, res) => {
+export const likeArticle = async (req, res, next) => {
+  const id = Number(req.params.id);
+  if (!Number.isSafeInteger(id) || id < 1) return res.status(400).json({ message: 'Identifiant invalide' });
   try {
-    const id = Number(req.params.id);
-
-    const article = await Article.findByPk(id);
-    if (!article) return res.status(404).json({ message: "Not found" });
-
-    const ip = req.ip || (req.headers && req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null);
-
-    // Vérifier si l'utilisateur ou l'IP a déjà liké
-    try {
-      if (req.user && req.user.id) {
-        const already = await ArticleLike.findOne({ where: { articleId: id, userId: req.user.id } });
-        if (already) return res.status(400).json({ message: 'Vous avez déjà liké cet article' });
-        await ArticleLike.create({ articleId: id, userId: req.user.id, ip });
-      } else {
-        if (ip) {
-          const already = await ArticleLike.findOne({ where: { articleId: id, ip } });
-          if (already) return res.status(400).json({ message: 'Vous avez déjà liké cet article' });
-        }
-        await ArticleLike.create({ articleId: id, userId: null, ip });
-      }
-    } catch (err) {
-      const msg = (err && err.message) ? err.message.toLowerCase() : '';
-      const missingTable = msg.includes('does not exist') || msg.includes('no such table') || msg.includes("doesn't exist") || msg.includes('er_no_such_table');
-      if (missingTable) {
-        console.error('Migration manquante: article_likes table non trouvée.');
-        return res.status(500).json({ message: 'Migration manquante: créez la table article_likes (exécutez les migrations).' });
-      }
-      throw err;
-    }
-
-    await article.increment("likes", { by: 1 });
-    await article.reload();
-
-    return res.json({ likes: article.likes });
-
-  } catch (error) {
-    console.error("likeArticle error:", error);
-    return res.status(500).json({ message: "Erreur like" });
-  }
+    const result = await sequelize.transaction(async transaction => {
+      // Verrouiller la même ligne pour sérialiser vérification et incrément.
+      const article = await Article.findByPk(id, { transaction, lock: transaction.LOCK.UPDATE });
+      if (!article) return { status: 404, body: { message: 'Article introuvable' } };
+      const identity = req.user ? { userId: req.user.id } : { ip: req.ip };
+      if (await ArticleLike.findOne({ where: { articleId: id, ...identity }, transaction })) return { status: 400, body: { message: 'Vous avez déjà liké cet article' } };
+      await ArticleLike.create({ articleId: id, userId: req.user?.id || null, ip: req.ip }, { transaction });
+      await article.increment('likes', { by: 1, transaction });
+      await article.reload({ transaction });
+      return { status: 200, body: { likes: article.likes } };
+    });
+    return res.status(result.status).json(result.body);
+  } catch (error) { next(error); }
 };
 
 /* =========================
@@ -413,7 +392,7 @@ export const getArticlesByCategorieName = async (req, res) => {
 
     const pageSize = 6;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
-    const search = req.query.search || "";
+    const search = typeof req.query.search === "string" ? req.query.search.slice(0, 200) : "";
 
     const where = {
       categorieId: category.id
@@ -437,7 +416,7 @@ export const getArticlesByCategorieName = async (req, res) => {
     const articles = rows.map(a => ({
       id: a.id,
       titre: a.title,
-      contenu: a.content,
+      contenu: articlePlainText(a.content),
       auteur: a.author?.name || "Inconnu",
       date_publication: a.createdAt,
       image: a.image,
@@ -457,7 +436,7 @@ export const getArticlesByCategorieName = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("getArticlesByCategorieName error:", error);
+    safeLog(error);
     return res.status(500).send("Erreur catégorie");
   }
 };

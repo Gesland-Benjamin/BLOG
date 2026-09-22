@@ -1,3 +1,4 @@
+import { safeLog } from '../utils/security.js';
 import Article from "../models/Article.model.js";
 import Categorie from "../models/Categorie.model.js";
 import User from "../models/User.model.js";
@@ -28,7 +29,7 @@ export async function showNewArticleForm(req, res) {
       ogImageTags: ""
     });
   } catch (error) {
-    console.error("showNewArticleForm error:", error);
+    safeLog(error);
     res.status(500).send("Erreur chargement catégories");
   }
 }
@@ -38,8 +39,8 @@ export async function showNewArticleForm(req, res) {
 ========================= */
 export const createArticle = async (req, res) => {
   try {
-    console.log("🟡 BODY RECEIVED:", req.body);
-    console.log("🟡 FILE:", req.file || req.processedImage);
+
+
 
     const { title, content, categorieId, video } = req.body;
 
@@ -76,22 +77,22 @@ export const createArticle = async (req, res) => {
       video: video ? prepareVideoUrl(video.trim()) : null
     });
 
-    console.log("✅ ARTICLE CREATED:", article.id);
+    req.uploadCommitted = true;
 
     return res.redirect("/article");
 
   } catch (error) {
-    console.error("❌ createArticle error:", error);
+    safeLog(error);
 
-    if (req.processedImage) {
+    if (!req.uploadCommitted && req.processedImage) {
       const uploadsDir = getUploadsDir();
       await deleteProcessedImages(uploadsDir, req.processedImage.basename)
-        .catch(console.error);
+        .catch(safeLog);
     }
 
-    if (req.processedInlineImage) {
+    if (!req.uploadCommitted && req.processedInlineImage) {
       const uploadsDir = getUploadsDir();
-      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(console.error);
+      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(safeLog);
     }
 
     return res.status(500).send("Erreur création article");
@@ -126,7 +127,7 @@ export const showEditArticleForm = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("showEditArticleForm error:", error);
+    safeLog(error);
     res.status(500).send("Erreur chargement article");
   }
 };
@@ -161,11 +162,13 @@ export const updateArticle = async (req, res) => {
       video: video ? prepareVideoUrl(video.trim()) : null
     });
 
+    req.uploadCommitted = true;
+
     if (hasNewImage && previousImage) {
       const uploadsDir = getUploadsDir();
       const previousBaseName = getImageBaseName(previousImage);
       if (previousBaseName) {
-        await deleteProcessedImages(uploadsDir, previousBaseName).catch(console.error);
+        await deleteProcessedImages(uploadsDir, previousBaseName).catch(safeLog);
       }
     }
 
@@ -173,7 +176,7 @@ export const updateArticle = async (req, res) => {
       const uploadsDir = getUploadsDir();
       const previousBaseNameInline = getImageBaseName(previousInline);
       if (previousBaseNameInline) {
-        await deleteProcessedImages(uploadsDir, previousBaseNameInline).catch(console.error);
+        await deleteProcessedImages(uploadsDir, previousBaseNameInline).catch(safeLog);
       }
     }
 
@@ -182,17 +185,17 @@ export const updateArticle = async (req, res) => {
     res.redirect("/article");
 
   } catch (error) {
-    console.error("updateArticle error:", error);
+    safeLog(error);
 
-    if (req.processedImage) {
+    if (!req.uploadCommitted && req.processedImage) {
       const uploadsDir = getUploadsDir();
       await deleteProcessedImages(uploadsDir, req.processedImage.basename)
-        .catch(console.error);
+        .catch(safeLog);
     }
 
-    if (req.processedInlineImage) {
+    if (!req.uploadCommitted && req.processedInlineImage) {
       const uploadsDir = getUploadsDir();
-      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(console.error);
+      await deleteProcessedImages(uploadsDir, req.processedInlineImage.basename).catch(safeLog);
     }
 
     res.status(500).send("Erreur update article");
@@ -212,13 +215,13 @@ export const deleteArticle = async (req, res) => {
     if (article.image) {
       const imageBaseName = getImageBaseName(article.image);
       if (imageBaseName) {
-        await deleteProcessedImages(uploadsDir, imageBaseName).catch(console.error);
+        await deleteProcessedImages(uploadsDir, imageBaseName).catch(safeLog);
       }
     }
     if (article.image_inline) {
       const imageInlineBaseName = getImageBaseName(article.image_inline);
       if (imageInlineBaseName) {
-        await deleteProcessedImages(uploadsDir, imageInlineBaseName).catch(console.error);
+        await deleteProcessedImages(uploadsDir, imageInlineBaseName).catch(safeLog);
       }
     }
 
@@ -229,7 +232,7 @@ export const deleteArticle = async (req, res) => {
     res.redirect("/article");
 
   } catch (error) {
-    console.error("deleteArticle error:", error);
+    safeLog(error);
     res.status(500).send("Erreur suppression article");
   }
 };

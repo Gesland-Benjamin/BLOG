@@ -1,4 +1,3 @@
-// This file has been moved to .trash/scripts/
 #!/usr/bin/env node
 
 /**

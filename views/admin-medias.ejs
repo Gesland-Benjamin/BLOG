@@ -8,7 +8,7 @@
         <div class="admin-header">
           <h1>Gestion des médias</h1>
           <% if (orphanMedia.length > 0) { %>
-            <button class="admin-btn danger" onclick="cleanOrphans()">Nettoyer les fichiers orphelins</button>
+            <button class="admin-btn danger" data-clean-orphans>Nettoyer les fichiers orphelins</button>
           <% } %>
         </div>
 
@@ -106,7 +106,7 @@
                     <td class="text-end"><%= media.sizeFormatted %></td>
                     <td><%= media.createdAtFormatted %></td>
                     <td class="text-end">
-                      <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('<%= media.filename %>')">Supprimer</button>
+                      <button class="btn btn-sm btn-outline-danger" data-delete-file="<%= media.filename %>">Supprimer</button>
                     </td>
                   </tr>
                 <% }) %>
@@ -119,26 +119,6 @@
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-    <script>
-      function deleteFile(filename) {
-        if (confirm(`Êtes-vous sûr de vouloir supprimer le fichier "${filename}" ?`)) {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = `/admin/medias/${filename}?_method=DELETE`;
-          document.body.appendChild(form);
-          form.submit();
-        }
-      }
 
-      function cleanOrphans() {
-        if (confirm('Êtes-vous sûr de vouloir supprimer tous les fichiers orphelins ? Cette action est irréversible.')) {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = '/admin/medias/clean-orphans';
-          document.body.appendChild(form);
-          form.submit();
-        }
-      }
-    </script>
   </body>
 </html>

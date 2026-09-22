@@ -88,7 +88,7 @@
                   <a href="/admin/articles/<%= article.id %>/edit" class="admin-btn-sm secondary">Éditer</a>
                   <form method="POST" action="/admin/articles/<%= article.id %>?_method=DELETE" style="display:inline-block; margin:0;">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button type="submit" class="admin-btn-sm danger" onclick="return confirm('Supprimer cet article ?')">Supprimer</button>
+                    <button type="submit" class="admin-btn-sm danger" data-confirm="Supprimer cet article ?">Supprimer</button>
                   </form>
                 </div>
               <% } %>
@@ -178,7 +178,7 @@
 
               <% if (typeof commentSubmitted !== 'undefined' && commentSubmitted) { %>
                 <div id="comment-success-alert" class="alert alert-success">Merci ! Votre commentaire est en attente de validation.</div>
-                <script>
+                <script nonce="<%= cspNonce %>">
                   setTimeout(function() {
                     var alert = document.getElementById('comment-success-alert');
                     if(alert) alert.style.display = 'none';
@@ -201,6 +201,7 @@
               <% } %>
 
               <form method="POST" action="/article/<%= article.id %>/comment">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <% if (!user) { %>
                   <div class="mb-3">
                     <label for="nom" class="form-label">Votre nom</label>
@@ -225,7 +226,7 @@
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-    <script>
+    <script nonce="<%= cspNonce %>">
       document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('like-btn');
         const countEl = document.getElementById('like-count');
@@ -274,7 +275,7 @@
         });
       });
     </script>
-    <script>
+    <script nonce="<%= cspNonce %>">
       document.addEventListener('DOMContentLoaded', function() {
         var commentsList = document.querySelector('.comments-list');
         if (commentsList && commentsList.children.length > 2) {
