@@ -1,4 +1,3 @@
-import { verifyAdminMfa } from '../utils/adminMfa.js';
 import { fingerprint, safeLog } from '../utils/security.js';
 import argon2 from "argon2";
 import { User } from "../models/index.js";
@@ -162,7 +161,7 @@ export const login = async (req, res) => {
       valid = false;
     }
 
-    if (!valid || !verifyAdminMfa(user, req.body.otp)) {
+    if (!valid) {
       return res.status(401).render("auth", {
         title: "Authentification",
         errors: ["Identifiants invalides"],

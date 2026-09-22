@@ -5,7 +5,6 @@ import { prepareVideoUrl } from "../utils/videoHelper.js";
    LOGIN
 ========================= */
 export const loginSchema = Joi.object({
-  otp: Joi.string().pattern(/^\d{6}$/).allow('').optional(),
   email: Joi.string()
     .trim().lowercase().max(150)
     .email()
