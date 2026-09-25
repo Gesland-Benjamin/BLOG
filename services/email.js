@@ -1,3 +1,4 @@
+import { newsletterEmail } from './newsletterTemplate.js';
 import { escapeHtml, appUrl, safeLog } from '../utils/security.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
@@ -21,6 +22,9 @@ const transporter = nodemailer.createTransport(
         port: Number(process.env.EMAIL_PORT) || 587,
         secure: Number(process.env.EMAIL_PORT) === 465,
         requireTLS: true,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 20000,
         auth: user && pass ? { user, pass } : undefined,
         logger: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
         debug: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
@@ -28,6 +32,9 @@ const transporter = nodemailer.createTransport(
     : {
         service: process.env.EMAIL_SERVICE || 'gmail',
         requireTLS: true,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 20000,
         auth: user && pass ? { user, pass } : undefined,
         logger: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
         debug: process.env.NODE_ENV !== 'production' && process.env.EMAIL_DEBUG === 'true',
@@ -214,63 +221,18 @@ export async function sendNewsletterConfirmationEmail(email, confirmationToken) 
       to: email,
       subject: 'Confirmation de votre inscription à la newsletter Emi-Pulse',
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-              .content { padding: 20px; }
-              .button { 
-                display: inline-block; 
-                background-color: #0d6efd; 
-                color: white; 
-                padding: 12px 24px; 
-                text-decoration: none; 
-                border-radius: 5px; 
-                margin: 20px 0; 
-              }
-              .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0; color: #0d6efd;">Emi-Pulse Newsletter</h1>
-              </div>
-              
-              <div class="content">
-                <h2>Confirmez votre inscription</h2>
-                <p>Vous avez demandé à recevoir la newsletter Emi-Pulse.</p>
-                
-                <p>Cliquez sur le bouton ci-dessous pour valider votre inscription :</p>
-                
-                <a href="${confirmUrl}" class="button">Confirmer mon inscription</a>
-                
-                <p>Ou copiez ce lien dans votre navigateur :</p>
-                <p style="word-break: break-all; color: #666;">${confirmUrl}</p>
-                
-                <p><strong>Ce lien est valide pendant 24 heures.</strong></p>
-                
-                <p>Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.</p>
-              </div>
-              
-              <div class="footer">
-                <p>© ${new Date().getFullYear()} Emi-Pulse - Tous droits réservés</p>
-                <p>Cet email a été envoyé à ${email}</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: newsletterEmail({
+        title: 'Encore un clic pour nous rejoindre',
+        preview: 'Confirmez votre inscription à la newsletter Emi’Pulse.',
+        paragraphs: ['Bonjour,', 'Vous avez demandé à recevoir les articles et les nouvelles d’Emi’Pulse par e-mail. Confirmez votre adresse pour finaliser votre inscription.'],
+        actionLabel: 'Confirmer mon inscription', actionUrl: confirmUrl,
+        note: 'Ce lien est valable 48 heures. Si vous n’êtes pas à l’origine de cette demande, ignorez ce message : votre abonnement ne sera pas activé.'
+      }),
       text: buildNewsletterText([
         'Confirmation de votre inscription à la newsletter Emi-Pulse',
         'Vous avez demandé à recevoir la newsletter Emi-Pulse.',
         `Validez votre inscription ici : ${confirmUrl}`,
-        'Ce lien est valide pendant 24 heures.',
+        'Ce lien est valide pendant 48 heures.',
         "Si vous n'avez pas demandé cette inscription, vous pouvez ignorer cet email.",
         'Cordialement,',
         'L\'équipe Emi-Pulse'
@@ -300,66 +262,20 @@ export async function sendNewsletterWelcomeEmail(email, unsubscribeUrl) {
       replyTo: process.env.EMAIL_USER || 'contact@emi-pulse.fr',
       headers: {
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         'Precedence': 'bulk'
       },
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background-color: #0d6efd; color: white; padding: 30px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
-              .content { padding: 20px; }
-              .button { 
-                display: inline-block; 
-                background-color: #0d6efd; 
-                color: white; 
-                padding: 12px 24px; 
-                text-decoration: none; 
-                border-radius: 5px; 
-                margin: 20px 0; 
-              }
-              .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">Bienvenue chez Emi-pulse</h1>
-              </div>
-              
-              <div class="content">
-                <p>Votre inscription à la newsletter est confirmée.</p>
-                
-                <p>Vous recevrez nos articles et actualités utiles sur :</p>
-                <ul>
-                  <li>La beauté et le bien-être</li>
-                  <li>La nutrition et la santé</li>
-                  <li>Le développement personnel</li>
-                </ul>
-                
-                <p>Découvrez dès maintenant nos derniers articles :</p>
-                <a href="${appUrl()}" class="button">Visiter le blog</a>
-                
-                <p>Merci pour votre inscription.</p>
-              </div>
-              
-              <div class="footer">
-                <p>© ${new Date().getFullYear()} Emi-pulse - Tous droits réservés</p>
-                <p>Vous recevez cet email car vous êtes inscrit à notre newsletter.</p>
-                <p><a href="${unsubscribeUrl}" style="color: #666;">Se désabonner</a></p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: newsletterEmail({
+        title: 'Bienvenue dans la newsletter',
+        preview: 'Votre inscription est confirmée. À bientôt sur Emi’Pulse !',
+        paragraphs: ['Votre inscription est confirmée, merci de nous rejoindre !', 'Vous pourrez recevoir les nouveaux articles et les actualités du blog directement dans votre boîte mail. En attendant, prenez le temps de découvrir les dernières publications.'],
+        actionLabel: 'Découvrir les articles', actionUrl: `${appUrl()}/article`,
+        note: 'Vous gardez le choix : un lien de désinscription est disponible au bas de ce message.',
+        unsubscribeUrl
+      }),
       text: buildNewsletterText([
         'Bienvenue sur la newsletter Emi-Pulse',
         'Votre inscription à la newsletter est confirmée.',
-        'Vous recevrez nos articles et actualités utiles sur la beauté, la nutrition et le développement personnel.',
+        'Vous pourrez recevoir les nouveaux articles et les actualités du blog.',
         `Découvrez nos derniers articles : ${appUrl()}`,
         `Pour vous désabonner : ${unsubscribeUrl}`,
         'Cordialement,',
@@ -447,6 +363,11 @@ export function sendUnsubscribeEmail(email, url) {
   return sendMailWithLogging({ from: getBrandFromAddress(), to: email,
     subject: 'Votre lien de désinscription Emi’Pulse',
     text: `Pour confirmer votre désinscription : ${url}`,
-    html: `<p>Pour confirmer votre désinscription :</p><p><a href="${escapeHtml(url)}">Me désabonner</a></p>`
+    html: newsletterEmail({
+      title: 'Gérer votre abonnement', preview: 'Votre lien personnel de désinscription Emi’Pulse.',
+      paragraphs: ['Vous avez demandé à vous désabonner de la newsletter. Ouvrez le lien ci-dessous, puis confirmez votre choix sur le site.'],
+      actionLabel: 'Me désabonner', actionUrl: url,
+      note: 'Si vous n’avez pas fait cette demande, vous pouvez ignorer ce message. Votre abonnement reste inchangé.'
+    })
   });
 }

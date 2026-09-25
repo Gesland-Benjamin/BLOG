@@ -23,9 +23,15 @@ export async function subscribeNewsletter(req, res, next) {
       where: { email }, defaults: { confirmed: false, confirmation_token: null, user_id: req.user?.id || null }
     });
     if (!subscriber.confirmed) {
-      void sendSubscriberConfirmation(subscriber).catch(safeLog);
+      try {
+        await sendSubscriberConfirmation(subscriber);
+      } catch (error) {
+        safeLog(error);
+        return res.status(503).render('newsletter', { title: 'Newsletter', formData: { email }, message: null,
+          errors: ['L’envoi de l’e-mail est momentanément indisponible. Votre abonnement n’est pas encore activé. Réessayez dans quelques instants.'] });
+      }
     }
-    return res.render('newsletter', { title: 'Newsletter', errors: [], formData: {}, message: 'Si nécessaire, un email de confirmation vous sera envoyé.' });
+    return res.render('newsletter', { title: 'Newsletter', errors: [], formData: {}, message: 'Votre demande a été prise en compte. Si votre adresse reste à confirmer, un e-mail vient de vous être envoyé. Consultez aussi vos courriers indésirables. Si vous êtes déjà abonné, aucune autre action n’est nécessaire.' });
   } catch (error) { next(error); }
 }
 export async function confirmSubscription(req, res, next) {
@@ -66,8 +72,14 @@ export async function unsubscribe(req, res, next) {
     const { value, error } = newsletterSchema.validate({ email: req.body.email });
     if (error) return res.status(400).render('newsletter-unsubscribe', { title: 'Désinscription', errors: ['Adresse email invalide.'], email: '', token: '', success: false, message: null });
     const subscriber = await NewsletterSubscriber.findOne({ where: { email: value.email } });
-    res.render('newsletter-unsubscribe', { title: 'Désinscription', errors: [], email: '', token: '', success: false,
-      message: 'Si cette adresse est inscrite, un lien de désinscription vous sera envoyé.' });
-    if (subscriber) void sendUnsubscribeEmail(subscriber.email, unsubscribeLink(subscriber)).catch(safeLog);
+    if (subscriber) {
+      try { await sendUnsubscribeEmail(subscriber.email, unsubscribeLink(subscriber)); }
+      catch (error) {
+        safeLog(error);
+        return res.status(503).render('newsletter-unsubscribe', { title: 'Désinscription', errors: ['Envoi momentanément indisponible. Réessayez dans quelques instants.'], email: value.email, token: '', success: false, message: null });
+      }
+    }
+    return res.render('newsletter-unsubscribe', { title: 'Désinscription', errors: [], email: '', token: '', success: false,
+      message: 'Si cette adresse est inscrite, un lien de désinscription vient de vous être envoyé. Consultez aussi vos courriers indésirables.' });
   } catch (error) { next(error); }
 }

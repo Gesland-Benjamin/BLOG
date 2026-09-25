@@ -1234,3 +1234,34 @@ h1 {
   .breadcrumb {
     font-size: 0.8rem;
   }
+
+/* Newsletter : une carte commune à toutes les étapes de l’abonnement. */
+.newsletter-page { width:100%; padding:3rem 1rem 1rem; }
+.newsletter-stage { width:100%; }
+.newsletter-page .newsletter-form-card {
+  width:100%; max-width:620px; margin:0 auto; padding:clamp(1.5rem,5vw,3rem);
+  border:1px solid #c99963; border-radius:32px; color:#4a2600;
+  background:linear-gradient(145deg,#fffaf0 0%,#fff0d9 65%,#f5d7b0 100%);
+  box-shadow:0 16px 40px rgba(107,53,0,.13),inset 0 2px 0 #fffdf8; text-align:left;
+}
+.newsletter-eyebrow { display:block; margin-bottom:.9rem; color:#805026; font-size:.72rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+.newsletter-page .newsletter-form-title { margin:0 0 1rem; color:#4a2600; font-size:clamp(1.65rem,4vw,2.25rem); line-height:1.2; text-align:left; }
+.newsletter-page .newsletter-message, .newsletter-page .newsletter-description { color:#705039; font-size:1rem; line-height:1.75; margin:0 0 1.6rem; text-align:left; }
+.newsletter-page .newsletter-form { display:grid; grid-template-columns:minmax(0,1fr); justify-content:stretch; align-items:stretch; gap:1rem; margin:1.5rem 0 0; }
+.newsletter-page .newsletter-form-group { margin:0; width:100%; }
+.newsletter-page .newsletter-form-group label { display:block; color:#4a2600; font-size:.9rem; font-weight:700; margin-bottom:.6rem; }
+.newsletter-page .newsletter-form-group input { width:100%; min-width:0; min-height:52px; padding:.85rem 1rem; background:#fffdf8; color:#4a2600; border:1px solid #c9a57b; border-radius:12px; font-size:1rem; }
+.newsletter-page .newsletter-submit { display:block; width:100%; padding:1rem 1.25rem; border:1px solid #6b3500; border-radius:12px; background:#6b3500; color:#fff8eb; font-size:.95rem; font-weight:700; line-height:1.5; text-align:center; text-decoration:none; cursor:pointer; box-shadow:0 4px 10px rgba(107,53,0,.12); }
+.newsletter-page .newsletter-submit:hover { background:#4a2600; transform:none; }
+.newsletter-page input:focus-visible, .newsletter-page button:focus-visible, .newsletter-page a:focus-visible { outline:3px solid #b56d29; outline-offset:3px; }
+.newsletter-fineprint { margin:1rem 0 0; font-size:.8rem; line-height:1.7; color:#705039; }
+.newsletter-fineprint a { color:#6b3500; text-underline-offset:3px; }
+.newsletter-card-footer { display:flex; flex-wrap:wrap; gap:.5rem 1.3rem; margin-top:1.75rem; padding-top:1.2rem; border-top:1px solid #dfc6a5; font-size:.75rem; color:#805026; }
+.newsletter-notice { margin:1.4rem 0; padding:1.2rem; border:1px solid #c9b287; border-radius:14px; background:#fffaf0; color:#4a2600; line-height:1.7; }
+.newsletter-notice p { margin:.5rem 0 0; }
+.newsletter-notice-error { border-color:#af5a42; color:#813522; }
+.newsletter-notice ul { margin:0; padding-left:1.2rem; }
+.newsletter-actions { display:flex; flex-wrap:wrap; gap:.8rem; margin-top:1.5rem; }
+.newsletter-page .newsletter-success-icon, .newsletter-page .newsletter-warning-icon { color:#805026; margin:0 0 1.25rem; text-align:left; }
+.newsletter-page .newsletter-success-icon svg, .newsletter-page .newsletter-warning-icon svg { width:44px; height:44px; margin-bottom:1rem; }
+@media(max-width:480px) { .newsletter-page { padding-top:1.5rem; } .newsletter-page .newsletter-form-card { border-radius:24px; } .newsletter-actions > a { width:100%; text-align:center; } }

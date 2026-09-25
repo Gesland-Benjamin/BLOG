@@ -3,49 +3,31 @@
   <%- include('partials/head') %>
   <body>
     <%- include('partials/header', { withContainer: true }) %>
-    <main class="auth-wrapper">
-      <div class="auth-container">
-        <div class="newsletter-form-card">
-          <h2 class="newsletter-form-title">📧 Newsletter Emi'Pulse</h2>
-          
-          <% if (typeof message !== 'undefined' && message) { %>
-            <div class="auth-alert info" role="alert">
-              <%= message %>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+    <main class="newsletter-page">
+      <section class="newsletter-form-card" aria-labelledby="newsletter-title">
+        <span class="newsletter-eyebrow">Les nouvelles d’Emi’Pulse</span>
+        <h1 id="newsletter-title" class="newsletter-form-title">Un peu d’Emi dans votre boîte mail</h1>
+        <p class="newsletter-message">Les nouveaux articles, les idées et les actualités du blog, directement chez vous.</p>
+        <% if (typeof message !== 'undefined' && message) { %>
+          <div class="newsletter-notice" role="status"><strong>Vérifiez votre boîte mail</strong><p><%= message %></p></div>
+          <a href="/article" class="newsletter-submit newsletter-action">Découvrir les articles</a>
+          <p class="newsletter-fineprint"><a href="/newsletter">Corriger mon adresse ou renvoyer une confirmation</a></p>
+        <% } else { %>
+          <% if (errors && errors.length) { %>
+            <div class="newsletter-notice newsletter-notice-error" id="newsletter-errors" role="alert"><ul><% errors.forEach(error => { %><li><%= error %></li><% }) %></ul></div>
           <% } %>
-          
-          <% if (errors && errors.length > 0) { %>
-            <div class="auth-alert error" role="alert">
-              <ul>
-                <% errors.forEach(err => { %>
-                  <li><%= err %></li>
-                <% }) %>
-              </ul>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          <% } %>
-          
-          <p class="newsletter-message">Recevez nos meilleurs articles sur toutes nos thématiques directement dans votre boîte mail.</p>
-          
           <form method="POST" action="/newsletter/subscribe" class="newsletter-form">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="newsletter-form-group">
-              <label for="email">Adresse email</label>
-              <input type="email" class="<%= (errors && errors.length > 0 && errors.some(e => e.includes('email'))) ? 'invalid' : '' %>" 
-                     id="email" name="email" value="<%= formData.email || '' %>" required autocomplete="email"
-                     placeholder="votre@email.com">
+              <label for="newsletter-email">Votre adresse e-mail</label>
+              <input type="email" id="newsletter-email" name="email" value="<%= formData.email || '' %>" required autocomplete="email" inputmode="email" maxlength="150" placeholder="vous@exemple.fr" aria-describedby="newsletter-help<%= errors.length ? ' newsletter-errors' : '' %>">
             </div>
-            <button type="submit" class="newsletter-submit">S'abonner à la newsletter</button>
+            <button type="submit" class="newsletter-submit">Recevoir la newsletter <span aria-hidden="true">→</span></button>
           </form>
-          
-          <p class="auth-footer">
-            En vous inscrivant, vous recevrez un email de confirmation.<br>
-            Vous pourrez vous désinscrire à tout moment.
-          </p>
-        </div>
-      </div>
-      <br>
+          <p id="newsletter-help" class="newsletter-fineprint">Un e-mail vous permettra de confirmer votre inscription. Vous pourrez vous désabonner à tout moment.</p>
+        <% } %>
+        <div class="newsletter-card-footer"><span>Une inscription en deux étapes</span><span>Vous gardez le choix</span></div>
+      </section>
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>

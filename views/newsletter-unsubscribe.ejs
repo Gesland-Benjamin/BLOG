@@ -3,21 +3,22 @@
   <%- include('partials/head') %>
   <body>
     <%- include('partials/header') %>
-    <main class="content-wrapper">
-      <div class="content-container" style="max-width:500px; margin:0 auto;">
+    <main class="newsletter-page">
+      <div class="newsletter-stage">
         <div class="newsletter-form-card">
+          <span class="newsletter-eyebrow">La newsletter Emi’Pulse</span>
           <% if (typeof success !== 'undefined' && success) { %>
             <div class="newsletter-success-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                 <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
               </svg>
-              <h2 class="newsletter-form-title">Désinscription réussie</h2>
+              <h1 class="newsletter-form-title">Désinscription réussie</h1>
               <p class="newsletter-message"><%= message %></p>
               <a href="/" class="btn-smeg primary">Retour à l'accueil</a>
             </div>
           <% } else { %>
-            <h2 class="newsletter-form-title">Se désabonner de la newsletter</h2>
+            <h1 class="newsletter-form-title">Se désabonner de la newsletter</h1>
             
             <% if (typeof message !== 'undefined' && message) { %>
               <div class="auth-alert info">
@@ -51,10 +52,10 @@
                        placeholder="votre@email.com">
               </div>
               <% } %>
-              <button type="submit" class="newsletter-submit" style="background:#e74c3c;"><%= token ? 'Confirmer ma désinscription' : 'Recevoir le lien' %></button>
+              <button type="submit" class="newsletter-submit"><%= token ? 'Confirmer ma désinscription' : 'Recevoir le lien' %></button>
             </form>
             
-            <div class="auth-footer">
+            <div class="newsletter-fineprint">
               <a href="/">Retour à l'accueil</a>
             </div>
           <% } %>

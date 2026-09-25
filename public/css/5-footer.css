@@ -216,3 +216,14 @@ footer::before {
     gap: 0.55rem;
   }
 }
+
+/* Carte d’inscription du pied de page. */
+.footer-newsletter { max-width:720px; padding:clamp(1.4rem,4vw,2.5rem); border:1px solid #c99963; border-radius:28px; background:linear-gradient(145deg,#fffaf0,#fbe8cd); box-shadow:0 10px 28px rgba(107,53,0,.1),inset 0 1px 0 #fffdf8; }
+.footer-newsletter h2 { margin:0 0 .7rem; font-size:clamp(1.4rem,3vw,1.85rem); line-height:1.3; color:#4a2600; font-weight:700; }
+.footer-newsletter-intro { max-width:450px; margin:0 auto 1.4rem; color:#705039; font-size:.95rem; line-height:1.7; }
+.footer-newsletter .newsletter-form { display:flex; align-items:stretch; gap:.65rem; }
+.footer-newsletter .newsletter-input { max-width:none; min-width:0; flex:1 1 240px; border:1px solid #c9a57b; border-radius:12px; padding:.85rem 1rem; font-size:1rem; }
+.footer-newsletter .newsletter-btn { border:1px solid #6b3500; border-radius:12px; padding:.85rem 1.25rem; background:#6b3500; color:#fff8eb; text-transform:none; letter-spacing:0; font-size:.9rem; box-shadow:none; }
+.footer-newsletter .newsletter-btn:hover { background:#4a2600; transform:none; }
+.footer-newsletter input:focus-visible, .footer-newsletter button:focus-visible { outline:3px solid #b56d29; outline-offset:3px; }
+@media(max-width:480px) { .footer-newsletter .newsletter-btn { width:100%; } }
