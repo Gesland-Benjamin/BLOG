@@ -16,10 +16,8 @@ Dans le tableau de bord du site, ouvrir **Environment variables / Variables d’
 | Variable | Valeur |
 | --- | --- |
 | `SEO_MIGRATION_ON_START` | `1` pour autoriser cette migration additive au prochain démarrage |
-| `EMI_AUTHOR_EMAIL` | `delbeemilie27500@gmail.com` |
 | `APP_URL` | Conserver/vérifier l’origine HTTPS exacte du site, sans chemin |
 
-Si `EMI_AUTHOR_ID` est déjà renseigné, il est prioritaire sur l’email : vérifier qu’il désigne le bon compte.
 
 L’ancienne version du code ignore `SEO_MIGRATION_ON_START`. L’ajout de cette variable ne lance donc pas encore la nouvelle migration. Ne pas la mettre dans une variable publique de frontend.
 
@@ -56,7 +54,6 @@ Si la migration était déjà terminée :
 - Accueil, catégories et administration accessibles.
 - Ancien lien `/article/ID` redirigé vers une URL avec slug ; mêmes texte, image et date.
 - `/sitemap.xml` et `/robots.txt` accessibles sur le bon domaine.
-- `/auteur/emilie` liste les articles du bon compte.
 - Effectif des articles et dates historiques inchangés après la migration (vérification en lecture seule dans phpMyAdmin).
 - Images des anciens articles toujours accessibles.
 
@@ -66,4 +63,4 @@ En cas d’échec partiel, les colonnes déjà ajoutées sont conservées ; le s
 
 ## Validation locale
 
-`npm test` : 51 tests réussis, dont cinq scénarios du démarrage conditionnel (activation, absence d’activation, schéma prêt, schéma incomplet, erreur). Modèles/bases simulés : aucune migration de production n’a été exécutée et le schéma réel Hostinger reste à vérifier.
+`npm test` : 50 tests réussis, dont cinq scénarios du démarrage conditionnel (activation, absence d’activation, schéma prêt, schéma incomplet, erreur). Modèles/bases simulés : aucune migration de production n’a été exécutée et le schéma réel Hostinger reste à vérifier.

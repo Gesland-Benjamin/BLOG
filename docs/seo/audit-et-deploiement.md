@@ -1,5 +1,7 @@
 # Emi’Pulse : audit et livraison SEO
 
+> Mise à jour : à la demande du propriétaire, les pages À propos et auteur ainsi que le bloc À propos d’Emi ont été retirés. Les anciennes URLs redirigent vers l’accueil et la liste des articles, et sont exclues du sitemap. Le nom réel de l’auteur reste dans les articles et le JSON-LD, sans lien vers une page auteur. Les variables EMI_AUTHOR_EMAIL/EMI_AUTHOR_ID ne sont plus utilisées. Les sections ci-dessous décrivent également l’historique de la livraison initiale.
+
 Audit du code local le 25 septembre 2026. Aucun accès à la BDD, aucune migration exécutée, aucun déploiement. Le schéma effectivement installé et les données de production restent à vérifier par l’exploitant. Les articles, les uploads et les migrations historiques n’ont pas été réécrits.
 
 ## Phase A — État initial
@@ -68,7 +70,7 @@ Inventaire exact : [fichiers créés et modifiés](fichiers-livres.md).
 
 ## Phase D — Vérifications
 
-- `npm test` : **51 tests réussis**, dont les tests historiques de sécurité/éditeur + tests SEO, modèle Sequelize sans connexion, migration simulée et HTTP réel sur loopback avec modèles simulés.
+- `npm test` : **50 tests réussis**, dont les tests historiques de sécurité/éditeur + tests SEO, modèle Sequelize sans connexion, migration simulée et HTTP réel sur loopback avec modèles simulés.
 - Cas couverts : ancien article, 301/200/404, brouillons, unicité et stabilité des slugs, fallbacks, canonical, H1, JSON-LD, auteur, dates, images et social, sitemap/index/feeds, pagination, rendu EJS, édition et conservation des dates, migration relançable/collision.
 - `npm run test:seo-images` et `npm run test:image-compression` : réussis. Le second utilise désormais un répertoire temporaire unique et ne touche pas aux uploads existants.
 - Génération des 11 WebP : dimensions et pixels visibles comparés aux PNG ; sources conservées. Rapport `static-images.json`.

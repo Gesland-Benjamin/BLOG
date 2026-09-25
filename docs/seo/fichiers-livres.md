@@ -7,7 +7,6 @@ Les chemins ci-dessous sont relatifs à la racine du projet. La migration est pr
 - [tests/seo-deployment.test.js](<../../tests/seo-deployment.test.js>)
 - [services/seoDeployment.js](<../../services/seoDeployment.js>)
 - [docs/seo/hostinger-sans-ssh.md](<../../docs/seo/hostinger-sans-ssh.md>)
-- [controllers/author-controller.js](<../../controllers/author-controller.js>)
 - [docs/seo/audit-et-deploiement.md](<../../docs/seo/audit-et-deploiement.md>)
 - [docs/seo/fichiers-livres.md](<../../docs/seo/fichiers-livres.md>)
 - [docs/seo/static-images.json](<../../docs/seo/static-images.json>)
@@ -29,8 +28,6 @@ Les chemins ci-dessous sont relatifs à la racine du projet. La migration est pr
 - [services/articleImage.js](<../../services/articleImage.js>)
 - [tests/seo.test.js](<../../tests/seo.test.js>)
 - [utils/seo.js](<../../utils/seo.js>)
-- [views/about.ejs](<../../views/about.ejs>)
-- [views/author.ejs](<../../views/author.ejs>)
 
 ## Fichiers modifiés
 
@@ -76,3 +73,8 @@ Les chemins ci-dessous sont relatifs à la racine du projet. La migration est pr
 - [views/partials/head.ejs](<../../views/partials/head.ejs>)
 - [views/partials/header.ejs](<../../views/partials/header.ejs>)
 - [views/search-articles.ejs](<../../views/search-articles.ejs>)
+
+## Pages retirées à la demande du propriétaire
+
+- `views/about.ejs`, `views/author.ejs` et `controllers/author-controller.js` supprimés.
+- Anciennes URLs redirigées en 301, liens et références au sitemap supprimés.

@@ -1,5 +1,5 @@
 import { articleImageDimensions, articleImageSrcset } from '../services/articleImage.js';
-import { articlePath, articleSeo, authorPath, breadcrumbSchema } from '../utils/seo.js';
+import { articlePath, articleSeo, breadcrumbSchema } from '../utils/seo.js';
 import { renderArticleContent } from '../public/js/article-content.js';
 import { safeLog } from '../utils/security.js';
 import sequelize from '../config/database.js';
@@ -165,7 +165,6 @@ export const getArticleById = async (req, res) => {
     const articleData = {
       id: article.id,
       slug: article.slug,
-      authorUrl: authorPath(article.author),
       date_modified_iso: seo.modified,
       date_modified_formatted: formatDate(article.updated_at),
       titre: article.title,

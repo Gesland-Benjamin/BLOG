@@ -16,9 +16,6 @@ export function isoDate(value) {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 export const jsonLd = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-export function authorPath(author) {
-  return author && ((process.env.EMI_AUTHOR_ID && String(author.id) === process.env.EMI_AUTHOR_ID) || (process.env.EMI_AUTHOR_EMAIL && author.email?.toLowerCase() === process.env.EMI_AUTHOR_EMAIL.toLowerCase())) ? '/auteur/emilie' : null;
-}
 export function articleSeo(article) {
   const canonical = appUrl() + articlePath(article);
   const description = article.meta_description?.trim() || articlePlainText(article.content || '')
@@ -30,13 +27,11 @@ export function articleSeo(article) {
   } catch { /* Invalid legacy image URLs fall back without breaking the page. */ }
   const published = isoDate(article.published_at || article.created_at);
   const modified = isoDate(article.updated_at);
-  const authorUrl = authorPath(article.author);
   const schema = {
     '@context': 'https://schema.org', '@type': 'BlogPosting', headline: article.title,
     description, image, mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
     ...(published ? { datePublished: published } : {}), ...(modified ? { dateModified: modified } : {}),
-    ...(article.author?.name ? { author: { '@type': 'Person', name: article.author.name,
-      ...(authorUrl ? { url: appUrl() + authorUrl } : {}) } } : {}),
+    ...(article.author?.name ? { author: { '@type': 'Person', name: article.author.name } } : {}),
     publisher: { '@type': 'Organization', name: "Emi'Pulse", url: appUrl() }
   };
   return { title: article.seo_title?.trim() || article.title, description, canonical, image, type: 'article', schema, published, modified };
@@ -49,9 +44,9 @@ export function breadcrumbSchema(items) {
 export function seoLocals(req, res, next) {
   const page = /^\d+$/.test(req.query.page || '') ? Math.max(1, Math.min(10000, Number(req.query.page))) : 1;
   const path = req.path.replace(/\/$/, '') || '/';
-  const paginated = /^\/(article\/categorie\/|archive\/|auteur\/)/.test(path);
+  const paginated = /^\/(article\/categorie\/|archive\/)/.test(path);
   res.locals.seo = {
-    title: ({ '/': 'Accueil', '/article': 'Articles', '/a-propos': 'Qui est Emi ?', '/auteur/emilie': 'Émilie', '/renseignements': 'Contact', '/mentions-legales': 'Mentions légales' })[path] || "Emi'Pulse",
+    title: ({ '/': 'Accueil', '/article': 'Articles', '/renseignements': 'Contact', '/mentions-legales': 'Mentions légales' })[path] || "Emi'Pulse",
     description: "Les articles et les partages d’Emi sur Emi’Pulse.",
     canonical: appUrl() + path + (paginated && page > 1 ? `?page=${page}` : ''),
     image: appUrl() + '/logo%203.png', type: 'website',

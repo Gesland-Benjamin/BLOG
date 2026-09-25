@@ -83,7 +83,9 @@ test('rendu article : canonical, seul H1, auteur, vraies dates, OG, Twitter, JSO
   const html = await ejs.renderFile('views/article-detail.ejs', { ...baseLocals, ...result.data });
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /rel="canonical" href="https:\/\/blog.example\/article\/arretons-de-tout-normaliser-35"/);
-  assert.match(html, /rel="author" href="\/auteur\/emilie"/);
+  assert.match(html, /Par <strong>Émilie<\/strong>/);
+  assert.ok(!html.includes('/auteur/emilie'));
+  assert.ok(!html.includes('À propos d’Emi'));
   assert.match(html, /fetchpriority="high"/);
   assert.match(html, /property="og:image" content="https:\/\/blog.example\/uploads\/ancienne.jpg"/);
   assert.match(html, /name="twitter:image"/);
@@ -132,7 +134,7 @@ test('sitemap XML : URLs publiques, dates historiques et exclusion brouillons', 
   assert.ok(res.body.includes(record.slug)); assert.ok(!res.body.includes(draft.slug));
   assert.ok(!res.body.includes('/admin')); assert.ok(!res.body.includes('/article/35<'));
   assert.ok(res.body.includes('<lastmod>2022-04-05T09:00:00.000Z</lastmod>'));
-  assert.ok(res.body.includes('/a-propos')); assert.ok(res.body.includes('/auteur/emilie'));
+  assert.ok(!res.body.includes('/a-propos')); assert.ok(!res.body.includes('/auteur/emilie'));
   for (const handler of [feeds.generateRssFeed, feeds.generateAtomFeed]) {
     const result = response(); await handler({ query: {} }, result); assert.equal(result.statusCode, 200);
     assert.ok(result.body.includes(record.slug)); assert.ok(!result.body.includes(draft.slug)); assert.ok(!result.body.includes('Invalid Date'));
@@ -186,7 +188,7 @@ test('formulaire accepte les champs facultatifs et refuse liens liés hors limit
 test('pages publiques et administration : rendu avec les nouveaux locals', async () => {
   const data = { ...baseLocals, seo: seo.articleSeo(record), author: record.author, articles: [record], pagination: pagination.createPaginationData(1, 1, 9, '/auteur/emilie'), baseUrl: '/auteur/emilie',
     article: record, linkArticles: [record], isEditing: true, ogImageTags: '', articlesParCategorie: [], recentPosts: [], featuredArticle: null, carouselItems: [], topLikedSections: [], archiveMonths: [] };
-  for (const name of ['author', 'about', '404', 'new-article', 'index', 'article']) {
+  for (const name of ['404', 'new-article', 'index', 'article']) {
     const html = await ejs.renderFile(`views/${name}.ejs`, { ...data, ...(name === 'article' ? { article: undefined } : {}) }); assert.ok(html.includes('</html>'), name);
   }
 });
@@ -256,26 +258,6 @@ test('migration refuse schéma ambigu et triggers avant la première écriture',
       query: async sql => { assert.match(sql, /^SELECT/); return [[{ TRIGGER_NAME: 'unknown' }]]; } };
     await assert.rejects(() => up(db)); assert.equal(writes, 0);
   }
-});
-
-test('auteur : compte existant par email, filtre des articles, aucune adresse divulguée', async () => {
-  let where;
-  const authorModule = await mockedModule('../controllers/author-controller.js', {
-    '../models/index.js': { User: { findOne: async options => { assert.equal(options.where.email, process.env.EMI_AUTHOR_EMAIL); return record.author; } },
-      Article: { findAndCountAll: async options => { where = options.where; return { rows: [record], count: 1 }; } } },
-    '../utils/pagination.js': pagination
-  });
-  const res = response(); res.locals.seo = { canonical: 'https://blog.example/auteur/emilie' };
-  await authorModule.getAuthor({ query: {} }, res, error => { throw error; });
-  assert.equal(where.userId, record.author.id);
-  const html = await ejs.renderFile('views/author.ejs', { ...baseLocals, ...res.data });
-  assert.ok(!html.includes(record.author.email)); assert.ok(html.includes(record.slug));
-  const email = process.env.EMI_AUTHOR_EMAIL;
-  try {
-    delete process.env.EMI_AUTHOR_EMAIL;
-    const missing = response(); await authorModule.getAuthor({ query: {} }, missing, error => { throw error; });
-    assert.equal(missing.data.seo.noindex, true); assert.equal(missing.data.articles.length, 0);
-  } finally { process.env.EMI_AUTHOR_EMAIL = email; }
 });
 
 test('images locales : dimensions et srcset réels, images anciennes/absentes préservées', async () => {

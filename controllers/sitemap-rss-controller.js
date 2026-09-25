@@ -3,7 +3,6 @@ import { articlePath, isoDate } from '../utils/seo.js';
 import { articlePlainText } from '../public/js/article-format.js';
 import Article from '../models/Article.model.js';
 import Categorie from '../models/Categorie.model.js';
-import User from '../models/User.model.js';
 
 export const escapeXml = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
 const chunkSize = 1000;
@@ -21,11 +20,9 @@ export async function generateSitemap(req, res) {
     const articles = await Article.findAll({ attributes: ['id', 'slug', 'updated_at', 'created_at', 'published_at'], order: [['id', 'ASC']], limit: chunkSize, offset: (page - 1) * chunkSize });
     const urls = [];
     if (page === 1) {
-      urls.push(...['/', '/article', '/a-propos', '/renseignements', '/mentions-legales'].map(path => ({ path })));
+      urls.push(...['/', '/article', '/renseignements', '/mentions-legales'].map(path => ({ path })));
       const categories = await Categorie.findAll({ attributes: ['id', 'name'], include: [{ model: Article, as: 'categoryArticles', attributes: [], required: true }], order: [['name', 'ASC']] });
       urls.push(...categories.map(category => ({ path: `/article/categorie/${encodeURIComponent(category.name)}` })));
-      const where = process.env.EMI_AUTHOR_ID ? { id: process.env.EMI_AUTHOR_ID } : process.env.EMI_AUTHOR_EMAIL ? { email: process.env.EMI_AUTHOR_EMAIL } : null;
-      if (where && await User.findOne({ where, attributes: ['id'] })) urls.push({ path: '/auteur/emilie' });
     }
     urls.push(...articles.map(article => ({ path: articlePath(article), modified: isoDate(article.updated_at || article.published_at || article.created_at) })));
     const xml = urls.map(url => `<url><loc>${escapeXml(base + url.path)}</loc>${url.modified ? `<lastmod>${url.modified}</lastmod>` : ''}</url>`).join('');

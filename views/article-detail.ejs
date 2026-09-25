@@ -5,9 +5,20 @@
     <%- include('partials/header', { withContainer: true, includeNavbar: true }) %>
     <main class="content-wrapper">
       <div class="article-detail-container">
-        <nav aria-label="Fil d’Ariane" class="seo-breadcrumb"><ol>
-          <% breadcrumbs.forEach((item, index) => { %><li><% if (index < breadcrumbs.length - 1) { %><a href="<%= item.path %>"><%= item.name %></a><% } else { %><span aria-current="page"><%= item.name %></span><% } %></li><% }) %>
-        </ol></nav>
+        <nav aria-label="Fil d’Ariane" class="seo-breadcrumb">
+          <ol>
+            <% breadcrumbs.forEach((item, index) => { %>
+              <li>
+                <% if (index > 0) { %><span class="seo-breadcrumb-separator" aria-hidden="true">›</span><% } %>
+                <% if (index < breadcrumbs.length - 1) { %>
+                  <a href="<%= item.path %>"><%= item.name %></a>
+                <% } else { %>
+                  <span class="seo-breadcrumb-current" aria-current="page"><%= item.name %></span>
+                <% } %>
+              </li>
+            <% }) %>
+          </ol>
+        </nav>
         <article class="article-detail-card">
           <% if (article.image) { %>
             <div class="article-detail-image">
@@ -27,7 +38,7 @@
             <p class="article-detail-date"><% if (article.date_publication_iso) { %>Publié le <time datetime="<%= article.date_publication_iso %>"><%= article.date_publication_formatted %></time><% } %>
             <% if (article.date_modified_iso && article.date_modified_iso !== article.date_publication_iso) { %> · Mis à jour le <time datetime="<%= article.date_modified_iso %>"><%= article.date_modified_formatted %></time><% } %></p>
             <h1 class="article-detail-title" style="text-align: left;"><%= article.titre %></h1>
-            <p class="article-detail-meta">Par <% if (article.authorUrl) { %><a rel="author" href="<%= article.authorUrl %>"><%= article.auteur %></a><% } else { %><strong><%= article.auteur %></strong><% } %><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
+            <p class="article-detail-meta">Par <strong><%= article.auteur %></strong><% if (article.categorie) { %> — <strong><%= article.categorie %></strong><% } %></p>
             <% if (toc.length) { %><nav class="article-toc" aria-label="Sommaire"><h2>Dans cet article</h2><ol><% toc.forEach(item => { %><li><a href="#<%= item.id %>"><%= item.label %></a></li><% }) %></ol></nav><% } %>
             <div class="article-detail-body">
               <%- article.contenuHtml %>
@@ -110,10 +121,18 @@
           </div>
         </article>
 
-        <section class="article-detail-card"><div class="article-detail-content">
-          <% if (relatedArticles.length) { %><h2>À lire aussi</h2><ul><% relatedArticles.forEach(item => { %><li><a href="<%= articlePath(item) %>"><%= item.title %></a></li><% }) %></ul><% } %>
-          <h2>À propos d’Emi</h2><p>Émilie est l’auteure principale d’Emi’Pulse. <a href="/a-propos">Découvrir le blog</a> et <a href="/auteur/emilie">ses articles</a>.</p>
-        </div></section>
+        <% if (relatedArticles.length) { %>
+          <section class="article-detail-card" aria-labelledby="related-articles-title">
+            <div class="article-detail-content">
+              <h2 id="related-articles-title">À lire aussi</h2>
+              <ul>
+                <% relatedArticles.forEach(item => { %>
+                  <li><a href="<%= articlePath(item) %>"><%= item.title %></a></li>
+                <% }) %>
+              </ul>
+            </div>
+          </section>
+        <% } %>
         <section class="comments-section">
           <div class="comments-content">
             <div class="comments-header">

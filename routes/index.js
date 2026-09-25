@@ -1,4 +1,3 @@
-import { getAuthor } from '../controllers/author-controller.js';
 import { Router } from "express";
 import {
   getHomePage,
@@ -14,8 +13,8 @@ import { registerSchema, contactSchema } from '../validators/schemas.js';
 const router = Router();
 
 router.get("/", getHomePage);
-router.get("/auteur/emilie", getAuthor);
-router.get("/a-propos", (req, res) => res.render("about"));
+router.get("/auteur/emilie", (req, res) => res.redirect(301, "/article"));
+router.get("/a-propos", (req, res) => res.redirect(301, "/"));
 router.get("/archive/:year/:month", getArticlesByMonth);
 router.get("/renseignements", getRenseignementsPage);
 
