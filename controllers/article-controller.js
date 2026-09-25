@@ -1,5 +1,5 @@
 import { articleImageDimensions, articleImageSrcset } from '../services/articleImage.js';
-import { articlePath, articleSeo, breadcrumbSchema } from '../utils/seo.js';
+import { articlePath, articleSeo, breadcrumbSchema, resolveArticleSlug, seriesForArticle } from '../utils/seo.js';
 import { renderArticleContent } from '../public/js/article-content.js';
 import { safeLog } from '../utils/security.js';
 import sequelize from '../config/database.js';
@@ -98,7 +98,7 @@ export const getArticleById = async (req, res) => {
     const key = req.params.id;
     const numeric = /^\d+$/.test(key);
     const article = await Article.findOne({
-      where: numeric ? { id: key } : { slug: key },
+      where: numeric ? { id: key } : { slug: resolveArticleSlug(key) },
       include: [
         { model: User, as: "author" },
         { model: Categorie, as: "categorie" }
@@ -124,6 +124,14 @@ export const getArticleById = async (req, res) => {
       order: [['created_at', 'DESC']], limit: 5 - manualArticles.length
     }) : [];
     const relatedArticles = [...manualArticles, ...similarArticles];
+    const articleSeries = [];
+    for (const series of seriesForArticle(article.slug)) {
+      // Default scope only: an unpublished or removed episode never gets a link.
+      const episodes = await Article.findAll({ where: { slug: { [Op.in]: series.slugs } }, attributes: ['id', 'slug', 'title'] });
+      const bySlug = new Map(episodes.map(episode => [episode.slug, episode]));
+      const ordered = series.slugs.map(slug => bySlug.get(slug)).filter(Boolean);
+      if (ordered.length > 1) articleSeries.push({ title: series.title, articles: ordered });
+    }
 
     // déterminer si l'utilisateur (ou l'IP) a déjà liké
     let hasLiked = false;
@@ -307,6 +315,7 @@ export const getArticleById = async (req, res) => {
       breadcrumbData: breadcrumbSchema(breadcrumbs),
       toc: renderedContent.toc,
       relatedArticles,
+      articleSeries,
       user: req.user,
       commentaires,
       commentsPagination: pagination,
@@ -432,7 +441,8 @@ export const getArticlesByCategorieName = async (req, res) => {
 
     return res.render("articles-by-category", {
       articles,
-      seo: { ...res.locals.seo, title: category.name },
+      seo: { ...res.locals.seo, title: category.name, description: category.description?.trim() || `Les articles d’Emi dans la rubrique ${category.name}. Découvrez ses expériences et ses réflexions, puis poursuivez votre lecture.` },
+      categoryDescription: category.description?.trim() || '',
       categorie: category.name,
       user: req.user,
       pagination,

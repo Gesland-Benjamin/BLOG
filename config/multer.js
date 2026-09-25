@@ -1,4 +1,5 @@
 import multer from 'multer';
+import { slugify } from '../utils/seo.js';
 import fs from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { processImage, isValidImage, deleteProcessedImages } from '../services/image.js';
@@ -44,9 +45,10 @@ function withProcessing(parser, presets) {
         req.processedImages = [];
         for (const file of files) {
           if (!await isValidImage(file.path)) throw new Error('Invalid image');
-          const record = { basename: file.filename };
+          const label = typeof req.body?.title === 'string' ? req.body.title : 'image-article';
+          const record = { basename: `${slugify(label).slice(0, 80)}-${file.fieldname === 'image_inline' ? 'detail-' : ''}${file.filename}` };
           processed.push(record); // Nettoyer aussi les variantes partiellement créées.
-          record.processed = await processImage(file.path, getUploadsDir(), file.filename, presets[file.fieldname] || 'article');
+          record.processed = await processImage(file.path, getUploadsDir(), record.basename, presets[file.fieldname] || 'article');
           req.processedImages.push(record);
           if (file.fieldname === 'image') req.processedImage = record;
           if (file.fieldname === 'image_inline') req.processedInlineImage = record;

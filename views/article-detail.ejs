@@ -114,13 +114,24 @@
               <% } %>
             </div>
 
+            <p class="article-reader-invitation">Et vous, quelle est votre expérience ? <a href="#commentaires">Partagez-la en commentaire</a> ou <a href="/newsletter">retrouvez les prochains articles par email</a>.</p>
             <div class="article-detail-links">
-              <a href="/article/categorie/<%= encodeURIComponent(article.categorie || '') %>" class="btn-general">Retour à la catégorie</a>
+              <% if (article.categorie) { %><a href="/article/categorie/<%= encodeURIComponent(article.categorie) %>" class="btn-general">Retour à la catégorie</a><% } %>
               <a href="/article" class="btn-general">Tous les articles</a>
             </div>
           </div>
         </article>
 
+        <% if (typeof articleSeries !== 'undefined') { articleSeries.forEach(series => { %>
+          <nav class="article-detail-card article-series" aria-label="Série : <%= series.title %>">
+            <div class="article-detail-content">
+              <h2>Dans la série « <%= series.title %> »</h2>
+              <ol><% series.articles.forEach(episode => { %><li>
+                <% if (episode.slug === article.slug) { %><span aria-current="page"><%= episode.title %></span><% } else { %><a href="<%= articlePath(episode) %>"><%= episode.title %></a><% } %>
+              </li><% }) %></ol>
+            </div>
+          </nav>
+        <% }); } %>
         <% if (relatedArticles.length) { %>
           <section class="article-detail-card" aria-labelledby="related-articles-title">
             <div class="article-detail-content">
@@ -133,7 +144,7 @@
             </div>
           </section>
         <% } %>
-        <section class="comments-section">
+        <section class="comments-section" id="commentaires">
           <div class="comments-content">
             <div class="comments-header">
               <h2>Commentaires</h2>

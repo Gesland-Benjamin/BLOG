@@ -26,7 +26,7 @@
     <% if (typeof googleVerification !== 'undefined' && googleVerification) { %><meta name="google-site-verification" content="<%= googleVerification %>"><% } %>
     <% if (metadata.schema) { %><script type="application/ld+json" nonce="<%= cspNonce %>"><%- jsonLd(metadata.schema) %></script><% } %>
     <% if (typeof breadcrumbData !== 'undefined') { %><script type="application/ld+json" nonce="<%= cspNonce %>"><%- jsonLd(breadcrumbData) %></script><% } %>
-    <script src="/js/color-modes.js"></script>
+    <script src="<%= typeof assetUrl === 'function' ? assetUrl('/js/color-modes.js') : '/js/color-modes.js' %>"></script>
     <meta name="theme-color" content="#F99285" />
     <link
       href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&display=swap"
@@ -48,28 +48,32 @@
 
     <!-- Fichiers CSS - Architecture modulaire (12 fichiers) -->
     <!-- 1. Base: Variables, reset, typographie -->
-    <link href="/css/1-base.css?v=20260925-seo" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/1-base.css?v=20260925-seo') : '/css/1-base.css?v=20260925-seo' %>" rel="stylesheet" />
     
     <!-- 2. Layout: Grille, flexbox, spacing utilitaires -->
-    <link href="/css/2-layout.css" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/2-layout.css') : '/css/2-layout.css' %>" rel="stylesheet" />
     
     <!-- 3. Composants: Boutons, cartes, formulaires, etc. -->
-    <link href="/css/3-components.css?v=20260925-seo" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/3-components.css?v=20260925-seo') : '/css/3-components.css?v=20260925-seo' %>" rel="stylesheet" />
     
     <!-- 4-5. Header & Footer -->
-    <link href="/css/4-header.css?v=20260917-menu-layers" rel="stylesheet" />
-    <link href="/css/5-footer.css?v=20260925-newsletter" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/4-header.css?v=20260917-menu-layers') : '/css/4-header.css?v=20260917-menu-layers' %>" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/5-footer.css?v=20260925-newsletter') : '/css/5-footer.css?v=20260925-newsletter' %>" rel="stylesheet" />
     
     <!-- 6. Carousel -->
-    <link href="/css/6-carousel.css?v=20260917-menu-layers" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/6-carousel.css?v=20260917-menu-layers') : '/css/6-carousel.css?v=20260917-menu-layers' %>" rel="stylesheet" />
     
     <!-- 7-12. Pages spécifiques -->
-    <link href="/css/7-pages-home.css?v=20260925-seo" rel="stylesheet" />
-    <link href="/css/8-pages-article.css?v=20260925-breadcrumb" rel="stylesheet" />
-    <link href="/css/9-pages-admin.css" rel="stylesheet" />
-    <link href="/css/10-pages-auth.css" rel="stylesheet" />
-    <link href="/css/11-pages-error.css" rel="stylesheet" />
-    <link href="/css/12-pages-other.css?v=20260925-newsletter" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/7-pages-home.css?v=20260925-seo') : '/css/7-pages-home.css?v=20260925-seo' %>" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/8-pages-article.css?v=20260925-breadcrumb') : '/css/8-pages-article.css?v=20260925-breadcrumb' %>" rel="stylesheet" />
+    <% if (typeof pagePath === 'undefined' || pagePath.startsWith('/admin')) { %>
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/9-pages-admin.css') : '/css/9-pages-admin.css' %>" rel="stylesheet" />
+    <% } %>
+    <% if (typeof pagePath === 'undefined' || /^\/(auth|register|forgot-password|reset-password)(\/|$)/.test(pagePath)) { %>
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/10-pages-auth.css') : '/css/10-pages-auth.css' %>" rel="stylesheet" />
+    <% } %>
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/11-pages-error.css') : '/css/11-pages-error.css' %>" rel="stylesheet" />
+    <link href="<%= typeof assetUrl === 'function' ? assetUrl('/css/12-pages-other.css?v=20260925-newsletter') : '/css/12-pages-other.css?v=20260925-newsletter' %>" rel="stylesheet" />
     
     <style>
     </style>

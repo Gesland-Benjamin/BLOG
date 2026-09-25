@@ -48,14 +48,15 @@ const helpers = {
   '../models/Categorie.model.js': { default: Categorie }, '../public/js/article-format.js': formatting,
   '../utils/pagination.js': pagination
 };
-const controller = await mockedModule('../controllers/article-controller.js', {
+const controllerStubs = {
   ...helpers, '../public/js/article-content.js': content,
   '../services/articleImage.js': { articleImageDimensions: async () => null, articleImageSrcset: async () => '' },
   '../config/database.js': { default: {} }, '../models/Commentaire.model.js': { default: Commentaire },
   '../models/ArticleLike.model.js': { default: { findOne: async () => null } },
   sequelize: { Op, literal }, '../services/imageHelper.js': { generateOpenGraphImage: () => '' },
   '../utils/videoHelper.js': video, '../utils/date.js': dates
-});
+};
+const controller = await mockedModule('../controllers/article-controller.js', controllerStubs);
 const feeds = await mockedModule('../controllers/sitemap-rss-controller.js', helpers);
 const baseLocals = { csrfToken: 'test-csrf', cspNonce: 'test-nonce', user: null, categories: [], message: null,
   articlePath: seo.articlePath, jsonLd: seo.jsonLd, errors: [], formData: {}, googleVerification: '' };
@@ -280,4 +281,86 @@ test('images locales : dimensions et srcset réels, images anciennes/absentes pr
     if (previous === undefined) delete process.env.STATIC_DIR; else process.env.STATIC_DIR = previous;
     fs.rmSync(directory, { recursive: true }); // This test's newly created directory only.
   }
+});
+
+test('formulaire rendu : un seul alt, accepté après un vrai décodage multipart', async () => {
+  const html = await ejs.renderFile('views/new-article.ejs', { ...baseLocals, article: record, linkArticles: [record], isEditing: true });
+  const fields = [...html.matchAll(/<input\b[^>]*name="image_alt"[^>]*>/g)];
+  assert.equal(fields.length, 1, 'Un doublon produit un tableau rejeté par Joi');
+  assert.equal((html.match(/id="image_alt"/g) || []).length, 1);
+  const { Readable } = await import('node:stream');
+  const { default: multer } = await import('multer');
+  const body = fields.map(() => '--audit\r\nContent-Disposition: form-data; name="image_alt"\r\n\r\nUne image décrite\r\n').join('') + '--audit--\r\n';
+  const req = Readable.from([Buffer.from(body)]);
+  req.headers = { 'content-type': 'multipart/form-data; boundary=audit', 'content-length': Buffer.byteLength(body) };
+  await new Promise((resolve, reject) => multer().none()(req, {}, error => error ? reject(error) : resolve()));
+  const result = articleSchema.validate({ title: record.title, content: record.content, categorieId: 2, ...req.body });
+  assert.equal(result.error, undefined);
+  assert.equal(result.value.image_alt, 'Une image décrite');
+});
+
+test('listes : vrais éléments HTML, transitions et contenu toujours échappé', () => {
+  const result = content.renderArticleContent('Intro\n- **un**\n- <img src=x>\n1. deux\n2. trois\n## Suite\nFin');
+  assert.match(result.html, /<p>Intro<\/p><ul><li><strong>un<\/strong><\/li><li>&lt;img src=x&gt;<\/li><\/ul><ol><li>deux<\/li><li>trois<\/li><\/ol><h2/);
+  assert.match(result.html, /<p>Fin<\/p>$/);
+});
+
+test('assets : manifest complet, fichiers minifiés existants et URL de secours', async () => {
+  const { assetUrl } = await import('../utils/assets.js');
+  const manifest = JSON.parse(fs.readFileSync('public/assets/manifest.json', 'utf8'));
+  for (const [source, target] of Object.entries(manifest)) {
+    assert.equal(assetUrl(source), target);
+    assert.ok(fs.existsSync(`public${target}`));
+  }
+  assert.equal(assetUrl('/absent.js?v=1'), '/absent.js?v=1');
+  const html = await ejs.renderFile('views/partials/head.ejs', { ...baseLocals, assetUrl, pagePath: '/article/test', seo: seo.articleSeo(record) });
+  assert.ok(!html.includes('pages-admin')); assert.ok(!html.includes('pages-auth'));
+  assert.match(html, /\/assets\/8-pages-article\.[a-f0-9]+\.css/);
+});
+
+test('série : ordre éditorial, liens réciproques et aucun épisode absent ou brouillon', async () => {
+  const series = seo.seriesForArticle('bienvenue-chez-moi-31')[0];
+  assert.ok(series.slugs.length > 1);
+  const published = series.slugs.slice(0, 2).map((slug, index) => ({ id: 70 + index, slug, title: `Épisode ${index + 1}`, is_published: true }));
+  const current = { ...record, ...published[0] };
+  let seriesQuery;
+  const model = {
+    findOne: async () => current,
+    findAll: async options => {
+      if (options.where.slug) { seriesQuery = options; return [...published].reverse(); }
+      return [];
+    }
+  };
+  const mod = await mockedModule('../controllers/article-controller.js', { ...controllerStubs, '../models/Article.model.js': { default: model } });
+  const res = response(); await mod.getArticleById(request(current.slug), res);
+  assert.ok(seriesQuery); assert.deepEqual(Array.from(res.data.articleSeries[0].articles, item => item.slug), published.map(item => item.slug));
+  const html = await ejs.renderFile('views/article-detail.ejs', { ...baseLocals, ...res.data });
+  assert.match(html, /aria-current="page">Épisode 1/);
+  assert.ok(html.includes(seo.articlePath(published[1])));
+  assert.ok(!html.includes(`/article/${series.slugs[2]}`));
+  assert.equal(seo.seriesForArticle(published[1].slug)[0].title, series.title);
+});
+
+test('robots.txt : sitemap absolu construit depuis APP_URL, avec ou sans slash final', () => {
+  const previous = process.env.APP_URL;
+  try {
+    for (const origin of ['https://emi-pulse.fr', 'https://emi-pulse.fr/', 'https://preview.example.test/']) {
+      process.env.APP_URL = origin;
+      const res = response();
+      seo.robotsTxt({ headers: { host: 'untrusted.example' } }, res);
+      assert.equal(res.contentType, 'text/plain');
+      assert.equal(res.body, `User-agent: *\nDisallow: /admin\nDisallow: /uploads/tmp/\nSitemap: ${new URL('/sitemap.xml', origin).href}\n`);
+      assert.equal((res.body.match(/^Sitemap:/gm) || []).length, 1);
+    }
+  } finally {
+    if (previous === undefined) delete process.env.APP_URL;
+    else process.env.APP_URL = previous;
+  }
+});
+
+test('robots.txt statique de secours : sitemap présent si le proxy sert directement le fichier', () => {
+  const robots = fs.readFileSync('public/robots.txt', 'utf8');
+  assert.match(robots, /^Sitemap: https:\/\/emi-pulse\.fr\/sitemap\.xml$/m);
+  assert.match(robots, /^Disallow: \/admin$/m);
+  assert.match(robots, /^Disallow: \/uploads\/tmp\/$/m);
 });

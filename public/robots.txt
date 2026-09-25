@@ -1,5 +1,6 @@
-# Served dynamically by index.js from APP_URL.
-# Do not serve this file directly from the reverse proxy.
+# Fallback for hosts serving public/robots.txt before Express.
+# Express generates this file dynamically from APP_URL when it handles the route.
 User-agent: *
 Disallow: /admin
 Disallow: /uploads/tmp/
+Sitemap: https://emi-pulse.fr/sitemap.xml

@@ -1,0 +1,1 @@
+(function(){function e(){!window.bootstrap||!window.bootstrap.Dropdown||document.querySelectorAll('header [data-bs-toggle="dropdown"]').forEach(function(o){window.bootstrap.Dropdown.getOrCreateInstance(o,{reference:"parent"})})}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",e,{once:!0}):e()})();

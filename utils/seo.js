@@ -1,3 +1,5 @@
+export { seriesForArticle } from '../config/article-series.js';
+export { resolveArticleSlug } from '../config/article-redirects.js';
 import { randomUUID } from 'node:crypto';
 import { appUrl } from './security.js';
 import { articlePlainText } from '../public/js/article-format.js';
@@ -42,6 +44,7 @@ export function breadcrumbSchema(items) {
   })) };
 }
 export function seoLocals(req, res, next) {
+  res.locals.pagePath = req.path;
   const page = /^\d+$/.test(req.query.page || '') ? Math.max(1, Math.min(10000, Number(req.query.page))) : 1;
   const path = req.path.replace(/\/$/, '') || '/';
   const paginated = /^\/(article\/categorie\/|archive\/)/.test(path);
@@ -59,5 +62,13 @@ export function seoLocals(req, res, next) {
 }
 
 export function robotsTxt(req, res) {
-  res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nDisallow: /uploads/tmp/\nSitemap: ${appUrl()}/sitemap.xml\n`);
+  // Use the configured canonical origin, never the request's Host header.
+  const sitemapUrl = new URL('/sitemap.xml', appUrl()).href;
+  res.type('text/plain').send([
+    'User-agent: *',
+    'Disallow: /admin',
+    'Disallow: /uploads/tmp/',
+    `Sitemap: ${sitemapUrl}`,
+    ''
+  ].join('\n'));
 }

@@ -1,8 +1,9 @@
-<script src="/js/security-actions.js?v=1" defer></script>
+<script src="<%= typeof assetUrl === 'function' ? assetUrl('/js/security-actions.js?v=1') : '/js/security-actions.js?v=1' %>" defer></script>
 <!-- Bootstrap gère seul les menus, accordéons et alertes. -->
 <script src="/jss/bootstrap.bundle.min.js"></script>
-<script src="/js/dropdown.js?v=2"></script>
+<script src="<%= typeof assetUrl === 'function' ? assetUrl('/js/dropdown.js?v=2') : '/js/dropdown.js?v=2' %>"></script>
 
+<% if (typeof carouselItems !== 'undefined' && carouselItems.length > 1) { %>
 <!-- Carrousel: défilement gauche -> droite -->
 <script nonce="<%= cspNonce %>">
 (function() {
@@ -53,3 +54,4 @@
   }
 })();
 </script>
+<% } %>

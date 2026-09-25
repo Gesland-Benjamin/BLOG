@@ -1,3 +1,4 @@
+import { assetUrl } from './utils/assets.js';
 import { prepareSeoDeployment } from './services/seoDeployment.js';
 import { seoLocals, robotsTxt } from './utils/seo.js';
 import compression from 'compression';
@@ -60,6 +61,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.locals.assetUrl = assetUrl;
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -110,6 +112,7 @@ app.use('/uploads', (req, res, next) => {
   if (!/^\/[a-zA-Z0-9_-]+\.(?:webp|png|jpe?g|gif)$/i.test(req.path)) return res.sendStatus(404);
   next();
 }, express.static(getUploadsDir(), { dotfiles: 'deny', index: false, maxAge: '7d' }));
+app.use("/assets", express.static(path.join(__dirname, "public/assets"), { maxAge: "1y", immutable: true, index: false, dotfiles: "deny" }));
 app.use(express.static(path.join(__dirname, "public"), { maxAge: "1h" }));
 
 // =========================

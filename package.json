@@ -37,7 +37,8 @@
     "ssl:verify": "node scripts/ssl-setup.js verify",
     "monitor": "node scripts/monitor.js",
     "test": "node --experimental-vm-modules --test tests/*.test.js",
-    "test:seo": "node --experimental-vm-modules --test tests/seo.test.js"
+    "test:seo": "node --experimental-vm-modules --test tests/seo.test.js",
+    "build": "node scripts/build-assets.js"
   },
   "keywords": [],
   "author": "",
@@ -68,6 +69,7 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "nodemon": "^3.1.10"
   }
 }

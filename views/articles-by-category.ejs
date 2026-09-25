@@ -6,6 +6,7 @@
     <main class="content-wrapper">
       <div class="content-container">
         <h1 class="page-title">Articles — <%= categorie %></h1>
+        <% if (typeof categoryDescription !== 'undefined' && categoryDescription) { %><p class="category-description"><%= categoryDescription %></p><% } %>
 
         <% if (!articles || articles.length === 0) { %>
           <p class="no-articles-message">Aucun article trouvé<%= search ? ' pour cette recherche' : ' pour cette catégorie' %>.</p>
@@ -17,7 +18,7 @@
                   <div class="archive-article-layout">
                     <% if (article.image) { %>
                       <div class="archive-article-image">
-                        <img 
+                        <img loading="lazy" decoding="async"
                           src="<%= article.image %>" 
                           alt="<%= article.image_alt || article.titre %>"
                         />

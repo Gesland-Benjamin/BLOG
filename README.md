@@ -1,5 +1,9 @@
 # Emi’Pulse — Guide de déploiement et de refonte
 
+**Production : [audit de préparation et commandes](docs/seo/preparation-production.md). Aucun déploiement autorisé ; la garantie zéro écriture reste bloquée par le démarrage conditionnel et les sessions en base.**
+
+**Suite de la finalisation SEO, sans modification de base : [bilan et étapes restantes](docs/seo/suivi-finalisation-2026-09-25.md). [Guide éditorial d’Emi](docs/seo/guide-editorial-emi.md).**
+
 **Hostinger sans SSH : [préparer le premier push ici](docs/seo/hostinger-sans-ssh.md).**
 
 **Livraison SEO : consulter [l’audit et la procédure dédiée](docs/seo/audit-et-deploiement.md) avant de déployer. La base et les uploads existants doivent être conservés.**

@@ -1,5 +1,7 @@
 # Premier déploiement SEO sur Hostinger sans SSH
 
+> **Procédure historique de première migration — ne pas appliquer pour la livraison actuelle.** Le propriétaire interdit toute modification de base. Ne pas activer `SEO_MIGRATION_ON_START=1`. Consulter [la préparation production et ses blocages](preparation-production.md).
+
 Le push déclenche le redéploiement : préparer les sauvegardes et les variables **avant** le push. Aucun push ni accès à la base de production n’a été effectué depuis ce projet local.
 
 ## 1. Sauvegarder avant de toucher au déploiement

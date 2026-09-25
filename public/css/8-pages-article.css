@@ -1214,3 +1214,12 @@
 }
 .article-toc { padding:1rem; margin:1.5rem 0; border:1px solid currentColor; border-radius:12px; }
 .article-detail-body h2, .article-detail-body h3 { scroll-margin-top:6rem; margin-top:1.5em; }
+
+.article-reader-invitation { margin: 2rem 0 1rem; padding: 1rem; border-left: 3px solid currentColor; line-height: 1.7; }
+.article-detail-body li { margin-block: .4rem; }
+.article-detail-body, .category-description { overflow-wrap: anywhere; }
+.article-detail-body h2, .article-detail-body h3, #commentaires { scroll-margin-top: 6rem; }
+@media (max-width: 600px) {
+  .article-detail-links { flex-wrap: wrap; }
+  .article-toc { overflow-wrap: anywhere; }
+}

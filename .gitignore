@@ -9,3 +9,6 @@ public/uploads/
 logs/
 .private-uploads/
 coverage/
+
+# Local production audit captures must not be committed.
+docs/seo/controle-public-*.json

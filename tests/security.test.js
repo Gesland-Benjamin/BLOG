@@ -262,6 +262,7 @@ test('Uploads : CSRF avant décodage, originaux nettoyés, variantes conservées
   const parser = (req, res, cb) => cb();
   const multer = Object.assign(() => ({ single: () => parser, array: () => parser, fields: () => parser }), { diskStorage: x => x });
   const mod = await mockedModule('../config/multer.js', {
+    '../utils/seo.js': await import('../utils/seo.js'),
     multer: { default: multer }, 'node:crypto': await import('node:crypto'),
     'node:fs/promises': { default: { unlink: async path => originals.push(path), mkdir: async () => {} } },
     '../services/image.js': { isValidImage: async () => { decoded++; return true; }, processImage: async () => ({}), deleteProcessedImages: async (dir, basename) => derivatives.push(basename) },
@@ -274,10 +275,10 @@ test('Uploads : CSRF avant décodage, originaux nettoyés, variantes conservées
   const rejected = response(); handler(makeReq('bad'), rejected, () => assert.fail('CSRF bypass')); await settle();
   assert.equal(rejected.statusCode, 403); assert.equal(decoded, 0); assert.equal(originals.length, 1);
   const failure = response(); handler(makeReq('valid'), failure, () => failure.emit('finish')); await settle();
-  assert.equal(decoded, 1); assert.deepEqual(derivatives, ['random']);
+  assert.equal(decoded, 1); assert.deepEqual(derivatives, ['image-article-random']);
   const success = response(), req = makeReq('valid');
   handler(req, success, () => { req.uploadCommitted = true; success.emit('finish'); }); await settle();
-  assert.equal(originals.length, 3); assert.deepEqual(derivatives, ['random']);
+  assert.equal(originals.length, 3); assert.deepEqual(derivatives, ['image-article-random']);
 });
 
 
