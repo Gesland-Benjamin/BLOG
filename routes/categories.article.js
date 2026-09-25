@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { getArticlesParCategorie } from "../controllers/article-controller.js";
 
 const router = Router();
 
-router.get("/", getArticlesParCategorie);
+router.get("/", (req, res) => res.redirect(301, "/article"));
 
 export default router;

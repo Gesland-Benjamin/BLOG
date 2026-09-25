@@ -551,13 +551,13 @@ button.dropdown-toggle.btn-chrome-menu {
 button.btn-chrome-articles,
 button.btn.btn-chrome-articles,
 button.dropdown-toggle.btn-chrome-articles {
-  background-image: url(../articles.png) !important;
+  background-image: url(../articles.webp) !important;
 }
 .btn-chrome-menu,
 button.btn-chrome-menu,
 button.btn.btn-chrome-menu,
 button.dropdown-toggle.btn-chrome-menu {
-  background-image: url(../menu.png) !important;
+  background-image: url(../menu.webp) !important;
 }
 
 /* États spéciaux pour bouton Articles (menu ouvert, focus, etc.) */
@@ -581,7 +581,7 @@ button.dropdown-toggle.btn-chrome-articles:focus,
 button.btn-chrome-articles:focus-visible,
 button.btn.btn-chrome-articles:focus-visible,
 button.dropdown-toggle.btn-chrome-articles:focus-visible {
-  background-image: url(../articles.png) !important;
+  background-image: url(../articles.webp) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
@@ -604,7 +604,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* --- Bouton Connexion/Inscription --- */
 .btn-chrome-connexion {  
   display: inline-block;
-  background-image: url(../connexion.png);
+  background-image: url(../connexion.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -626,7 +626,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* --- Bouton Contacts --- */
 .btn-chrome-contactes {  
   display: inline-block;
-  background-image: url(../contacts.png);
+  background-image: url(../contacts.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -648,7 +648,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* --- Bouton Boutique --- */
 .btn-chrome-boutique {
   display: inline-block;
-  background-image: url(../boutique.png);
+  background-image: url(../boutique.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -670,7 +670,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* --- Bouton Déconnexion --- */
 .btn-chrome-deconnexion {
   display: inline-block;
-  background-image: url(../deconnexion.png);
+  background-image: url(../deconnexion.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -841,7 +841,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
  button.btn.btn-chrome-articles,
  button.dropdown-toggle.btn-chrome-articles {
    display: inline-block;
-   background-image: url(../articles.png) !important;
+   background-image: url(../articles.webp) !important;
    background-size: cover !important;
    background-repeat: no-repeat !important;
    background-position: center !important;
@@ -862,7 +862,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* CONTACTES */
 .btn-chrome-contactes {  
   display: inline-block;
-  background-image: url(../contacts.png);
+  background-image: url(../contacts.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -883,7 +883,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* CONNEXION/INSCRIPTION */
 .btn-chrome-connexion {  
   display: inline-block;
-  background-image: url(../connexion.png);
+  background-image: url(../connexion.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -904,7 +904,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* MENU */
 .btn-chrome-menu {
   display: inline-block;
-  background-image: url(../menu.png);
+  background-image: url(../menu.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -925,7 +925,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* BOUTIQUE */
 .btn-chrome-boutique {
   display: inline-block;
-  background-image: url(../boutique.png);
+  background-image: url(../boutique.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -946,7 +946,7 @@ button.dropdown-toggle.btn-chrome-articles:focus-visible {
 /* DECONNEXION */
 .btn-chrome-deconnexion {
   display: inline-block;
-  background-image: url(../deconnexion.png);
+  background-image: url(../deconnexion.webp);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

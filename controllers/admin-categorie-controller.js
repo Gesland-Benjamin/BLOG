@@ -29,7 +29,7 @@ export const listCategories = async (req, res) => {
 
     const categoriesWithCount = await Promise.all(
       rows.map(async (cat) => {
-        const articleCount = await Article.count({
+        const articleCount = await Article.unscoped().count({
           where: { categorieId: cat.id }
         });
 
@@ -252,7 +252,7 @@ export const deleteCategory = async (req, res) => {
       return res.status(404).render('404');
     }
 
-    const articleCount = await Article.count({
+    const articleCount = await Article.unscoped().count({
       where: { categorieId: category.id }
     });
 

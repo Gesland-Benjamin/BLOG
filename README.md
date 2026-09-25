@@ -1,4 +1,8 @@
-# Blog Node.js - Guide de déploiement et de refonte
+# Emi’Pulse — Guide de déploiement et de refonte
+
+**Hostinger sans SSH : [préparer le premier push ici](docs/seo/hostinger-sans-ssh.md).**
+
+**Livraison SEO : consulter [l’audit et la procédure dédiée](docs/seo/audit-et-deploiement.md) avant de déployer. La base et les uploads existants doivent être conservés.**
 
 Ce projet est un site Express / Sequelize avec une interface EJS et du CSS découpé par pages. Ce document sert de guide pratique pour un redéploiement sur Hostinger et pour savoir exactement où intervenir si tu veux retravailler les cartes articles et la page détail.
 
@@ -14,7 +18,7 @@ Ce projet est un site Express / Sequelize avec une interface EJS et du CSS déco
 Avant de redeployer, valide ces points :
 
 1. Les variables `.env` ou `.env.production` sont correctes pour l'environnement cible.
-2. La base de données répond et les migrations / seeds ont déjà été joués si nécessaire.
+2. La base de données répond, son schéma a été vérifié et une sauvegarde cohérente est disponible.
 3. Les vues article et les feuilles CSS ont été vérifiées en local.
 4. Les images et uploads utiles sont présents dans `public/uploads`.
 5. Le serveur démarre avec la bonne valeur de `NODE_ENV`.
@@ -74,7 +78,7 @@ Le plus important pour une refonte visuelle propre se trouve ici :
 
 1. Envoie le code sur Hostinger via git, SSH ou SFTP.
 2. Installe les dépendances avec `npm ci` ou `npm install`.
-3. Joue la création / migration de base seulement si le schéma a changé.
+3. Applique uniquement la nouvelle migration additive revue, selon le guide SEO. Ne rejoue pas les scripts historiques de création, reset ou seed.
 4. Démarre l'app avec PM2 ou le service d'hébergement.
 
 ### 4. Contrôler après déploiement
@@ -90,8 +94,7 @@ Le plus important pour une refonte visuelle propre se trouve ici :
 
 ```bash
 npm run check:env
-npm run db:create
-npm run db:seed
+npm test
 npm run test:production
 npm run pm2:production
 ```
@@ -130,4 +133,4 @@ Modifie plutôt :
 
 Si tu n'as touché qu'au rendu visuel, envoie seulement les vues et le CSS.
 Si tu as touché au contenu des articles, ajoute le contrôleur.
-Si tu as touché à la base, relance les scripts de création / seed et teste les routes critiques.
+Si le schéma change, utilise uniquement une migration additive revue et teste les routes critiques. Ne recrée jamais la base existante.

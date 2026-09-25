@@ -34,9 +34,9 @@ export const listCommentsAdmin = async (req, res) => {
 
       include: [
         {
-          model: Article,
+          model: Article.unscoped(),
           as: "article",
-          attributes: ["id", "title"],
+          attributes: ["id", "slug", "is_published", "title"],
           required: false
         },
         {

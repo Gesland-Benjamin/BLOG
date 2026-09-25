@@ -1,201 +1,60 @@
 import { safeLog, appUrl } from '../utils/security.js';
-import Article from "../models/Article.model.js";
-import Categorie from "../models/Categorie.model.js";
+import { articlePath, isoDate } from '../utils/seo.js';
+import { articlePlainText } from '../public/js/article-format.js';
+import Article from '../models/Article.model.js';
+import Categorie from '../models/Categorie.model.js';
+import User from '../models/User.model.js';
 
-/**
- * Génère un sitemap.xml conforme aux standards SEO
- */
+export const escapeXml = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
+const chunkSize = 1000;
 export async function generateSitemap(req, res) {
   try {
-    const baseUrl = appUrl();
-
-    const articles = await Article.findAll({
-      attributes: ["id", "title", "createdAt"],
-      order: [["createdAt", "DESC"]]
-    });
-
-    const categories = await Categorie.findAll({
-      attributes: ["id", "name"],
-      order: [["name", "ASC"]]
-    });
-
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
-    xml += '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"\n';
-    xml += '        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n';
-
-    // Home
-    xml += "  <url>\n";
-    xml += `    <loc>${baseUrl}</loc>\n`;
-    xml += "    <changefreq>daily</changefreq>\n";
-    xml += "    <priority>1.0</priority>\n";
-    xml += "  </url>\n";
-
-    // Articles list
-    xml += "  <url>\n";
-    xml += `    <loc>${baseUrl}/article</loc>\n`;
-    xml += "    <changefreq>daily</changefreq>\n";
-    xml += "    <priority>0.9</priority>\n";
-    xml += "  </url>\n";
-
-    // Categories
-    for (const cat of categories) {
-      xml += "  <url>\n";
-      xml += `    <loc>${baseUrl}/article/categorie/${encodeURIComponent(cat.name)}</loc>\n`;
-      xml += "    <changefreq>weekly</changefreq>\n";
-      xml += "    <priority>0.8</priority>\n";
-      xml += "  </url>\n";
+    const base = appUrl();
+    const count = await Article.count(); // Default scope excludes drafts everywhere.
+    const chunks = Math.max(1, Math.ceil(count / chunkSize));
+    if (!req.query.page && chunks > 1) {
+      const xml = Array.from({ length: chunks }, (_, i) => `<sitemap><loc>${escapeXml(`${base}/sitemap.xml?page=${i + 1}`)}</loc></sitemap>`).join('');
+      return res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${xml}</sitemapindex>`);
     }
-
-    // Articles
-    for (const article of articles) {
-      const date = article.createdAt
-        ? new Date(article.createdAt)
-        : new Date();
-
-      const lastmod = date.toISOString().split("T")[0];
-
-      const daysOld = Math.floor(
-        (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)
-      );
-
-      const priority =
-        daysOld < 7 ? 0.9 : daysOld < 30 ? 0.8 : 0.7;
-
-      const changefreq = daysOld < 7 ? "daily" : "weekly";
-
-      xml += "  <url>\n";
-      xml += `    <loc>${baseUrl}/article/${article.id}</loc>\n`;
-      xml += `    <lastmod>${lastmod}</lastmod>\n`;
-      xml += `    <priority>${priority}</priority>\n`;
-      xml += `    <changefreq>${changefreq}</changefreq>\n`;
-      xml += "  </url>\n";
+    const page = req.query.page === undefined ? 1 : Number(req.query.page);
+    if (!Number.isInteger(page) || page < 1 || page > chunks) return res.status(404).send('Sitemap introuvable');
+    const articles = await Article.findAll({ attributes: ['id', 'slug', 'updated_at', 'created_at', 'published_at'], order: [['id', 'ASC']], limit: chunkSize, offset: (page - 1) * chunkSize });
+    const urls = [];
+    if (page === 1) {
+      urls.push(...['/', '/article', '/a-propos', '/renseignements', '/mentions-legales'].map(path => ({ path })));
+      const categories = await Categorie.findAll({ attributes: ['id', 'name'], include: [{ model: Article, as: 'categoryArticles', attributes: [], required: true }], order: [['name', 'ASC']] });
+      urls.push(...categories.map(category => ({ path: `/article/categorie/${encodeURIComponent(category.name)}` })));
+      const where = process.env.EMI_AUTHOR_ID ? { id: process.env.EMI_AUTHOR_ID } : process.env.EMI_AUTHOR_EMAIL ? { email: process.env.EMI_AUTHOR_EMAIL } : null;
+      if (where && await User.findOne({ where, attributes: ['id'] })) urls.push({ path: '/auteur/emilie' });
     }
-
-    xml += "</urlset>";
-
-    res.type("application/xml");
-    res.send(xml);
-  } catch (error) {
-    safeLog(error);
-    res.status(500).send("Erreur sitemap");
-  }
+    urls.push(...articles.map(article => ({ path: articlePath(article), modified: isoDate(article.updated_at || article.published_at || article.created_at) })));
+    const xml = urls.map(url => `<url><loc>${escapeXml(base + url.path)}</loc>${url.modified ? `<lastmod>${url.modified}</lastmod>` : ''}</url>`).join('');
+    res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${xml}</urlset>`);
+  } catch (error) { safeLog(error); res.status(500).send('Erreur sitemap'); }
 }
-
-/**
- * RSS Feed
- */
+async function feedArticles(req) {
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+  return Article.findAll({ attributes: ['id', 'slug', 'title', 'content', 'created_at', 'published_at', 'updated_at'], order: [['created_at', 'DESC']], limit });
+}
 export async function generateRssFeed(req, res) {
   try {
-    const baseUrl = appUrl();
-    const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
-
-    const articles = await Article.findAll({
-      attributes: ["id", "title", "content", "createdAt", "image"],
-      order: [["createdAt", "DESC"]],
-      limit
-    });
-
-    const lastBuild =
-      articles.length > 0
-        ? new Date(articles[0].createdAt).toUTCString()
-        : new Date().toUTCString();
-
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-    xml += '<rss version="2.0">\n';
-    xml += "  <channel>\n";
-    xml += "    <title>Blog - Derniers articles</title>\n";
-    xml += `    <link>${baseUrl}</link>\n`;
-    xml += "    <description>Derniers articles du blog</description>\n";
-    xml += `    <lastBuildDate>${lastBuild}</lastBuildDate>\n`;
-
-    for (const article of articles) {
-      const date = new Date(article.createdAt);
-
-      const desc = (article.content || "")
-        .replace(/<[^>]*>/g, "")
-        .substring(0, 500);
-
-      xml += "    <item>\n";
-      xml += `      <title>${escapeXml(article.title)}</title>\n`;
-      xml += `      <link>${baseUrl}/article/${article.id}</link>\n`;
-      xml += `      <guid>${baseUrl}/article/${article.id}</guid>\n`;
-      xml += `      <pubDate>${date.toUTCString()}</pubDate>\n`;
-      xml += `      <description>${escapeXml(desc)}</description>\n`;
-      xml += "    </item>\n";
-    }
-
-    xml += "  </channel>\n";
-    xml += "</rss>";
-
-    res.type("application/rss+xml");
-    res.send(xml);
-  } catch (error) {
-    safeLog(error);
-    res.status(500).send("Erreur RSS");
-  }
+    const articles = await feedArticles(req), base = appUrl();
+    const items = articles.map(article => {
+      const published = isoDate(article.published_at || article.created_at);
+      return `<item><title>${escapeXml(article.title)}</title><link>${escapeXml(base + articlePath(article))}</link><guid isPermaLink="true">${escapeXml(`${base}/article/${article.id}`)}</guid>${published ? `<pubDate>${new Date(published).toUTCString()}</pubDate>` : ''}<description>${escapeXml(articlePlainText(article.content).slice(0, 500))}</description></item>`;
+    }).join('');
+    res.type('application/rss+xml').send(`<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Emi’Pulse</title><link>${escapeXml(base)}</link><description>Les derniers articles d’Emi’Pulse</description>${items}</channel></rss>`);
+  } catch (error) { safeLog(error); res.status(500).send('Erreur RSS'); }
 }
-
-/**
- * Atom Feed
- */
 export async function generateAtomFeed(req, res) {
   try {
-    const baseUrl = appUrl();
-    const limit = Math.min(parseInt(req.query.limit || "20", 10), 100);
-
-    const articles = await Article.findAll({
-      attributes: ["id", "title", "content", "createdAt"],
-      order: [["createdAt", "DESC"]],
-      limit
-    });
-
-    const lastUpdate =
-      articles.length > 0
-        ? new Date(articles[0].createdAt).toISOString()
-        : new Date().toISOString();
-
-    let xml = '<?xml version="1.0" encoding="utf-8"?>\n';
-    xml += '<feed xmlns="http://www.w3.org/2005/Atom">\n';
-    xml += `  <title>Blog</title>\n`;
-    xml += `  <link href="${baseUrl}" />\n`;
-    xml += `  <updated>${lastUpdate}</updated>\n`;
-    xml += `  <id>${baseUrl}</id>\n`;
-
-    for (const article of articles) {
-      const date = new Date(article.createdAt);
-
-      const desc = (article.content || "")
-        .replace(/<[^>]*>/g, "")
-        .substring(0, 500);
-
-      xml += "  <entry>\n";
-      xml += `    <title>${escapeXml(article.title)}</title>\n`;
-      xml += `    <link href="${baseUrl}/article/${article.id}" />\n`;
-      xml += `    <id>${baseUrl}/article/${article.id}</id>\n`;
-      xml += `    <updated>${date.toISOString()}</updated>\n`;
-      xml += `    <summary>${escapeXml(desc)}</summary>\n`;
-      xml += "  </entry>\n";
-    }
-
-    xml += "</feed>";
-
-    res.type("application/atom+xml");
-    res.send(xml);
-  } catch (error) {
-    safeLog(error);
-    res.status(500).send("Erreur Atom");
-  }
-}
-
-/**
- * Escape XML safe
- */
-function escapeXml(str = "") {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    const articles = await feedArticles(req), base = appUrl();
+    const entries = articles.map(article => {
+      const updated = isoDate(article.updated_at || article.published_at || article.created_at);
+      if (!updated) return ''; // Do not fabricate an article date required by Atom.
+      return `<entry><title>${escapeXml(article.title)}</title><link href="${escapeXml(base + articlePath(article))}"/><id>${escapeXml(`${base}/article/${article.id}`)}</id><updated>${updated}</updated><summary>${escapeXml(articlePlainText(article.content).slice(0, 500))}</summary></entry>`;
+    }).join('');
+    const updated = articles.map(a => isoDate(a.updated_at || a.created_at)).filter(Boolean).sort().at(-1) || new Date().toISOString();
+    res.type('application/atom+xml').send(`<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title>Emi’Pulse</title><link href="${escapeXml(base)}"/><id>${escapeXml(base)}</id><updated>${updated}</updated><author><name>Emi’Pulse</name></author>${entries}</feed>`);
+  } catch (error) { safeLog(error); res.status(500).send('Erreur Atom'); }
 }

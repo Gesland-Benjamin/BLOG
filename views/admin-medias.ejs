@@ -66,7 +66,7 @@
                     <td class="text-end"><%= media.sizeFormatted %></td>
                     <td><%= media.createdAtFormatted %></td>
                     <td class="text-end">
-                      <a href="/article/<%= media.articleId %>" class="btn btn-sm btn-outline-primary">Voir article</a>
+                      <a href="<%= articlePath({ id: media.articleId, slug: media.articleSlug }) %>" class="btn btn-sm btn-outline-primary">Voir article</a>
                     </td>
                   </tr>
                 <% }) %>

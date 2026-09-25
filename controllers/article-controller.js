@@ -1,7 +1,10 @@
-import { safeLog, appUrl } from '../utils/security.js';
+import { articleImageDimensions, articleImageSrcset } from '../services/articleImage.js';
+import { articlePath, articleSeo, authorPath, breadcrumbSchema } from '../utils/seo.js';
+import { renderArticleContent } from '../public/js/article-content.js';
+import { safeLog } from '../utils/security.js';
 import sequelize from '../config/database.js';
 import { escapeHtml as encodeAttribute } from '../utils/security.js';
-import { formatArticleText, articlePlainText } from '../public/js/article-format.js';
+import { articlePlainText } from '../public/js/article-format.js';
 import Article from "../models/Article.model.js";
 import User from "../models/User.model.js";
 import Categorie from "../models/Categorie.model.js";
@@ -10,12 +13,11 @@ import ArticleLike from "../models/ArticleLike.model.js";
 
 import { Op, literal } from "sequelize";
 import { getPaginationParams, createPaginationData } from "../utils/pagination.js";
-import { generateOpenGraphImage } from "../services/imageHelper.js";
 import { prepareVideoUrl, getVideoType } from "../utils/videoHelper.js";
 import { formatDate, toDateObject } from "../utils/date.js";
 
 function getArticleCreatedAt(article) {
-  return article?.createdAt || article?.created_at || article?.date_publication || null;
+  return article?.published_at || article?.createdAt || article?.created_at || article?.date_publication || null;
 }
 
 /* =========================
@@ -60,6 +62,7 @@ export const getArticlesParCategorie = async (req, res) => {
           categorie: categorie.name,
           articles: articles.map(a => ({
             id: a.id,
+            slug: a.slug,
             titre: a.title,
             contenu: articlePlainText(a.content),
             image: a.image,
@@ -92,16 +95,35 @@ export const getArticlesParCategorie = async (req, res) => {
 ========================= */
 export const getArticleById = async (req, res) => {
   try {
-    const id = Number(req.params.id);
-
-    const article = await Article.findByPk(id, {
+    const key = req.params.id;
+    const numeric = /^\d+$/.test(key);
+    const article = await Article.findOne({
+      where: numeric ? { id: key } : { slug: key },
       include: [
         { model: User, as: "author" },
         { model: Categorie, as: "categorie" }
       ]
     });
 
-    if (!article) return res.status(404).send("Article non trouvé");
+    if (!article) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
+    const id = article.id;
+    if (article.slug && key !== article.slug) {
+      const query = new URLSearchParams();
+      if (/^\d+$/.test(req.query.page || '')) query.set('page', req.query.page);
+      if (req.query.comment_submitted === '1') query.set('comment_submitted', '1');
+      return res.redirect(301, articlePath(article) + (query.size ? `?${query}` : ''));
+    }
+    const seo = articleSeo(article);
+    const breadcrumbs = [{ name: 'Accueil', path: '/' },
+      ...(article.categorie ? [{ name: article.categorie.name, path: `/article/categorie/${encodeURIComponent(article.categorie.name)}` }] : []),
+      { name: article.title, path: articlePath(article) }];
+    const manualIds = Array.isArray(article.related_article_ids) ? article.related_article_ids.filter(value => Number.isInteger(value) && value !== id).slice(0, 5) : [];
+    const manualArticles = manualIds.length ? await Article.findAll({ where: { id: { [Op.in]: manualIds } } }) : [];
+    const similarArticles = manualArticles.length < 5 ? await Article.findAll({
+      where: { categorieId: article.categorieId, id: { [Op.notIn]: [id, ...manualIds] } },
+      order: [['created_at', 'DESC']], limit: 5 - manualArticles.length
+    }) : [];
+    const relatedArticles = [...manualArticles, ...similarArticles];
 
     // déterminer si l'utilisateur (ou l'IP) a déjà liké
     let hasLiked = false;
@@ -128,39 +150,27 @@ export const getArticleById = async (req, res) => {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
 
-    const renderParagraphs = (text) => {
-      return text
-        .split(/\n\s*\n/)
-        .map((block) => block.trim())
-        .filter(Boolean)
-        .map((block) => {
-          return `<p>${formatArticleText(block).replace(/\n/g, '<br>')}</p>`;
-        })
-        .join('');
-    };
-
-    const buildContentHtml = (content, inlineImageUrl, imageAlt) => {
-      const text = content || "";
-      const imageHtml = inlineImageUrl
-        ? `\n\n<div class="article-inline-image" style="margin:2rem 0 1.5rem;"><img src="${encodeAttribute(inlineImageUrl)}" alt="${escapeHtml(imageAlt)}" loading="lazy" srcset="${encodeAttribute(inlineImageUrl)} 600w, ${encodeAttribute(inlineImageUrl.replace('_md', '_lg'))} 1200w" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 16px rgba(0, 0, 0, 0.08);"></div>\n\n`
-        : "";
-
-      if (inlineImageUrl && text.includes('[[IMAGE_INLINE]]')) {
-        const position = text.indexOf('[[IMAGE_INLINE]]');
-        return renderParagraphs(text.slice(0, position)) + imageHtml +
-          renderParagraphs(text.slice(position + '[[IMAGE_INLINE]]'.length));
-      }
-
-      return renderParagraphs(text);
-    };
+    const [imageDimensions, inlineDimensions] = await Promise.all([
+      articleImageDimensions(article.image), articleImageDimensions(article.image_inline)
+    ]);
+    const [imageSrcset, inlineSrcset] = await Promise.all([
+      articleImageSrcset(article.image, imageDimensions), articleImageSrcset(article.image_inline, inlineDimensions)
+    ]);
+    const renderedContent = renderArticleContent(article.content);
+    const inlineImageHtml = article.image_inline
+      ? `<div class="article-inline-image" style="margin:2rem 0 1.5rem"><img src="${encodeAttribute(article.image_inline)}" alt="${escapeHtml(article.image_alt || article.title)}" loading="lazy" ${inlineSrcset ? `srcset="${encodeAttribute(inlineSrcset)}" sizes="(max-width: 900px) 100vw, 900px"` : ''} ${inlineDimensions ? `width="${inlineDimensions.width}" height="${inlineDimensions.height}"` : ''} style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 8px 16px rgba(0,0,0,.08)"></div>` : '';
 
     const contentHasInlinePlaceholder = article.content?.includes('[[IMAGE_INLINE]]');
 
     const articleData = {
       id: article.id,
+      slug: article.slug,
+      authorUrl: authorPath(article.author),
+      date_modified_iso: seo.modified,
+      date_modified_formatted: formatDate(article.updated_at),
       titre: article.title,
       contenu: article.content,
-      contenuHtml: buildContentHtml(article.content, article.image_inline, article.image_alt || article.title),
+      contenuHtml: renderedContent.html.replace('<p>[[IMAGE_INLINE]]</p>', inlineImageHtml),
       inlineImagePlacedInContent: contentHasInlinePlaceholder,
       auteur: article.author?.name || "Inconnu",
       categorie: article.categorie?.name || null,
@@ -172,14 +182,18 @@ export const getArticleById = async (req, res) => {
         day: 'numeric'
       }),
       image: article.image,
+      imageDimensions,
+      inlineDimensions,
+      imageSrcset,
+      inlineSrcset,
       image_inline: article.image_inline || null,
       image_alt: article.image_alt || article.title,
       video: article.video ? prepareVideoUrl(article.video) : null,
       videoType: article.video ? getVideoType(article.video) : null,
       likes: article.likes || 0,
       liked: hasLiked,
-      description: articlePlainText(article.content || "").substring(0, 160),
-      url: `${appUrl()}/article/${article.id}`
+      description: seo.description,
+      url: seo.canonical
     };
 
     /* =========================
@@ -284,23 +298,20 @@ export const getArticleById = async (req, res) => {
       total,
       page,
       pageSize,
-      `/article/${id}`
+      articlePath(article)
     );
-
-    const ogTags = generateOpenGraphImage({
-      imageUrl: article.image,
-      imageAlt: article.image_alt,
-      width: "1200",
-      height: "630"
-    });
 
     return res.render("article-detail", {
       article: articleData,
+      seo,
+      breadcrumbs,
+      breadcrumbData: breadcrumbSchema(breadcrumbs),
+      toc: renderedContent.toc,
+      relatedArticles,
       user: req.user,
       commentaires,
       commentsPagination: pagination,
-      commentsBaseUrl: `/article/${id}`,
-      ogImageTags: ogTags,
+      commentsBaseUrl: articlePath(article),
       commentSubmitted: req.query.comment_submitted === "1",
       errors: [],
       formData: {}
@@ -338,7 +349,7 @@ export const postComment = async (req, res) => {
       is_spam: spam
     });
 
-    return res.redirect(`/article/${articleId}?comment_submitted=1`);
+    return res.redirect(`${articlePath(article)}?comment_submitted=1`);
 
   } catch (error) {
     safeLog(error);
@@ -360,7 +371,7 @@ export const likeArticle = async (req, res, next) => {
       const identity = req.user ? { userId: req.user.id } : { ip: req.ip };
       if (await ArticleLike.findOne({ where: { articleId: id, ...identity }, transaction })) return { status: 400, body: { message: 'Vous avez déjà liké cet article' } };
       await ArticleLike.create({ articleId: id, userId: req.user?.id || null, ip: req.ip }, { transaction });
-      await article.increment('likes', { by: 1, transaction });
+      await article.increment('likes', { by: 1, transaction, silent: true });
       await article.reload({ transaction });
       return { status: 200, body: { likes: article.likes } };
     });
@@ -373,22 +384,13 @@ export const likeArticle = async (req, res, next) => {
 ========================= */
 export const getArticlesByCategorieName = async (req, res) => {
   try {
-    const name = decodeURIComponent(req.params.nom || "");
+    const name = req.params.nom || "";
 
     const category = await Categorie.findOne({
       where: { name }
     });
 
-    if (!category) {
-      return res.render("articles-by-category", {
-        articles: [],
-        categorie: name,
-        user: req.user,
-        pagination: { page: 1, pages: 0, total: 0 },
-        search: "",
-        baseUrl: `/article/categorie/${encodeURIComponent(name)}`
-      });
-    }
+    if (!category) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
 
     const pageSize = 6;
     const { offset, limit, page } = getPaginationParams(req.query.page, pageSize);
@@ -415,19 +417,23 @@ export const getArticlesByCategorieName = async (req, res) => {
 
     const articles = rows.map(a => ({
       id: a.id,
+      slug: a.slug,
       titre: a.title,
       contenu: articlePlainText(a.content),
       auteur: a.author?.name || "Inconnu",
-      date_publication: a.createdAt,
+      date_publication_formatted: formatDate(a.published_at || a.created_at),
+      date_publication: (a.published_at || a.created_at),
       image: a.image,
       image_alt: a.image_alt || a.title
     }));
 
-    const baseUrl = `/article/categorie/${encodeURIComponent(category.name)}`;
+    if (page > 1 && offset >= count) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
+    const baseUrl = `/article/categorie/${encodeURIComponent(category.name)}` + (search ? `?search=${encodeURIComponent(search)}` : '');
     const pagination = createPaginationData(count, page, pageSize, baseUrl);
 
     return res.render("articles-by-category", {
       articles,
+      seo: { ...res.locals.seo, title: category.name },
       categorie: category.name,
       user: req.user,
       pagination,

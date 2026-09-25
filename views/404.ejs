@@ -17,6 +17,7 @@
           </div>
         </div>
       </div>
+    <nav aria-label="Explorer le blog"><a href="/article">Parcourir les articles</a><ul><% (typeof categories !== 'undefined' ? categories : []).forEach(category => { %><li><a href="/article/categorie/<%= encodeURIComponent(category.name) %>"><%= category.name %></a></li><% }) %></ul></nav>
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>

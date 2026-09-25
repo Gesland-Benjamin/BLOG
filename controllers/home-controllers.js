@@ -1,3 +1,5 @@
+import { getPaginationParams, createPaginationData } from '../utils/pagination.js';
+import { formatDate } from '../utils/date.js';
 import { safeLog } from '../utils/security.js';
 import { Op } from "sequelize";
 import { Article, User, Categorie } from "../models/index.js";
@@ -34,9 +36,10 @@ export const getHomePage = async (req, res) => {
 
     const recentPosts = recentArticles.map((a) => ({
       id: a.id,
+      slug: a.slug,
       titre: a.title,
       extrait: (a.content || "").substring(0, 120),
-      date: a.createdAt,
+      date: (a.published_at || a.created_at),
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu"
@@ -47,9 +50,10 @@ export const getHomePage = async (req, res) => {
     const featuredArticle = latest
       ? {
           id: latest.id,
+          slug: latest.slug,
           titre: latest.title,
           extrait: (latest.content || "").substring(0, 200),
-          date: latest.createdAt,
+          date: (latest.published_at || latest.created_at),
           image: latest.image,
           categorie: latest.categorie?.name || null,
           auteur: latest.author?.name || "Inconnu"
@@ -91,9 +95,10 @@ export const getHomePage = async (req, res) => {
 
     const carouselItems = [...carouselMap.values()].map((a) => ({
       id: a.id,
+      slug: a.slug,
       titre: a.title,
       extrait: (a.content || "").substring(0, 160),
-      date: a.createdAt,
+      date: (a.published_at || a.created_at),
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu"
@@ -101,9 +106,10 @@ export const getHomePage = async (req, res) => {
 
     const topLikedSections = [...topLikedMap.values()].map((a) => ({
       id: a.id,
+      slug: a.slug,
       titre: a.title,
       extrait: (a.content || "").substring(0, 160),
-      date: a.createdAt,
+      date: (a.published_at || a.created_at),
       image: a.image,
       categorie: a.categorie?.name || null,
       auteur: a.author?.name || "Inconnu",
@@ -141,30 +147,32 @@ export const getArticlesByMonth = async (req, res) => {
   try {
     const { year, month } = req.params;
 
+    if (!/^\d{4}$/.test(year) || !/^\d{1,2}$/.test(month) || Number(month) < 1 || Number(month) > 12) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
+    const { page, limit, offset } = getPaginationParams(req.query.page, 9);
+    const baseUrl = `/archive/${Number(year)}/${Number(month)}`;
     const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0, 23, 59, 59);
+    const endDate = new Date(year, month, 1);
 
-    const articles = await Article.findAll({
-      where: {
-        created_at: {
-          [Op.between]: [startDate, endDate]
-        }
-      },
-      include: [
-        { model: User, as: "author" },
-        { model: Categorie, as: "categorie" }
-      ],
-      order: [["created_at", "DESC"]]
+    const { count, rows: articles } = await Article.findAndCountAll({
+      where: { [Op.or]: [
+        { published_at: { [Op.gte]: startDate, [Op.lt]: endDate } },
+        { published_at: null, created_at: { [Op.gte]: startDate, [Op.lt]: endDate } }
+      ] },
+      include: [{ model: User, as: "author" }, { model: Categorie, as: "categorie" }],
+      order: [["created_at", "DESC"]], limit, offset
     });
+    if (page > 1 && offset >= count) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
 
     const articlesMapped = articles.map((article) => ({
       id: article.id,
+      slug: article.slug,
       titre: article.title,
       contenu: article.content,
       image: article.image,
       categorie: article.categorie?.name || article.categorie?.nom || null,
       auteur: article.author?.name || "Inconnu",
-      date_publication: article.createdAt
+      date_publication_formatted: formatDate(article.published_at || article.created_at),
+      date_publication: (article.published_at || article.created_at)
     }));
 
     // Préparer le nom du mois et l'année pour la vue
@@ -181,6 +189,9 @@ export const getArticlesByMonth = async (req, res) => {
     res.render("articles-by-month", {
       articles: articlesWithExcerpt,
       title: "Articles du mois",
+      seo: { ...res.locals.seo, title: `Articles de ${monthName} ${yearNum}`, canonical: new URL(baseUrl + (page > 1 ? `?page=${page}` : ''), res.locals.seo.canonical).href },
+      pagination: createPaginationData(count, page, limit, baseUrl),
+      baseUrl,
       monthName,
       year: yearNum
     });

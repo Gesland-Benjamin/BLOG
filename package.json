@@ -35,7 +35,9 @@
     "test:production": "node scripts/test-production.js",
     "ssl:generate": "node scripts/ssl-setup.js generate",
     "ssl:verify": "node scripts/ssl-setup.js verify",
-    "monitor": "node scripts/monitor.js"
+    "monitor": "node scripts/monitor.js",
+    "test": "node --experimental-vm-modules --test tests/*.test.js",
+    "test:seo": "node --experimental-vm-modules --test tests/seo.test.js"
   },
   "keywords": [],
   "author": "",

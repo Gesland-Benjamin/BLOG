@@ -1,0 +1,90 @@
+[
+  {
+    "source": "logo 3.png",
+    "target": "logo 3.webp",
+    "before": 332441,
+    "after": 169446,
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "source": "Design sans titre.png",
+    "target": "Design sans titre.webp",
+    "before": 294855,
+    "after": 159586,
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "source": "Boutton_coeur-Photoroom.png",
+    "target": "Boutton_coeur-Photoroom.webp",
+    "before": 889802,
+    "after": 388460,
+    "width": 1024,
+    "height": 1024
+  },
+  {
+    "source": "images/ChatGPT-Image-18-dec-2025-15_29_48.png",
+    "target": "images/ChatGPT-Image-18-dec-2025-15_29_48.webp",
+    "before": 2288080,
+    "after": 1607250,
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "source": "articles.png",
+    "target": "articles.webp",
+    "before": 244768,
+    "after": 103094,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "menu.png",
+    "target": "menu.webp",
+    "before": 274087,
+    "after": 114486,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "connexion.png",
+    "target": "connexion.webp",
+    "before": 290041,
+    "after": 123702,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "contacts.png",
+    "target": "contacts.webp",
+    "before": 285949,
+    "after": 121228,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "boutique.png",
+    "target": "boutique.webp",
+    "before": 279596,
+    "after": 118486,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "deconnexion.png",
+    "target": "deconnexion.webp",
+    "before": 283399,
+    "after": 121004,
+    "width": 1280,
+    "height": 720
+  },
+  {
+    "source": "ratio10.png",
+    "target": "ratio10.webp",
+    "before": 1478084,
+    "after": 1169022,
+    "width": 832,
+    "height": 1248
+  }
+]

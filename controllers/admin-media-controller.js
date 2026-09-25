@@ -19,8 +19,8 @@ export const listMedia = async (req, res) => {
     const files = await fs.readdir(UPLOADS_DIR);
 
     // 🔥 IMPORTANT: récupérer aussi id + title (sinon bug plus bas)
-    const usedArticles = await Article.findAll({
-      attributes: ['id', 'title', 'image', 'image_inline']
+    const usedArticles = await Article.unscoped().findAll({
+      attributes: ['id', 'slug', 'title', 'image', 'image_inline']
     });
 
     const usedImages = usedArticles.filter(a => a.image || a.image_inline);
@@ -45,6 +45,7 @@ export const listMedia = async (req, res) => {
             createdAtFormatted: stats.birthtime.toLocaleDateString('fr-FR'),
             isUsed,
             articleId: article ? article.id : null,
+            articleSlug: article?.slug || null,
             articleTitle: article ? article.title : null
           };
 
@@ -95,7 +96,7 @@ export const deleteMedia = async (req, res) => {
     }
 
     // 🔥 Vérifier si utilisé en BDD
-    const article = await Article.findOne({
+    const article = await Article.unscoped().findOne({
       where: {
         [Op.or]: [{ image: { [Op.like]: `%${getImageBaseName(filename)}%` } }, { image_inline: { [Op.like]: `%${getImageBaseName(filename)}%` } }]
       }
@@ -139,7 +140,7 @@ export const deleteOrphanFiles = async (req, res) => {
   try {
     const files = await fs.readdir(UPLOADS_DIR);
 
-    const usedArticles = await Article.findAll({
+    const usedArticles = await Article.unscoped().findAll({
       attributes: ['image', 'image_inline']
     });
 

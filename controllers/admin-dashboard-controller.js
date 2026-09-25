@@ -31,7 +31,7 @@ export const getDashboard = async (req, res) => {
       totalAbonnes
     ] = await Promise.all([
       User.count(),
-      Article.count(),
+      Article.unscoped().count(),
       Commentaire.count(),
       Commentaire.count({ where: { statut: "pending" } }),
       NewsletterSubscriber.count()
@@ -54,8 +54,8 @@ export const getDashboard = async (req, res) => {
     // =========================
     // ARTICLES RECENTS
     // =========================
-    const recentArticles = await Article.findAll({
-      attributes: ["id", "title", "likes", "created_at"],
+    const recentArticles = await Article.unscoped().findAll({
+      attributes: ["id", "slug", "is_published", "title", "likes", "created_at"],
       include: [
         { model: User, as: "author", attributes: ["id", "name"] },
         { model: Categorie, as: "categorie", attributes: ["id", "name"] }
@@ -78,7 +78,7 @@ export const getDashboard = async (req, res) => {
       await Commentaire.findAndCountAll({
         where: { statut: "pending" },
         include: [
-          { model: Article, as: "article", attributes: ["id", "title"] },
+          { model: Article.unscoped(), as: "article", attributes: ["id", "slug", "is_published", "title"] },
           { model: User, as: "user", attributes: ["id", "name"] }
         ],
         order: [["created_at", "DESC"]],
@@ -109,8 +109,8 @@ export const getDashboard = async (req, res) => {
     // =========================
     // TOP ARTICLES
     // =========================
-    const topArticles = await Article.findAll({
-      attributes: ["id", "title", "likes"],
+    const topArticles = await Article.unscoped().findAll({
+      attributes: ["id", "slug", "is_published", "title", "likes"],
       order: [["likes", "DESC"]],
       limit: pageSize
     });

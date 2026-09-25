@@ -31,6 +31,7 @@
       </symbol>
     </svg>
     <main class="home-wrapper">
+      <h1 class="visually-hidden">Emi’Pulse — le blog d’Émilie</h1>
       <!-- Carrousel mélangé Événements + Nouveautés -->
       <div class="carousel-wrapper">
         <%- include('partials/carousel', { carouselItems }) %>
@@ -45,11 +46,11 @@
                 <div class="home-featured-card card-bordered smeg-frame">
                   <div class="home-featured-layout">
                     <div class="article-card-text">
-                      <h1 class="article-card-title"><%= s.titre %></h1>
+                      <h2 class="article-card-title"><%= s.titre %></h2>
                       <p class="article-card-excerpt"><%= s.extrait %>...</p>
                       <p class="article-card-author">Par <%= s.auteur %> • <%= s.categorie %></p>
                       <p class="article-card-link">
-                        <a href="/article/<%= s.id %>">Lire plus...</a>
+                        <a href="<%= articlePath(s) %>">Lire plus...</a>
                       </p>
                     </div>
                     <div class="article-card-image-wrapper">
@@ -75,7 +76,7 @@
                     <% if (recentPosts && recentPosts.length) { %>
                       <% recentPosts.forEach((p, idx) => { %>
                         <li class="list-group-item">
-                          <a href="/article/<%= p.id %>" class="sidebar-article-link">
+                          <a href="<%= articlePath(p) %>" class="sidebar-article-link">
                             <div class="sidebar-article-img-wrapper">
                               <% if (p.image) { %>
                                 <img src="<%= p.image %>" alt="<%= p.titre %>">

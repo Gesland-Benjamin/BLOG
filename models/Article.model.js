@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import { newSlug } from "../utils/seo.js";
 import sequelize from "../config/database.js";
 
 const Article = sequelize.define(
@@ -10,6 +11,13 @@ const Article = sequelize.define(
       autoIncrement: true
     },
 
+    slug: { type: DataTypes.STRING(255), allowNull: true, unique: true },
+    seo_title: { type: DataTypes.STRING(255), allowNull: true },
+    meta_description: { type: DataTypes.STRING(320), allowNull: true },
+    image_alt: { type: DataTypes.STRING(255), allowNull: true },
+    is_published: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+    published_at: { type: DataTypes.DATE, allowNull: true },
+    related_article_ids: { type: DataTypes.JSON, allowNull: true },
     title: {
       type: DataTypes.STRING(255),
       allowNull: false
@@ -70,7 +78,7 @@ const Article = sequelize.define(
     date_publication: {
       type: DataTypes.VIRTUAL,
       get() {
-        return this.createdAt || this.created_at || null;
+        return this.published_at || this.createdAt || this.created_at || null;
       }
     },
 
@@ -83,6 +91,13 @@ const Article = sequelize.define(
 
   },
   {
+    defaultScope: { where: { is_published: true } },
+    hooks: {
+      beforeValidate(article) {
+        if (article.isNewRecord && !article.slug) article.slug = newSlug(article.title);
+        if (article.isNewRecord && article.is_published !== false && !article.published_at) article.published_at = new Date();
+      }
+    },
     tableName: "articles",
     timestamps: true,
     createdAt: "created_at",

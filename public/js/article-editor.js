@@ -1,3 +1,4 @@
+import { renderArticleContent } from './article-content.js';
 import { formatArticleText } from './article-format.js';
 
 const content = document.getElementById('content');
@@ -6,7 +7,7 @@ const preview = document.getElementById('article-content-preview');
 
 if (content && toolbar && preview) {
   const updatePreview = () => {
-    preview.innerHTML = formatArticleText(content.value);
+    preview.innerHTML = /^(?:#{2,3} )|\]\(\/article\//m.test(content.value) ? renderArticleContent(content.value).html : formatArticleText(content.value);
   };
 
   function format(marker) {
@@ -44,3 +45,13 @@ if (content && toolbar && preview) {
   preview.parentElement.hidden = false;
   updatePreview();
 }
+
+const insertLink = document.getElementById('insert-article-link');
+insertLink?.addEventListener?.('click', () => {
+  const select = document.getElementById('internal-article');
+  if (!select?.value || !content) return;
+  const label = select.options[select.selectedIndex].textContent.replace(/[\[\]\r\n]/g, '');
+  content.setRangeText(`[${label}](${select.value})`, content.selectionStart, content.selectionEnd, 'end');
+  content.dispatchEvent(new Event('input', { bubbles: true }));
+  content.focus();
+});

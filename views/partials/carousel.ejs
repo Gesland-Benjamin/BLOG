@@ -17,11 +17,11 @@
     <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
       <div class="main-carousel-article-card">
         <div class="main-carousel-text">
-          <h1 class="main-carousel-title"><%= item.titre %></h1>
+          <h2 class="main-carousel-title"><%= item.titre %></h2>
           <p class="main-carousel-excerpt"><%= item.extrait %>...</p>
           <p class="main-carousel-author">Par <%= item.auteur %></p>
           <p class="main-carousel-link">
-            <a href="/article/<%= item.id %>"
+            <a href="<%= articlePath(item) %>"
               >Lire l'article complet...</a
             >
           </p>

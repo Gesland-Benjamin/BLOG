@@ -104,6 +104,11 @@ export const resetPasswordSchema = Joi.object({
    ARTICLE (FIX CRITIQUE)
 ========================= */
 export const articleSchema = Joi.object({
+  seo_title: Joi.string().trim().max(255).allow('').optional(),
+  meta_description: Joi.string().trim().max(320).allow('').optional(),
+  image_alt: Joi.string().trim().max(255).allow('').optional(),
+  is_published: Joi.string().valid('true', 'false').optional(),
+  related_article_ids: Joi.array().items(Joi.number().integer().positive()).max(5).single().optional(),
   title: Joi.string()
     .min(5)
     .max(255)

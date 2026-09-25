@@ -93,8 +93,8 @@
               <% recentArticles.slice(0, 3).forEach(a => { %>
                 <div class="admin-list-item">
                   <div class="admin-list-content">
-                    <a href="/article/<%= a.id %>" class="admin-list-title">
-                      <%= a.title %>
+                    <a href="<%= articlePath(a) %>" class="admin-list-title">
+                      <%= a.title %><%= a.is_published === false ? ' (brouillon)' : '' %>
                     </a>
 
                     <div class="admin-list-meta">
@@ -140,7 +140,7 @@
 
                     <div class="admin-list-meta">
                       <% if (c.article) { %>
-                        Sur : <a href="/article/<%= c.article.id %>"><%= c.article.title %></a>
+                        Sur : <a href="<%= articlePath(c.article) %>"><%= c.article.title %></a>
                       <% } else { %>
                         Article supprimé
                       <% } %>

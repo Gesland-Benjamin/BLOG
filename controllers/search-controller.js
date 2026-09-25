@@ -1,3 +1,4 @@
+import { formatDate } from '../utils/date.js';
 import { articlePlainText } from '../public/js/article-format.js';
 import { safeLog } from '../utils/security.js';
 import Article from "../models/Article.model.js";
@@ -50,6 +51,8 @@ export const searchArticles = async (req, res) => {
       offset
     });
 
+    if (page > 1 && offset >= count) return res.status(404).render('404', { seo: { ...res.locals.seo, noindex: true } });
+
     const categories = await Categorie.findAll({
       order: [["name", "ASC"]]
     });
@@ -59,10 +62,12 @@ export const searchArticles = async (req, res) => {
     ========================= */
     const articles = rows.map((a) => ({
       id: a.id,
+      slug: a.slug,
       titre: a.title,                 // ✅ FIX
       contenu: articlePlainText(a.content),             // ✅ FIX
       categorie: a.categorie?.name || null,
-      date_publication: a.createdAt,  // OK via Sequelize
+      date_publication_formatted: formatDate(a.published_at || a.created_at),
+      date_publication: (a.published_at || a.created_at),  // OK via Sequelize
       image: a.image
     }));
 

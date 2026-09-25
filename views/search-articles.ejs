@@ -56,14 +56,14 @@
                   <% } %>
                   <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
                     <h2 class="archive-article-title">
-                      <a href="/article/<%= article.id %>"><%= article.titre %></a>
+                      <a href="<%= articlePath(article) %>"><%= article.titre %></a>
                     </h2>
                     <p class="archive-article-meta">
                       <% if (article.categorie) { %><strong><%= article.categorie %></strong> | <% } %>
                       <%= article.date_publication_formatted || '' %>
                     </p>
                     <p class="archive-article-excerpt"><%= (article.contenu || '').substring(0, 200) %>...</p>
-                    <a href="/article/<%= article.id %>" class="archive-article-btn">Lire la suite →</a>
+                    <a href="<%= articlePath(article) %>" class="archive-article-btn">Lire la suite →</a>
                   </div>
                 </div>
               </article>

@@ -17,7 +17,7 @@ export async function deleteUser(req, res, next) {
       const user = await User.findByPk(userId, { transaction, lock: transaction.LOCK.UPDATE });
       if (!user) return 'Utilisateur introuvable.';
       if (user.role === 'admin' && admins.length <= 1) return 'Impossible de supprimer le dernier administrateur.';
-      if (await Article.count({ where: { userId }, transaction })) return 'Ce compte possède des articles. Réattribuez-les avant de supprimer le compte.';
+      if (await Article.unscoped().count({ where: { userId }, transaction })) return 'Ce compte possède des articles. Réattribuez-les avant de supprimer le compte.';
       // Préserver les contenus et abonnements au lieu de les effacer en cascade.
       await Commentaire.update({ userId: null }, { where: { userId }, transaction });
       await ArticleLike.update({ userId: null }, { where: { userId }, transaction });

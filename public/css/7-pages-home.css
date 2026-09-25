@@ -429,7 +429,7 @@
     background-color: #fff6df !important; /* couleur de fond proche de l'image */
   }
   body {
-    background-image: url('../ratio10.png') !important;
+    background-image: url('../ratio10.webp') !important;
     background-size: contain !important;
     background-position: center top !important;
     background-attachment: scroll !important;

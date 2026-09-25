@@ -46,7 +46,7 @@
                 </h6>
                 <div class="admin-comment-meta">
                   <% if (c.article) { %>
-                    Article: <a href="/article/<%= c.article.id %>"><%= c.article.titre %></a> •
+                    Article: <a href="<%= articlePath(c.article) %>"><%= c.article.titre %></a> •
                   <% } %>
                   <%= new Date(c.date).toLocaleString('fr-FR') %>
                 </div>

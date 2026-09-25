@@ -3,47 +3,29 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
-    <!-- Meta dynamiques pour SEO -->
-    <% if (typeof article !== 'undefined' && article && article.titre) { %>
-      <title><%= article.titre %> | Blog</title>
-      <meta name="description" content="<%= article.description || article.titre %>" />
-      <meta name="robots" content="index, follow" />
-      <meta property="og:type" content="article" />
-      <meta property="og:title" content="<%= article.titre %>" />
-      <meta property="og:description" content="<%= article.description || article.titre %>" />
-      <meta property="og:url" content="<%= article.url %>" />
-      <% if (ogImageTags) { %>
-        <%- ogImageTags %>
-      <% } %>
-      <% if (article.date_publication) { %>
-        <% if (article.date_publication_iso) { %>
-          <meta name="article:published_time" content="<%= article.date_publication_iso %>" />
-        <% } %>
-      <% } %>
-      <% if (article.auteur) { %>
-        <meta name="article:author" content="<%= article.auteur %>" />
-      <% } %>
-      <% if (article.categorie) { %>
-        <meta name="article:section" content="<%= article.categorie %>" />
-      <% } %>
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="<%= article.titre %>" />
-      <meta name="twitter:description" content="<%= article.description || article.titre %>" />
-    <% } else { %>
-      <% const pageTitle = (typeof title !== 'undefined' && title) ? `${title} | Blog` : 'Blog | Accueil'; %>
-      <meta name="description" content="<%= (typeof pageDescription !== 'undefined' && pageDescription) ? pageDescription : 'Blog - Découvrez nos articles sur la beauté, la nutrition et le développement personnel' %>" />
-      <title><%= pageTitle %></title>
+    <% const metadata = typeof seo !== 'undefined' ? seo : { title: "Emi’Pulse", description: '', noindex: true }; %>
+    <title><%= metadata.title %> | Emi’Pulse</title>
+    <meta name="description" content="<%= metadata.description %>">
+    <meta name="robots" content="<%= metadata.noindex ? 'noindex, follow' : 'index, follow' %>">
+    <% if (metadata.canonical) { %><link rel="canonical" href="<%= metadata.canonical %>"><% } %>
+    <meta property="og:title" content="<%= metadata.title %>">
+    <meta property="og:description" content="<%= metadata.description %>">
+    <meta property="og:type" content="<%= metadata.type || 'website' %>">
+    <meta property="og:site_name" content="Emi’Pulse">
+    <meta property="og:locale" content="fr_FR">
+    <% if (metadata.canonical) { %><meta property="og:url" content="<%= metadata.canonical %>"><% } %>
+    <% if (metadata.image) { %>
+      <meta property="og:image" content="<%= metadata.image %>">
+      <meta name="twitter:image" content="<%= metadata.image %>">
     <% } %>
-    
-    <meta
-      name="author"
-      content="Gesland Benjamin"
-    />
-    <meta name="generator" content="Express.js" />
-    <link
-      rel="canonical"
-      href="<%= (typeof article !== 'undefined' && article) ? article.url : 'http://localhost:3000' %>"
-    />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= metadata.title %>">
+    <meta name="twitter:description" content="<%= metadata.description %>">
+    <% if (metadata.published) { %><meta property="article:published_time" content="<%= metadata.published %>"><% } %>
+    <% if (metadata.modified) { %><meta property="article:modified_time" content="<%= metadata.modified %>"><% } %>
+    <% if (typeof googleVerification !== 'undefined' && googleVerification) { %><meta name="google-site-verification" content="<%= googleVerification %>"><% } %>
+    <% if (metadata.schema) { %><script type="application/ld+json" nonce="<%= cspNonce %>"><%- jsonLd(metadata.schema) %></script><% } %>
+    <% if (typeof breadcrumbData !== 'undefined') { %><script type="application/ld+json" nonce="<%= cspNonce %>"><%- jsonLd(breadcrumbData) %></script><% } %>
     <script src="/js/color-modes.js"></script>
     <meta name="theme-color" content="#F99285" />
     <link
@@ -66,13 +48,13 @@
 
     <!-- Fichiers CSS - Architecture modulaire (12 fichiers) -->
     <!-- 1. Base: Variables, reset, typographie -->
-    <link href="/css/1-base.css" rel="stylesheet" />
+    <link href="/css/1-base.css?v=20260925-seo" rel="stylesheet" />
     
     <!-- 2. Layout: Grille, flexbox, spacing utilitaires -->
     <link href="/css/2-layout.css" rel="stylesheet" />
     
     <!-- 3. Composants: Boutons, cartes, formulaires, etc. -->
-    <link href="/css/3-components.css" rel="stylesheet" />
+    <link href="/css/3-components.css?v=20260925-seo" rel="stylesheet" />
     
     <!-- 4-5. Header & Footer -->
     <link href="/css/4-header.css?v=20260917-menu-layers" rel="stylesheet" />
@@ -82,8 +64,8 @@
     <link href="/css/6-carousel.css?v=20260917-menu-layers" rel="stylesheet" />
     
     <!-- 7-12. Pages spécifiques -->
-    <link href="/css/7-pages-home.css" rel="stylesheet" />
-    <link href="/css/8-pages-article.css?v=20260917-search-card" rel="stylesheet" />
+    <link href="/css/7-pages-home.css?v=20260925-seo" rel="stylesheet" />
+    <link href="/css/8-pages-article.css?v=20260925-seo" rel="stylesheet" />
     <link href="/css/9-pages-admin.css" rel="stylesheet" />
     <link href="/css/10-pages-auth.css" rel="stylesheet" />
     <link href="/css/11-pages-error.css" rel="stylesheet" />

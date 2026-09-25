@@ -38,7 +38,7 @@ export const createPaginationData = (
     pageNumbers.push({
       number: i,
       isActive: i === currentPage,
-      url: `${baseUrl}?${pageParam}=${i}`
+      url: `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${pageParam}=${i}`
     });
   }
 
@@ -49,8 +49,8 @@ export const createPaginationData = (
     total_items: total,
     has_previous: currentPage > 1,
     has_next: currentPage < totalPages,
-    previous_url: currentPage > 1 ? `${baseUrl}?${pageParam}=${currentPage - 1}` : null,
-    next_url: currentPage < totalPages ? `${baseUrl}?${pageParam}=${currentPage + 1}` : null,
+    previous_url: currentPage > 1 ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${pageParam}=${currentPage - 1}` : null,
+    next_url: currentPage < totalPages ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${pageParam}=${currentPage + 1}` : null,
     pages: pageNumbers,
     start_item: (currentPage - 1) * limit + 1,
     end_item: Math.min(currentPage * limit, total)

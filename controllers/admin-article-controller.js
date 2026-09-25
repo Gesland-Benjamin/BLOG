@@ -26,6 +26,7 @@ export async function showNewArticleForm(req, res) {
       article: {},
       errors: [],
       formData: {},
+      linkArticles: await Article.findAll({ attributes: ['id', 'title', 'slug'], order: [['title', 'ASC']] }),
       ogImageTags: ""
     });
   } catch (error) {
@@ -68,6 +69,11 @@ export const createArticle = async (req, res) => {
       : null;
 
     const article = await Article.create({
+      seo_title: req.body.seo_title || null,
+      meta_description: req.body.meta_description || null,
+      image_alt: req.body.image_alt || null,
+      is_published: req.body.is_published !== 'false',
+      related_article_ids: req.body.related_article_ids || [],
       title: title.trim(),
       content: content.trim(),
       categorieId: categoryIdNum,
@@ -104,7 +110,7 @@ export const createArticle = async (req, res) => {
 ========================= */
 export const showEditArticleForm = async (req, res) => {
   try {
-    const article = await Article.findByPk(req.params.id, {
+    const article = await Article.unscoped().findByPk(req.params.id, {
       include: [
         { model: Categorie, as: "categorie" },
         { model: User, as: "author" }
@@ -123,6 +129,7 @@ export const showEditArticleForm = async (req, res) => {
       article,
       errors: [],
       formData: {},
+      linkArticles: await Article.findAll({ attributes: ['id', 'title', 'slug'], order: [['title', 'ASC']] }),
       ogImageTags: ""
     });
 
@@ -137,7 +144,7 @@ export const showEditArticleForm = async (req, res) => {
 ========================= */
 export const updateArticle = async (req, res) => {
   try {
-    const article = await Article.findByPk(req.params.id);
+    const article = await Article.unscoped().findByPk(req.params.id);
     if (!article) return res.status(404).send("Article non trouvé");
 
     const { title, content, categorieId, video } = req.body;
@@ -154,6 +161,12 @@ export const updateArticle = async (req, res) => {
       : article.image_inline;
 
     await article.update({
+      ...(req.body.seo_title !== undefined ? { seo_title: req.body.seo_title || null } : {}),
+      ...(req.body.meta_description !== undefined ? { meta_description: req.body.meta_description || null } : {}),
+      ...(req.body.image_alt !== undefined ? { image_alt: req.body.image_alt || null } : {}),
+      ...(req.body.is_published !== undefined ? { is_published: req.body.is_published === 'true' } : {}),
+      ...(!article.published_at && req.body.is_published !== undefined ? { published_at: article.is_published ? article.created_at : req.body.is_published === 'true' ? new Date() : null } : {}),
+      related_article_ids: req.body.related_article_ids || [],
       title,
       content,
       categorieId: Number(categorieId),
@@ -207,7 +220,7 @@ export const updateArticle = async (req, res) => {
 ========================= */
 export const deleteArticle = async (req, res) => {
   try {
-    const article = await Article.findByPk(req.params.id);
+    const article = await Article.unscoped().findByPk(req.params.id);
     if (!article) return res.status(404).send("Article non trouvé");
 
     // Supprimer les images générées avant de supprimer l'article

@@ -16,6 +16,7 @@ import {
 } from '../services/image.js';
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'node:os';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +24,7 @@ const __dirname = path.dirname(__filename);
 
 // Créer une image de test (100x100 PNG)
 async function createTestImage() {
-  const testDir = path.join(__dirname, '../public/uploads/test');
+  const testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'emipulse-image-test-'));
   await fs.mkdir(testDir, { recursive: true });
   
   // Créer un PNG simple pour le test
@@ -39,7 +40,7 @@ async function runTests() {
   console.log('🖼️  Tests de compression d\'images avec Sharp\n');
   console.log('═'.repeat(60));
   
-  const testDir = path.join(__dirname, '../public/uploads/test');
+  const testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'emipulse-image-test-'));
   
   try {
     // Créer le répertoire de test

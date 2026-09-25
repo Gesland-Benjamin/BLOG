@@ -78,6 +78,7 @@
                 <button type="button" data-format="**" aria-controls="content" title="Gras (Ctrl ou Cmd + B)"><strong>Gras</strong></button>
                 <button type="button" data-format="_" aria-controls="content" title="Italique (Ctrl ou Cmd + I)"><em>Italique</em></button>
               </div>
+              <div class="admin-form-group"><label for="internal-article">Insérer un lien vers un article</label><select id="internal-article"><option value="">Choisir un article publié</option><% linkArticles.forEach(item => { %><option value="<%= articlePath(item) %>"><%= item.title %></option><% }) %></select><button type="button" id="insert-article-link">Insérer le lien</button></div>
               <textarea
                 id="content"
                 name="content"
@@ -87,6 +88,7 @@
               <small class="admin-form-hint" id="content-help">
                 Sélectionnez un passage puis cliquez sur Gras ou Italique. Vous pouvez combiner les deux.
                 Les marqueurs <code>**gras**</code> et <code>_italique_</code> seront remplacés à la publication.
+                Une ligne commençant par <code>## </code> crée une section H2 ; <code>### </code> crée une sous-section H3. Deux H2 déclenchent le sommaire.
                 Min 50 caractères. Pour placer l'image inline dans le texte,
                 insérez le marqueur <code>[[IMAGE_INLINE]]</code> à l'endroit souhaité.
               </small>
@@ -173,6 +175,15 @@
               </div>
             </section>
 
+            <section class="article-compose-section" aria-labelledby="seo-options">
+              <h2 id="seo-options">Référencement et publication</h2>
+              <div class="admin-form-group"><label for="seo_title">Titre SEO (facultatif)</label><input id="seo_title" name="seo_title" maxlength="255" value="<%= article.seo_title || formData.seo_title || '' %>"><small>Par défaut, le titre de l’article sera utilisé.</small></div>
+              <div class="admin-form-group"><label for="meta_description">Meta description (facultative)</label><textarea id="meta_description" name="meta_description" maxlength="320"><%= article.meta_description || formData.meta_description || '' %></textarea><small>Visez une description concise et fidèle au contenu. Sans saisie, un extrait sera utilisé.</small></div>
+              <div class="admin-form-group"><label for="image_alt">Description de l’image</label><input id="image_alt" name="image_alt" maxlength="255" value="<%= article.image_alt || formData.image_alt || '' %>"></div>
+              <div class="admin-form-group"><label for="is_published">Visibilité</label><select id="is_published" name="is_published"><option value="true" <%= article.is_published !== false ? 'selected' : '' %>>Publié</option><option value="false" <%= article.is_published === false ? 'selected' : '' %>>Brouillon (privé)</option></select></div>
+              <div class="admin-form-group"><label for="related_article_ids">Articles liés (5 maximum)</label><select id="related_article_ids" name="related_article_ids" multiple size="5"><% linkArticles.filter(item => item.id !== article.id).forEach(item => { %><option value="<%= item.id %>" <%= (article.related_article_ids || []).includes(item.id) ? 'selected' : '' %>><%= item.title %></option><% }) %></select></div>
+              <% if (article.slug) { %><p>URL conservée : <code><%= articlePath(article) %></code></p><% } %>
+            </section>
             <!-- ACTIONS -->
             <div class="admin-form-actions">
               <button type="submit" class="admin-btn primary">
@@ -192,6 +203,6 @@
 
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-    <script type="module" src="/js/article-editor.js"></script>
+    <script type="module" src="/js/article-editor.js?v=20260925-seo"></script>
   </body>
 </html>

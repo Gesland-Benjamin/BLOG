@@ -193,7 +193,7 @@ test('Temporaires privés et pagination bornée', () => {
 });
 test('Toutes les vues compilent ; formulaires principaux rendus avec CSRF et CSP', async () => {
   for(const dir of ['views','views/partials']) for(const file of fs.readdirSync(dir).filter(f=>f.endsWith('.ejs'))) ejs.compile(fs.readFileSync(`${dir}/${file}`,'utf8'));
-  const locals={csrfToken:'csrf-test',cspNonce:'nonce-test',user:null,errors:[],formData:{},message:null,error:null,devToken:null,categories:[],article:{},ogImageTags:'',isEditing:false,isValid:true,token:'signed.token',email:'',success:false,title:'Test'};
+  const locals={linkArticles:[],csrfToken:'csrf-test',cspNonce:'nonce-test',user:null,errors:[],formData:{},message:null,error:null,devToken:null,categories:[],article:{},ogImageTags:'',isEditing:false,isValid:true,token:'signed.token',email:'',success:false,title:'Test'};
   for(const view of ['auth','register','forgot-password','reset-password','newsletter','newsletter-unsubscribe','new-article','renseignements']) {
     const html=await ejs.renderFile(`views/${view}.ejs`,locals);
     assert.ok(!/\son(?:click|submit)=/.test(html));
@@ -207,7 +207,7 @@ test('Suppression utilisateur : validation avant transaction et contenus préser
   const user={id:2,role:'visiteur',destroy:async()=>deleted++};
   const sequelize={transaction:async fn=>{transactions++;return fn({LOCK:{UPDATE:'UPDATE'}});}};
   const User={findAll:async()=>[{id:1}],findByPk:async()=>user};
-  const Article={count:async()=>1};
+  const Article={count:async()=>1,unscoped(){return this;}};
   const updateModel={update:async value=>updates.push(value)};
   const mod=await mockedModule('../controllers/admin-user-controller.js',{
     '../models/User.model.js':{default:User},'../models/Article.model.js':{default:Article},

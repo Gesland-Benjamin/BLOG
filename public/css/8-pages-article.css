@@ -1164,3 +1164,8 @@
     width: 100%;
   }
 }
+/* SEO navigation reuses the article card palette and spacing. */
+.seo-breadcrumb ol { display:flex; flex-wrap:wrap; gap:.5rem; list-style:none; padding:1rem 0; }
+.seo-breadcrumb li + li::before { content:"›"; margin-right:.5rem; }
+.article-toc { padding:1rem; margin:1.5rem 0; border:1px solid currentColor; border-radius:12px; }
+.article-detail-body h2, .article-detail-body h3 { scroll-margin-top:6rem; margin-top:1.5em; }

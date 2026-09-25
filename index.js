@@ -1,3 +1,6 @@
+import { prepareSeoDeployment } from './services/seoDeployment.js';
+import { seoLocals, robotsTxt } from './utils/seo.js';
+import compression from 'compression';
 import dotenv from "dotenv";
  dotenv.config(); // Load .env for development
 
@@ -78,6 +81,12 @@ if (process.env.NODE_APP_INSTANCE && process.env.NODE_APP_INSTANCE !== '0') {
 app.set('trust proxy', (process.env.TRUST_PROXY || 'loopback').split(',').map(s => s.trim()));
 app.disable('x-powered-by');
 app.use(securityHeaders);
+app.use(compression());
+app.use(seoLocals);
+// Before static files and sessions: always use the configured canonical origin.
+app.get("/robots.txt", robotsTxt);
+// XML endpoints are public and do not need a session or CSRF cookie.
+app.use("/", sitemapRssRoutes);
 app.use(globalRateLimit);
 
 // =========================
@@ -100,8 +109,8 @@ app.set("view engine", "ejs");
 app.use('/uploads', (req, res, next) => {
   if (!/^\/[a-zA-Z0-9_-]+\.(?:webp|png|jpe?g|gif)$/i.test(req.path)) return res.sendStatus(404);
   next();
-}, express.static(getUploadsDir(), { dotfiles: 'deny', index: false }));
-app.use(express.static(path.join(__dirname, "public")));
+}, express.static(getUploadsDir(), { dotfiles: 'deny', index: false, maxAge: '7d' }));
+app.use(express.static(path.join(__dirname, "public"), { maxAge: "1h" }));
 
 // =========================
 // SESSION STORE
@@ -194,7 +203,6 @@ app.use("/auth", authRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/categories", categoriesRoutes);
 app.use("/search", searchRoutes);
-app.use("/", sitemapRssRoutes);
 app.use("/admin", adminArticleRoutes);
 app.use("/admin", adminCategorieRoutes);
 app.use("/admin", adminCommentRoutes);
@@ -205,7 +213,7 @@ app.use("/admin/users", adminUserRoutes);
 // 404
 // =========================
 app.use((req, res) => {
-  res.status(404).render("404", { article: undefined });
+  res.status(404).render("404", { article: undefined, seo: { ...res.locals.seo, noindex: true } });
 });
 
 // =========================
@@ -215,6 +223,7 @@ app.use((err, req, res, next) => {
   safeLog(err);
 
   res.status(Number.isInteger(err.status) && err.status >= 400 && err.status < 600 ? err.status : 500).render("500", {
+    seo: { ...res.locals.seo, noindex: true },
     error: isProduction ? null : err.message
   });
 });
@@ -227,6 +236,7 @@ let server;
 async function startServer() {
   // Lecture uniquement : le schéma existant doit déjà avoir sa table sessions.
   await sequelize.authenticate();
+  await prepareSeoDeployment(sequelize);
 
   server = app.listen(PORT, () => {
     console.log(`🚀 http://localhost:${PORT}`);
@@ -235,6 +245,7 @@ async function startServer() {
 
 startServer().catch((error) => {
   safeLog(error);
+  console.error('[SEO] Démarrage interrompu. Vérifier le schéma et les instructions docs/seo/hostinger-sans-ssh.md ; aucune réinitialisation ne sera effectuée.');
   process.exit(1);
 });
 

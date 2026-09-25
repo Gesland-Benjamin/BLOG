@@ -26,7 +26,7 @@
                       <% } %>
                       <div class="archive-article-content <%= article.image ? '' : 'full-width' %>">
                         <h2 class="archive-article-title">
-                          <a href="/article/<%= article.id %>">
+                          <a href="<%= articlePath(article) %>">
                             <%= article.titre %>
                           </a>
                         </h2>
@@ -38,7 +38,7 @@
                         
                         <p class="archive-article-excerpt"><%= article.extrait %>...</p>
                         
-                        <a href="/article/<%= article.id %>" class="archive-article-btn">
+                        <a href="<%= articlePath(article) %>" class="archive-article-btn">
                           Lire la suite →
                         </a>
                       </div>
@@ -51,6 +51,7 @@
                 Aucun article publié en <%= monthName %> <%= year %>.
               </div>
             <% } %>
+            <%- include('partials/pagination', { pagination, baseUrl }) %>
           </article>
         </div>
       </div>
