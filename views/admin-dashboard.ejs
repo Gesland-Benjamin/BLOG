@@ -5,9 +5,14 @@
   <body>
     <%- include('partials/header', { withContainer: true }) %>
 
-    <main class="admin-wrapper">
+    <main class="admin-wrapper admin-dashboard">
       <div class="admin-container">
 
+        <section class="admin-welcome" aria-labelledby="admin-welcome-title">
+          <div><p class="admin-welcome-eyebrow">Votre espace Emi’Pulse</p><h1 id="admin-welcome-title">Bonjour <%= typeof user !== 'undefined' && user?.name ? user.name : 'Émilie' %> !</h1>
+          <p>N’oubliez pas de remercier votre développeur préféré comme il se doit.</p></div>
+          <a href="/admin/articles/new" class="btn-general">Écrire un article</a>
+        </section>
         <!-- STATS -->
         <div class="admin-stats-row">
 
@@ -127,7 +132,7 @@
               <a href="/admin/commentaires" class="btn-general">Voir tout</a>
             </div>
 
-            <div class="admin-list">
+            <div class="admin-list dashboard-moderation">
               <% if (!pendingComments || pendingComments.length === 0) { %>
                 <div class="admin-list-empty">Aucun commentaire</div>
               <% } %>
@@ -136,7 +141,7 @@
                 <div class="admin-list-item">
                   <div class="admin-list-content">
 
-                    <strong><%= c.user?.name || 'Lecteur' %></strong>
+                    <strong><%= c.name || c.user?.name || 'Lecteur' %></strong>
 
                     <div class="admin-list-meta">
                       <% if (c.article) { %>
@@ -147,7 +152,7 @@
                     </div>
 
                     <div>
-                      <%= c.content.substring(0, 80) %>...
+                      <%= (c.content || '').slice(0, 160) %><%= (c.content || '').length > 160 ? '…' : '' %>
                     </div>
 
                   </div>
@@ -156,15 +161,16 @@
 
                     <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <button class="admin-btn-sm success">✓</button>
+                      <button class="admin-btn-sm success">Approuver</button>
                     </form>
 
                     <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
                       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                      <button class="admin-btn-sm danger">✕</button>
+                      <button class="admin-btn-sm secondary">Refuser</button>
                     </form>
 
                   </div>
+                  <%- include('partials/admin-comment-reply', { comment: c }) %>
                 </div>
               <% }) %>
             </div>

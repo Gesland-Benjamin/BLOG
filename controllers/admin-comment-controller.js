@@ -66,13 +66,13 @@ export const listCommentsAdmin = async (req, res) => {
       limit,
       offset
     });
-    const baseUrl = "/admin/commentaires";
+    const baseUrl = "/admin/commentaires" + (search ? `?search=${encodeURIComponent(search)}` : "");
     
     const pagination = createPaginationData(
       count,
       page,
       pageSize,
-      "/admin/commentaires"
+      baseUrl
     );
 
     return res.render("admin-commentaires", {

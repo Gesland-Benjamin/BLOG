@@ -122,28 +122,6 @@
           </div>
         </article>
 
-        <% if (typeof articleSeries !== 'undefined') { articleSeries.forEach(series => { %>
-          <nav class="article-detail-card article-series" aria-label="Série : <%= series.title %>">
-            <div class="article-detail-content">
-              <h2>Dans la série « <%= series.title %> »</h2>
-              <ol><% series.articles.forEach(episode => { %><li>
-                <% if (episode.slug === article.slug) { %><span aria-current="page"><%= episode.title %></span><% } else { %><a href="<%= articlePath(episode) %>"><%= episode.title %></a><% } %>
-              </li><% }) %></ol>
-            </div>
-          </nav>
-        <% }); } %>
-        <% if (relatedArticles.length) { %>
-          <section class="article-detail-card" aria-labelledby="related-articles-title">
-            <div class="article-detail-content">
-              <h2 id="related-articles-title">À lire aussi</h2>
-              <ul>
-                <% relatedArticles.forEach(item => { %>
-                  <li><a href="<%= articlePath(item) %>"><%= item.title %></a></li>
-                <% }) %>
-              </ul>
-            </div>
-          </section>
-        <% } %>
         <section class="comments-section" id="commentaires">
           <div class="comments-content">
             <div class="comments-header">
@@ -264,6 +242,29 @@
               </form>
             </div>
           </section>
+
+        <% if (typeof articleSeries !== 'undefined') { articleSeries.forEach(series => { %>
+          <nav class="article-detail-card article-series" aria-label="Série : <%= series.title %>">
+            <div class="article-detail-content">
+              <h2>Dans la série « <%= series.title %> »</h2>
+              <ol><% series.articles.forEach(episode => { %><li>
+                <% if (episode.slug === article.slug) { %><span aria-current="page"><%= episode.title %></span><% } else { %><a href="<%= articlePath(episode) %>"><%= episode.title %></a><% } %>
+              </li><% }) %></ol>
+            </div>
+          </nav>
+        <% }); } %>
+        <% if (relatedArticles.length) { %>
+          <section class="article-detail-card" aria-labelledby="related-articles-title">
+            <div class="article-detail-content">
+              <h2 id="related-articles-title">À lire aussi</h2>
+              <ul>
+                <% relatedArticles.forEach(item => { %>
+                  <li><a href="<%= articlePath(item) %>"><%= item.title %></a></li>
+                <% }) %>
+              </ul>
+            </div>
+          </section>
+        <% } %>
         </div>
       </div>
     </main>

@@ -4,157 +4,51 @@
   <body>
     <%- include('partials/header', { withContainer: true }) %>
     <main class="admin-wrapper admin-commentaires">
-     
       <div class="admin-container">
-
-          <div class="admin-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; justify-content: space-between; padding:1.2rem 1.7rem;">
-            <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
-              <h1 style="margin-bottom: 0;">Modération des commentaires</h1>
-              <form method="GET" action="/admin/commentaires" class="admin-search-form" style="display: flex; gap: 0.5rem; align-items: center;">
-                <input type="text" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Rechercher par nom ou prénom..." class="admin-input" style="min-width: 220px;" />
-                <button type="submit" class="btn-general">Rechercher</button>
-                <% if (typeof search !== 'undefined' && search) { %>
-                  <a href="/admin/commentaires" class="btn-general secondary" style="margin-left: 0.5rem;">Réinitialiser</a>
-                <% } %>
-              </form>
-            </div>
-            <a href="/article" class="btn-general">Voir les articles</a>
-          </div>
-
-        <% if (comments.length === 0) { %>
-          <div class="admin-alert info">Aucun commentaire</div>
-        <% } %>
-
-        <div class="admin-comments-grid">
-        <% comments.forEach(function(c, idx) { %>
-        <div class="admin-comment-card" style="padding:1.7rem 1.7rem;">
-            <div class="admin-comment-header">
-              <div class="admin-comment-author-section">
-                <h6>
-                  <strong><%= c.nom || (c.user ? c.user.nom_prenom : 'Lecteur') %></strong>
-                  <% if (c.user) { %><span class="admin-badge info">Utilisateur</span><% } %>
-                  <% if (c.statut === 'approved') { %>
-                    <span class="admin-badge success">Approuvé</span>
-                  <% } else if (c.statut === 'pending') { %>
-                    <span class="admin-badge warning">En attente</span>
-                  <% } else { %>
-                    <span class="admin-badge secondary">Rejeté</span>
-                  <% } %>
-                  <% if (c.is_spam) { %>
-                    <span class="admin-badge danger">Spam</span>
-                  <% } %>
-                </h6>
-                <div class="admin-comment-meta">
-                  <% if (c.article) { %>
-                    Article: <a href="<%= articlePath(c.article) %>"><%= c.article.titre %></a> •
-                  <% } %>
-                  <%= new Date(c.date).toLocaleString('fr-FR') %>
-                </div>
-              </div>
-            </div>
-            
-            <p class="admin-comment-content"><%= c.contenu %></p>
-
-            <!-- Actions du commentaire -->
-            <div class="admin-comment-actions">
-              <div class="admin-action-row">
-                <form method="POST" action="/admin/commentaires/<%= c.id %>/approve">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button class="admin-btn-sm success" type="submit">✓ Approuver</button>
-                </form>
-                <form method="POST" action="/admin/commentaires/<%= c.id %>/reject">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button class="admin-btn-sm secondary" type="submit">✗ Rejeter</button>
-                </form>
-              </div>
-              <div class="admin-action-row">
-                <form method="POST" action="/admin/commentaires/<%= c.id %>/spam">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button class="admin-btn-sm danger" type="submit">🚫 Spam</button>
-                </form>
-                <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button class="admin-btn-sm danger" type="submit" data-confirm="Supprimer ce commentaire ?">🗑️ Supprimer</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Formulaire de réponse (collapsé) -->
-            <div class="collapse" id="reply-form-<%= c.id %>">
-              <form method="POST" action="/admin/commentaires/<%= c.id %>/reply" class="admin-reply-form">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="admin-form-group">
-                  <label for="contenu-<%= c.id %>">Votre réponse</label>
-                  <textarea id="contenu-<%= c.id %>" name="contenu" rows="3" required placeholder="Écrivez votre réponse..."></textarea>
-                </div>
-                <div class="admin-form-actions">
-                  <button type="submit" class="btn-general">Envoyer la réponse</button>
-                  <button type="button" class="btn-general" data-bs-toggle="collapse" data-bs-target="#reply-form-<%= c.id %>">Annuler</button>
-                </div>
-              </form>
-            </div>
-
-            <!-- Affichage des réponses -->
-            <% if (c.replies && c.replies.length > 0) { %>
-              <div class="mt-3 pt-3 border-top">
-                <h6 class="mb-3">
-                  <span class="badge text-bg-secondary"><%= c.replies.length %></span> 
-                  Réponse<%= c.replies.length > 1 ? 's' : '' %>
-                </h6>
-                
-                <% if (c.replies.length <= 3) { %>
-                  <!-- Afficher toutes les réponses si 3 ou moins -->
-                  <% c.replies.forEach(reply => { %>
-                    <div class="ms-4 mb-2 p-2 bg-light rounded">
-                      <div class="d-flex justify-content-between align-items-start">
-                        <small class="fw-bold text-primary">
-                          <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Emilie Delbe') %>
-                          <% if (reply.is_admin_reply) { %>
-                            <span class="badge text-bg-primary" style="font-size:0.7rem;">Emilie Delbe</span>
-                          <% } %>
-                        </small>
-                        <small class="text-muted"><%= new Date(reply.date).toLocaleString('fr-FR') %></small>
-                      </div>
-                      <p class="mb-0 mt-1"><%= reply.contenu %></p>
-                    </div>
-                  <% }) %>
-                <% } else { %>
-                  <!-- Menu déroulant si plus de 3 réponses -->
-                  <div class="accordion" id="accordion-<%= c.id %>">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= c.id %>">
-                          Voir les <%= c.replies.length %> réponses
-                        </button>
-                      </h2>
-                      <div id="collapse-<%= c.id %>" class="accordion-collapse collapse" data-bs-parent="#accordion-<%= c.id %>">
-                        <div class="accordion-body">
-                          <% c.replies.forEach(reply => { %>
-                            <div class="ms-4 mb-2 p-2 bg-light rounded">
-                              <div class="d-flex justify-content-between align-items-start">
-                                <small class="fw-bold text-primary">
-                                  <%= reply.nom || (reply.user ? reply.user.nom_prenom : 'Emilie Delbe') %>
-                                  <% if (reply.is_admin_reply) { %>
-                                    <span class="badge text-bg-primary" style="font-size:0.7rem;">Emilie Delbe</span>
-                                  <% } %>
-                                </small>
-                                <small class="text-muted"><%= new Date(reply.date).toLocaleString('fr-FR') %></small>
-                              </div>
-                              <p class="mb-0 mt-1"><%= reply.contenu %></p>
-                            </div>
-                          <% }) %>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <% } %>
-              </div>
-            <% } %>
-          </div>
-        <% }) %>
+        <div class="admin-header moderation-heading">
+          <div><h1>Modération des commentaires</h1><p>Lisez, répondez et choisissez les échanges à publier.</p></div>
+          <a href="/admin/dashboard" class="btn-general">Tableau de bord</a>
+          <form method="GET" action="/admin/commentaires" class="admin-search-form moderation-search">
+            <label class="visually-hidden" for="comment-search">Rechercher un auteur ou un passage</label>
+            <input id="comment-search" type="search" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Nom ou contenu du commentaire" class="admin-input">
+            <button type="submit" class="btn-general">Rechercher</button>
+            <% if (typeof search !== 'undefined' && search) { %><a href="/admin/commentaires" class="btn-general secondary">Effacer le filtre</a><% } %>
+          </form>
         </div>
-
-      <%- include('partials/pagination', { pagination, baseUrl }) %>
+        <% if (comments.length === 0) { %><div class="admin-alert info">Aucun commentaire<%= typeof search !== 'undefined' && search ? ' ne correspond à votre recherche' : ' pour le moment' %>.</div><% } %>
+        <div class="admin-comments-grid">
+          <% comments.forEach(c => { const text = c.content || c.contenu || ''; const created = c.created_at || c.date; const date = created ? new Date(created) : null; %>
+            <article class="admin-comment-card moderation-card" id="comment-<%= c.id %>">
+              <div class="moderation-card-heading">
+                <h2><%= c.name || c.nom || c.user?.name || 'Lecteur' %></h2>
+                <span class="admin-badge <%= c.statut === 'approved' ? 'success' : c.statut === 'pending' ? 'warning' : 'secondary' %>"><%= c.statut === 'approved' ? 'Publié' : c.statut === 'pending' ? 'En attente' : 'Refusé' %></span>
+                <% if (c.is_spam) { %><span class="admin-badge danger">Spam</span><% } %>
+              </div>
+              <div class="admin-comment-meta">
+                <% if (c.article) { %>
+                  Sur <a href="<%= c.article.is_published === false ? '/admin/articles/' + c.article.id + '/edit' : articlePath(c.article) %>"><%= c.article.title || c.article.titre %></a>
+                <% } else { %>Article indisponible<% } %>
+                <% if (date && !Number.isNaN(date.getTime())) { %><time datetime="<%= date.toISOString() %>"><%= date.toLocaleString('fr-FR') %></time><% } %>
+              </div>
+              <p class="admin-comment-content"><%= text.length > 500 ? text.slice(0, 500) + '…' : text %></p>
+              <% if (text.length > 500) { %><details class="moderation-full-text"><summary>Lire le commentaire entier</summary><p><%= text %></p></details><% } %>
+              <div class="moderation-primary-actions">
+                <% if (c.statut !== 'approved') { %><form method="POST" action="/admin/commentaires/<%= c.id %>/approve"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="admin-btn-sm success" type="submit">Approuver</button></form><% } %>
+                <% if (c.statut !== 'rejected') { %><form method="POST" action="/admin/commentaires/<%= c.id %>/reject"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="admin-btn-sm secondary" type="submit">Refuser</button></form><% } %>
+              </div>
+              <%- include('partials/admin-comment-reply', { comment: c }) %>
+              <details class="moderation-other-actions"><summary>Autres actions</summary><div class="moderation-primary-actions">
+                <% if (!c.is_spam) { %><form method="POST" action="/admin/commentaires/<%= c.id %>/spam"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="admin-btn-sm secondary" type="submit">Marquer comme spam</button></form><% } %>
+                <form method="POST" action="/admin/commentaires/<%= c.id %>?_method=DELETE"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="admin-btn-sm danger" type="submit" data-confirm="Supprimer définitivement ce commentaire ?">Supprimer</button></form>
+              </div></details>
+              <% if (c.replies?.length) { %><details class="moderation-thread"><summary><%= c.replies.length %> réponse<%= c.replies.length > 1 ? 's' : '' %></summary>
+                <% c.replies.forEach(reply => { %><div class="moderation-thread-item"><strong><%= reply.name || reply.nom || reply.user?.name || 'Lecteur' %></strong><% if (reply.is_admin_reply) { %> <span class="admin-badge info">Équipe du blog</span><% } %><p><%= reply.content || reply.contenu %></p></div><% }) %>
+              </details><% } %>
+            </article>
+          <% }) %>
+        </div>
+        <%- include('partials/pagination', { pagination, baseUrl }) %>
+      </div>
     </main>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>

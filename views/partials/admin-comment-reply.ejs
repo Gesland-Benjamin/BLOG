@@ -1,0 +1,10 @@
+<details class="moderation-reply">
+  <summary>Répondre</summary>
+  <form method="POST" action="/admin/commentaires/<%= comment.id %>/reply" class="admin-reply-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="reply-<%= comment.id %>">Votre réponse à <%= comment.name || comment.nom || comment.user?.name || 'ce lecteur' %></label>
+    <textarea id="reply-<%= comment.id %>" name="contenu" rows="4" required placeholder="Écrivez votre réponse…"></textarea>
+    <small>La réponse sera publiée. Le statut du commentaire d’origine reste inchangé.</small>
+    <button type="submit" class="admin-btn-sm primary">Publier la réponse</button>
+  </form>
+</details>
