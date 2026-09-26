@@ -1,9 +1,9 @@
 <footer class="footer-wrapper">
   <div class="footer-container">
     <!-- Newsletter Signup -->
-    <div class="footer-newsletter">
+    <section class="footer-newsletter" id="footer-newsletter" aria-labelledby="footer-newsletter-title" tabindex="-1">
       <span class="newsletter-eyebrow">Gardons le lien</span>
-      <h2>Les nouvelles d’Emi’Pulse</h2>
+      <h2 id="footer-newsletter-title">Les nouvelles d’Emi’Pulse</h2>
       <p class="footer-newsletter-intro">Retrouvez les nouveaux articles et les actualités du blog dans votre boîte mail.</p>
       <form action="/newsletter/subscribe" method="POST" class="newsletter-form">
 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -18,7 +18,7 @@
         <button type="submit" class="newsletter-btn">Je m’inscris <span aria-hidden="true">→</span></button>
       </form>
       <p id="footer-newsletter-help" class="newsletter-fineprint">Inscription à confirmer par e-mail. Désinscription à tout moment.</p>
-    </div>
+    </section>
 
     <!-- Links -->
     <div class="footer-links">
@@ -39,7 +39,6 @@
     </div>
   </div>
 </footer>
-
 
 
 
